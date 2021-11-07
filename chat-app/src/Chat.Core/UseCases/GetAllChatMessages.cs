@@ -4,11 +4,11 @@ using Chat.Core.Repostories;
 
 namespace Chat.Core.UseCases;
 
-public class GetAllChatMessages
+public class GetAllChatMessagesUseCase
 {
     private IMessagesRepository _repo;
 
-    public GetAllChatMessages(IMessagesRepository repo)
+    public GetAllChatMessagesUseCase(IMessagesRepository repo)
     {
         _repo = repo;
     }
