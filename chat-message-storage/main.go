@@ -14,12 +14,12 @@ func main() {
 	)
 	defer tracer.Stop()
 	tgin.WithAnalytics(true)
-	r := gin.Default()
-	r.Use(tgin.Middleware("chat-message-storage", tgin.WithAnalytics(true)))
+	r := gin.New()
+	r.Use(tgin.Middleware("chat-message-storage"))
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
-	r.Run("0.0.0.0:9000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(":9000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
