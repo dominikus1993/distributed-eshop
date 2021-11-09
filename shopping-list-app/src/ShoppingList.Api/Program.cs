@@ -1,3 +1,5 @@
+﻿using ShoppingList.Core.UseCases;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Core
+builder.Services.AddTransient<AddItemToCustomerShoppingListUseCase>();
+builder.Services.AddTransient<GetCustomerShoppingListUseCase>();
+builder.Services.AddTransient<RemoveItemFromCustomerShoppingList>();
 
 var app = builder.Build();
 
