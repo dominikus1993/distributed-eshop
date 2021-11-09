@@ -1,3 +1,3 @@
 namespace Chat.Core.Model;
 
-public record ChatMessage(string UserName, string Message, DateTime SentAt);
+public record ChatMessage(Guid Id, string UserName, string Message, DateTime SentAt);
