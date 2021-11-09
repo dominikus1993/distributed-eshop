@@ -27,4 +27,4 @@ ENV DD_LOGS_INJECTION=true
 ENV DD_ADONET_ENABLED=true
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Chat.App.dll"]
+ENTRYPOINT ["dotnet", "ShoppingList.Api.dll"]
