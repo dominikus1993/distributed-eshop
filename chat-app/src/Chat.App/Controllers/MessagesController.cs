@@ -26,10 +26,7 @@ public class MessagesController : ControllerBase
     public async Task<IActionResult> Post([FromBody]AddChatMessageRequest request, [FromServices] AddMessageUseCase uc, CancellationToken cancellationToken)
     {
         var dto = new ChatMessageDto(request.Id, request.UserName, request.Message, request.SentAt);
-        var res =  await uc.Execute(dto, cancellationToken);
-        return res.Match<IActionResult>(
-            ok => CreatedAtRoute("GetMessages", new { id = dto.Id }, dto),
-            err => BadRequest(err)
-        );
+        var res = await uc.Execute(dto, cancellationToken);
+        return Accepted();
     }
 }
