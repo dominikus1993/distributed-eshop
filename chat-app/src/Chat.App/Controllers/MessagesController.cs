@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Chat.App.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("messages")]
 public class MessagesController : ControllerBase
 {
     private readonly ILogger<WeatherForecastController> _logger;

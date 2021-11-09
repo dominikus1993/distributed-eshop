@@ -23,8 +23,5 @@ public class GetAllChatMessagesUseCase
         {
             yield return new ChatMessageDto(item);
         }
-        {
-            
-        }
     }
 }
