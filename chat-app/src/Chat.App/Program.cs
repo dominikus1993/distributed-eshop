@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IMessageOrderProvider, DefaultMessageOrderProvider>(); 
 builder.Services.AddTransient<GetAllChatMessagesUseCase>();
+builder.Services.AddTransient<AddMessageUseCase>();
 builder.Services.AddInfrastructure();
 var app = builder.Build();
 

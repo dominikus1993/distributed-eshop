@@ -12,7 +12,7 @@ public class DefaultMessageOrderProvider : IMessageOrderProvider
 {
     public async IAsyncEnumerable<ChatMessage> Sort(IEnumerable<ChatMessage> messages)
     {
-        foreach (var item in messages.OrderBy(m => m.SentAt))
+        foreach (var item in messages.OrderByDescending(m => m.SentAt))
         {
             await Task.Delay(100);
             yield return item;

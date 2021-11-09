@@ -16,9 +16,9 @@ public class GetAllChatMessagesUseCase
         _orderProvider = orderProvider;
     }
 
-    public async IAsyncEnumerable<ChatMessageDto> Execute()
+    public async IAsyncEnumerable<ChatMessageDto> Execute(CancellationToken cancellationToken = default)
     {
-        var messages = await _repo.GetAllMessages().ToListAsync();
+        var messages = await _repo.GetAllMessages(cancellationToken).ToListAsync(cancellationToken);
         await foreach (var item in _orderProvider.Sort(messages))
         {
             yield return new ChatMessageDto(item);

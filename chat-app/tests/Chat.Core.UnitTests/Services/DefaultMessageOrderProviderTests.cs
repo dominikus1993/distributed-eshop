@@ -28,6 +28,6 @@ public class DefaultMessageOrderProviderTests
         var provider = new DefaultMessageOrderProvider();
         var subject = await provider.Sort(messages).ToListAsync();
         Assert.Equal(3, subject.Count);
-        Assert.Equal(id2, subject[0].Id);
+        Assert.Equal(id3, subject[0].Id);
     }
 }

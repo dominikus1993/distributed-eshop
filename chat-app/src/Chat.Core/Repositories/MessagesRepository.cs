@@ -1,9 +1,10 @@
 using Chat.Core.Model;
+using LanguageExt;
 
 namespace Chat.Core.Repostories;
 
 public interface IMessagesRepository
 {
-    Task AddMessage(ChatMessage message);
-    IAsyncEnumerable<ChatMessage> GetAllMessages();
+    Task<Either<Exception, Unit>> AddMessage(ChatMessage message, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<ChatMessage> GetAllMessages(CancellationToken cancellationToken = default);
 }
