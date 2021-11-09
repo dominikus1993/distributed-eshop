@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ShoppingList.Core.Dto;
 using ShoppingList.Core.Model;
@@ -9,7 +6,7 @@ using ShoppingList.Core.Repositories;
 
 namespace ShoppingList.Core.UseCases
 {
-    internal class GetCustomerShoppingListUseCase
+    public class GetCustomerShoppingListUseCase
     {
         private IShippingListRepository _repository;
 
@@ -18,11 +15,12 @@ namespace ShoppingList.Core.UseCases
             _repository = repository;
         }
 
-        public async Task<CustomerShoppingList> Execute(GetCustomerBasket query)
+        public async Task<CustomerShoppingListDto> Execute(GetCustomerBasket query, CancellationToken cancellationToken = default)
         {
             var customerId = new CustomerId(query.CustomerId);
-            var basketOpt = await _repository.Get(customerId);
-            return basketOpt.IfNone(() => CustomerShoppingList.Empty(customerId));
+            var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
+            var basket = basketOpt.IfNone(() => CustomerShoppingList.Empty(customerId));
+            return new CustomerShoppingListDto(basket);
         }
     }
 }
