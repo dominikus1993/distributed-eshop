@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<AddItemToCustomerShoppingListUseCase>();
 builder.Services.AddTransient<GetCustomerShoppingListUseCase>();
 builder.Services.AddTransient<RemoveItemFromCustomerShoppingList>();
+builder.Services.AddTransient<GetCustomerShoppingListItemsUseCase>();
 
 var app = builder.Build();
 
