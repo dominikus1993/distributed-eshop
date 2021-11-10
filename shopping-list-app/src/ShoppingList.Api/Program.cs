@@ -1,4 +1,5 @@
 ﻿using ShoppingList.Core.UseCases;
+using ShoppingList.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ builder.Services.AddTransient<AddItemToCustomerShoppingListUseCase>();
 builder.Services.AddTransient<GetCustomerShoppingListUseCase>();
 builder.Services.AddTransient<RemoveItemFromCustomerShoppingList>();
 builder.Services.AddTransient<GetCustomerShoppingListItemsUseCase>();
+
+// Infastructure
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

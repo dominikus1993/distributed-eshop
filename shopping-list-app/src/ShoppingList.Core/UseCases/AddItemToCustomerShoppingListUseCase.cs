@@ -9,9 +9,9 @@ namespace ShoppingList.Core.UseCases
 {
     public class AddItemToCustomerShoppingListUseCase
     {
-        private IShippingListRepository _repository;
+        private IShoppingListRepository _repository;
 
-        public AddItemToCustomerShoppingListUseCase(IShippingListRepository repository)
+        public AddItemToCustomerShoppingListUseCase(IShoppingListRepository repository)
         {
             _repository = repository;
         }

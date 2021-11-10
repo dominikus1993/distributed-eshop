@@ -9,9 +9,9 @@ namespace ShoppingList.Core.UseCases
 {
     public class RemoveItemFromCustomerShoppingList
     {
-        private IShippingListRepository _repository;
+        private IShoppingListRepository _repository;
 
-        public RemoveItemFromCustomerShoppingList(IShippingListRepository repository)
+        public RemoveItemFromCustomerShoppingList(IShoppingListRepository repository)
         {
             _repository = repository;
         }

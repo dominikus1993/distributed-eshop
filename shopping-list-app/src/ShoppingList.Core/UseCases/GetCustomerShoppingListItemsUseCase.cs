@@ -13,9 +13,9 @@ namespace ShoppingList.Core.UseCases
 
     public class GetCustomerShoppingListItemsUseCase
     {
-        private IShippingListRepository _repository;
+        private IShoppingListRepository _repository;
 
-        public GetCustomerShoppingListItemsUseCase(IShippingListRepository repository)
+        public GetCustomerShoppingListItemsUseCase(IShoppingListRepository repository)
         {
             _repository = repository;
         }

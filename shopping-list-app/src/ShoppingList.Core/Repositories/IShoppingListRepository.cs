@@ -5,7 +5,7 @@ using ShoppingList.Core.Model;
 
 namespace ShoppingList.Core.Repositories
 {
-    public interface IShippingListRepository
+    public interface IShoppingListRepository
     {
         Task AddOrUpdate(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default);
         Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default);

@@ -23,7 +23,7 @@ public class ShoppingListController : ControllerBase
         return Ok(basket);
     }
 
-    [HttpGet("items", Name = "GetCustomerBasket")]
+    [HttpGet("items", Name = "GetCustomerBasketItems")]
     public async IAsyncEnumerable<ItemDto> GetItems(int customerId, [FromServices] GetCustomerShoppingListItemsUseCase usecase)
     {
         await foreach (var item in usecase.Execute(new GetCustomerBasket(customerId)))
