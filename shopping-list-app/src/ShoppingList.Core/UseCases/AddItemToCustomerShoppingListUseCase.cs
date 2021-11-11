@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ShoppingList.Core.Dto;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
@@ -10,10 +11,12 @@ namespace ShoppingList.Core.UseCases
     public class AddItemToCustomerShoppingListUseCase
     {
         private IShoppingListRepository _repository;
+        private ILogger<AddItemToCustomerShoppingListUseCase> _logger;
 
-        public AddItemToCustomerShoppingListUseCase(IShoppingListRepository repository)
+        public AddItemToCustomerShoppingListUseCase(IShoppingListRepository repository, ILogger<AddItemToCustomerShoppingListUseCase> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         public async Task Execute(AddItem addItem, CancellationToken cancellationToken = default)
@@ -22,6 +25,8 @@ namespace ShoppingList.Core.UseCases
             {
                 throw new ArgumentNullException(nameof(addItem));
             }
+
+            _logger.LogWarning("Adding item to shoppinglist, item: {Item}", addItem);
 
             var customerId = new CustomerId(addItem.CustomerId);
             var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);

@@ -16,21 +16,6 @@ public class ShoppingListController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetCustomerBasket")]
-    public async Task<ActionResult<CustomerShoppingListDto>> Get(int customerId, [FromServices] GetCustomerShoppingListUseCase usecase)
-    {
-        var basket = await usecase.Execute(new GetCustomerBasket(customerId));
-        return Ok(basket);
-    }
-
-    [HttpGet("items", Name = "GetCustomerBasketItems")]
-    public async IAsyncEnumerable<ItemDto> GetItems(int customerId, [FromServices] GetCustomerShoppingListItemsUseCase usecase)
-    {
-        await foreach (var item in usecase.Execute(new GetCustomerBasket(customerId)))
-        {
-            yield return item;
-        }
-    }
 
     [HttpPost("items", Name = "AddItemToBasket")]
     public async Task<ActionResult<CustomerShoppingListDto>> AddItem(int customerId, [FromBody] AddItemRequest addItem, [FromServices] AddItemToCustomerShoppingListUseCase usecase)

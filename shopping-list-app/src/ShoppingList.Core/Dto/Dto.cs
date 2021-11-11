@@ -4,6 +4,7 @@ using ShoppingList.Core.Model;
 
 namespace ShoppingList.Core.Dto;
 
+public record RemoveCustomerShoppingList(int CustomerId);
 public record AddItem(int CustomerId, int ItemId, int ItemQuantity);
 public record RemoveItem(int CustomerId, int ItemId, int ItemQuantity);
 public record GetCustomerBasket(int CustomerId);

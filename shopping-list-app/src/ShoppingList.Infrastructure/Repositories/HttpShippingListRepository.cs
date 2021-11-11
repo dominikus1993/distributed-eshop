@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using LanguageExt;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
+using static LanguageExt.Prelude;
 
 namespace ShoppingList.Infrastructure.Repositories
 {
@@ -22,12 +23,13 @@ namespace ShoppingList.Infrastructure.Repositories
 
         public Task AddOrUpdate(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
-        public Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
+        public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            await Task.Yield();
+            return None;
         }
 
         public Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
