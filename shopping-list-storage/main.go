@@ -1,8 +1,14 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	tgin "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
+	"flag"
+	"fmt"
+	"log"
+	"net"
+
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
@@ -13,13 +19,13 @@ func main() {
 		tracer.WithServiceVersion("v1.1.1"),
 	)
 	defer tracer.Stop()
-	tgin.WithAnalytics(true)
-	r := gin.New()
-	r.Use(tgin.Middleware("chat-message-storage"))
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run(":9000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	flag.Parse()
+	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 9000))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	reflection.Register(grpcServer)
+	shoppinglist.RegisterShoppingListsStorageServer(grpcServer, NewFakeCustomerShoppingListServer())
+	grpcServer.Serve(lis)
 }
