@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
@@ -28,7 +24,7 @@ namespace ShoppingList.Infrastructure.Repositories
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
             var result = await _client.GetCustomerShoppingList(id.Value);
-            if (result is null)
+            if (result?.Items is null)
             {
                 return None;
             }

@@ -13,13 +13,13 @@ type Customer struct {
 func main() {
 	tracer.Start(
 		tracer.WithEnv("local"),
-		tracer.WithService("chat-message-storage"),
+		tracer.WithService("shopping-list-storage"),
 		tracer.WithServiceVersion("v1.1.1"),
 	)
 	defer tracer.Stop()
 	tgin.WithAnalytics(true)
 	r := gin.New()
-	r.Use(tgin.Middleware("chat-message-storage"))
+	r.Use(tgin.Middleware("shopping-list-storage"))
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
