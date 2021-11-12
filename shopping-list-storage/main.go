@@ -1,37 +1,48 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-	"log"
-	"net"
-
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
-	grpctrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc"
+	"github.com/gin-gonic/gin"
+	tgin "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
+
+type Customer struct {
+	ID int `uri:"id" binding:"required"`
+}
 
 func main() {
 	tracer.Start(
 		tracer.WithEnv("local"),
-		tracer.WithService("shopping-list-storage"),
+		tracer.WithService("chat-message-storage"),
 		tracer.WithServiceVersion("v1.1.1"),
 	)
 	defer tracer.Stop()
-	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	si := grpctrace.StreamServerInterceptor(grpctrace.WithServiceName("shopping-list-storage"))
-	ui := grpctrace.UnaryServerInterceptor(grpctrace.WithServiceName("shopping-list-storage"))
-	grpcServer := grpc.NewServer(grpc.StreamInterceptor(si), grpc.UnaryInterceptor(ui))
-	reflection.Register(grpcServer)
-	shoppinglist.RegisterShoppingListsStorageServer(grpcServer, NewFakeCustomerShoppingListServer())
+	tgin.WithAnalytics(true)
+	r := gin.New()
+	r.Use(tgin.Middleware("chat-message-storage"))
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
 
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	r.GET("/shoppingLists/:id", func(c *gin.Context) {
+		var customer Customer
+		if err := c.ShouldBindUri(&customer); err != nil {
+			c.JSON(400, gin.H{"msg": err.Error()})
+			return
+		}
+		var items []struct {
+			ItemID       int `json:"itemId"`
+			ItemQuantity int `json:"ItemQuantity"`
+		} = []struct {
+			ItemID       int `json:"itemId"`
+			ItemQuantity int `json:"ItemQuantity"`
+		}{{ItemID: 2, ItemQuantity: 2}}
+		c.JSON(200, gin.H{
+			"customerId": customer.ID,
+			"items":      items,
+		})
+	})
+	r.Run(":9000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

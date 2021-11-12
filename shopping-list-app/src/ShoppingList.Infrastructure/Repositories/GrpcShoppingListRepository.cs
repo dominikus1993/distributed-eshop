@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 using LanguageExt;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
+using ShoppingList.Infrastructure.Refit;
 using static LanguageExt.Prelude;
 namespace ShoppingList.Infrastructure.Repositories
 {
-    internal class GrpcShoppingListRepository : IShoppingListRepository
+    internal class HttpShoppingListRepository : IShoppingListRepository
     {
-        private readonly ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient _client;
+        private readonly IStorageClient _client;
 
-        public GrpcShoppingListRepository(ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient client)
+        public HttpShoppingListRepository(IStorageClient client)
         {
             _client = client;
         }
@@ -24,10 +25,9 @@ namespace ShoppingList.Infrastructure.Repositories
         {
             return Task.CompletedTask;
         }
-
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
-            var result = await _client.GetCustomerShoppingListAsync(new ShoppingListsStorage.GetCustomerShoppingListRequest() {CustomerId = id.Value}, cancellationToken: cancellationToken);
+            var result = await _client.GetCustomerShoppingList(id.Value);
             if (result is null)
             {
                 return None;
