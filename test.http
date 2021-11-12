@@ -1,5 +1,5 @@
 @BASE_URL=http://localhost:5000
-@customer_id=3
+@customer_id=2
 ###
 
 GET {{BASE_URL}}/shoppingLists/{{customer_id}}/items HTTP/1.1
