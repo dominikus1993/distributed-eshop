@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.4
-	gopkg.in/DataDog/dd-trace-go.v1 v1.33.0
+	gopkg.in/DataDog/dd-trace-go.v1 v1.34.0
 )
 
 require (

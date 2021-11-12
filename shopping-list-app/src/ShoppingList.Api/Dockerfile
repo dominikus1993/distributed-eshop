@@ -5,7 +5,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/nightly/sdk:6.0 AS build
 WORKDIR /src
 COPY . .
-WORKDIR /src/src/Chat.App
+WORKDIR /src/src/ShoppingList.Api
 RUN dotnet restore -nowarn:msb3202,nu1503
 RUN dotnet build -c Release -o /app
 
