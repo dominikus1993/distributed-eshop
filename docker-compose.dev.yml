@@ -12,6 +12,8 @@ services:
       DD_ENV: "local"
       DD_TRACE_ENABLED: "true"
     command: /bin/sh -c "while sleep 1000; do :; done"
+    links:
+     - storage 
   storage:
     image: mcr.microsoft.com/vscode/devcontainers/go:1.17-bullseye
     ports:
@@ -24,6 +26,8 @@ services:
       DD_ENV: "local"
       DD_TRACE_ENABLED: "true"
     command: /bin/sh -c "while sleep 1000; do :; done"
+    links:
+     - db 
   ddagent: 
     image: datadog/agent:latest
     volumes:
