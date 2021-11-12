@@ -11,6 +11,7 @@ services:
       DD_ENV: "local"
       DD_TRACE_ENABLED: "true"
       ConnectionStrings__Storage: "http://storage:9000"
+      ASPNETCORE_ENVIRONMENT: "Development"
     depends_on:
       - storage
   storage:

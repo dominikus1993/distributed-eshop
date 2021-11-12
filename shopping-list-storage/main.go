@@ -21,16 +21,17 @@ func main() {
 	)
 	defer tracer.Stop()
 	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 9000))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	si := grpctrace.StreamServerInterceptor(
-		grpctrace.WithServiceName("shopping-list-storage"),
-		grpctrace.WithStreamMessages(false),
-	)
-	grpcServer := grpc.NewServer(grpc.StreamInterceptor(si))
+	si := grpctrace.StreamServerInterceptor(grpctrace.WithServiceName("shopping-list-storage"))
+	ui := grpctrace.UnaryServerInterceptor(grpctrace.WithServiceName("shopping-list-storage"))
+	grpcServer := grpc.NewServer(grpc.StreamInterceptor(si), grpc.UnaryInterceptor(ui))
 	reflection.Register(grpcServer)
 	shoppinglist.RegisterShoppingListsStorageServer(grpcServer, NewFakeCustomerShoppingListServer())
-	grpcServer.Serve(lis)
+
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }
