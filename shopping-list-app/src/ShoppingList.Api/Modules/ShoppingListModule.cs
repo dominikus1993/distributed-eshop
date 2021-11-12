@@ -11,13 +11,13 @@ namespace ShoppingList.Api.Modules
 {
     public static class CustomerShoppingList
     {
-        public async static Task<IResult> GetCustomerShoppingList(int customerId, GetCustomerShoppingListUseCase usecase)
+        public static async Task<IResult> GetCustomerShoppingList(int customerId, GetCustomerShoppingListUseCase usecase)
         {
             var basket = await usecase.Execute(new GetCustomerBasket(customerId));
             return Results.Ok(basket);
         }
 
-        public async static IAsyncEnumerable<ItemDto> GetCustomerShoppingListItems(int customerId, GetCustomerShoppingListItemsUseCase usecase)
+        public static async IAsyncEnumerable<ItemDto> GetCustomerShoppingListItems(int customerId, GetCustomerShoppingListItemsUseCase usecase)
         {
             await foreach (var item in usecase.Execute(new GetCustomerBasket(customerId)))
             {
@@ -35,9 +35,9 @@ namespace ShoppingList.Api.Modules
             return Results.Accepted();
         }
 
-        public static async Task<IResult> RemoveItemFromCustomerShoppingList(int customerId, RemoveItemRequest addItem, RemoveItemFromCustomerShoppingList usecase)
+        public static async Task<IResult> RemoveItemFromCustomerShoppingList(int customerId, RemoveItemRequest removeItem, RemoveItemFromCustomerShoppingList usecase)
         {
-            await usecase.Execute(new RemoveItem(customerId, addItem.ItemId, addItem.ItemQuantity));
+            await usecase.Execute(new RemoveItem(customerId, removeItem.ItemId, removeItem.ItemQuantity));
             return Results.NoContent();
         }
 

@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShoppingList.Core.Repositories;
 using ShoppingList.Infrastructure.Repositories;
+using Grpc.Core;
+using Grpc.Net.Client;
 
 namespace ShoppingList.Infrastructure.Extensions
 {
@@ -14,7 +16,12 @@ namespace ShoppingList.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
-            services.AddHttpClient<IShoppingListRepository, HttpShoppingListRepository>();
+            services.AddSingleton(sp => {
+                var channel = GrpcChannel.ForAddress(config.GetConnectionString("Storage"));
+                var client = new ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient(channel);
+                return client;
+            });
+            services.AddTransient<IShoppingListRepository, GrpcShoppingListRepository>();
             return services;
         }
     }

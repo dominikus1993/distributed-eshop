@@ -1,6 +1,7 @@
 ﻿using ShoppingList.Api.Modules;
 using ShoppingList.Core.UseCases;
 using ShoppingList.Infrastructure.Extensions;
+AppContext.SetSwitch( "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,6 @@ builder.Services.AddTransient<GetCustomerShoppingListItemsUseCase>();
 builder.Services.AddTransient<RemoveCustomerShoppingListUseCase>();
 // Infastructure
 builder.Services.AddInfrastructure(builder.Configuration);
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,7 +32,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/shoppingLists/{customerId}", CustomerShoppingList.GetCustomerShoppingList);
 app.MapDelete("/shoppingLists/{customerId}", CustomerShoppingList.RemoveCustomerShoppingList);
 app.MapPost("/shoppingLists/{customerId}/items", CustomerShoppingList.AddItemToCustomerShoppingList);
-app.MapDelete("/shoppingLists/{customerId}/items", CustomerShoppingList.RemoveItemFromCustomerShoppingList);
+//app.MapDelete("/shoppingLists/{customerId}/items", CustomerShoppingList.RemoveItemFromCustomerShoppingList);
 app.MapGet("/shoppingLists/{customerId}/items", CustomerShoppingList.GetCustomerShoppingListItems);
 
 app.UseAuthorization();

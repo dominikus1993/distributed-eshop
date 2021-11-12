@@ -9,14 +9,13 @@ using LanguageExt;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
 using static LanguageExt.Prelude;
-
 namespace ShoppingList.Infrastructure.Repositories
 {
-    internal class HttpShoppingListRepository : IShoppingListRepository
+    internal class GrpcShoppingListRepository : IShoppingListRepository
     {
-        private readonly HttpClient _client;
+        private readonly ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient _client;
 
-        public HttpShoppingListRepository(HttpClient client)
+        public GrpcShoppingListRepository(ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient client)
         {
             _client = client;
         }
@@ -28,13 +27,18 @@ namespace ShoppingList.Infrastructure.Repositories
 
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
-            await Task.Yield();
-            return None;
+            var result = await _client.GetCustomerShoppingListAsync(new ShoppingListsStorage.GetCustomerShoppingListRequest() {CustomerId = id.Value}, cancellationToken: cancellationToken);
+            if (result is null)
+            {
+                return None;
+            }
+            var items = result.Items.Select(x => new Item(new ItemId(x.ItemId), new ItemQuantity(x.ItemQuantity))).ToList();
+            return new CustomerShoppingList(new CustomerId(result.CustomerId), items);
         }
 
         public Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }
