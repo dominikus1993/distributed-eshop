@@ -1,0 +1,9 @@
+{
+    "name": "ShoppingListApp",
+    "dockerComposeFile": ["../docker-compose.dev.yml"],
+    "service": "web",
+    "shutdownAction": "none",
+    "extensions": ["ms-dotnettools.csharp", "kreativ-software.csharpextensions", "humao.rest-client", "fudge.auto-using", "wakatime.vscode-wakatime"],
+    "forwardPorts": [5000],
+    "workspaceFolder": "/workspace/shopping-list-app"
+  }
