@@ -9,6 +9,9 @@ using ShoppingList.Core.Repositories;
 using ShoppingList.Infrastructure.Repositories;
 using Grpc.Core;
 using Grpc.Net.Client;
+using System.Net.Http;
+using Grpc.Core.Interceptors;
+using Datadog.Trace;
 
 namespace ShoppingList.Infrastructure.Extensions
 {
@@ -16,10 +19,9 @@ namespace ShoppingList.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
-            services.AddSingleton(sp => {
-                var channel = GrpcChannel.ForAddress(config.GetConnectionString("Storage"));
-                var client = new ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient(channel);
-                return client;
+            services.AddGrpcClient<ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient>(options =>
+            {
+                options.Address = new Uri(config.GetConnectionString("Storage"));
             });
             services.AddTransient<IShoppingListRepository, GrpcShoppingListRepository>();
             return services;
