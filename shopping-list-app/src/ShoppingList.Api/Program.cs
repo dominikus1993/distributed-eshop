@@ -32,7 +32,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/shoppingLists/{customerId}", CustomerShoppingList.GetCustomerShoppingList);
 app.MapDelete("/shoppingLists/{customerId}", CustomerShoppingList.RemoveCustomerShoppingList);
 app.MapPost("/shoppingLists/{customerId}/items", CustomerShoppingList.AddItemToCustomerShoppingList);
-//app.MapDelete("/shoppingLists/{customerId}/items", CustomerShoppingList.RemoveItemFromCustomerShoppingList);
+app.MapDelete("/shoppingLists/{customerId}/items", CustomerShoppingList.RemoveItemFromCustomerShoppingList);
 app.MapGet("/shoppingLists/{customerId}/items", CustomerShoppingList.GetCustomerShoppingListItems);
 
 app.UseAuthorization();

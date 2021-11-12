@@ -35,7 +35,7 @@ namespace ShoppingList.Api.Modules
             return Results.Accepted();
         }
 
-        public static async Task<IResult> RemoveItemFromCustomerShoppingList(int customerId, RemoveItemRequest removeItem, RemoveItemFromCustomerShoppingList usecase)
+        public static async Task<IResult> RemoveItemFromCustomerShoppingList(int customerId, [FromBody]RemoveItemRequest removeItem, [FromServices]RemoveItemFromCustomerShoppingList usecase)
         {
             await usecase.Execute(new RemoveItem(customerId, removeItem.ItemId, removeItem.ItemQuantity));
             return Results.NoContent();
