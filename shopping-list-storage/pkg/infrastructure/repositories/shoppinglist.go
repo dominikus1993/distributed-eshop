@@ -14,7 +14,7 @@ type MongoClient struct {
 	mongo *mongo.Client
 }
 
-func NewClient(connectionString string, ctx context.Context) (*MongoClient, error) {
+func NewClient(ctx context.Context, connectionString string) (*MongoClient, error) {
 
 	// Set client options
 	clientOptions := options.Client().ApplyURI(connectionString)
@@ -23,14 +23,14 @@ func NewClient(connectionString string, ctx context.Context) (*MongoClient, erro
 	client, err := mongo.Connect(ctx, clientOptions)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error when trying connect to mongo: %w", err)
+		return nil, fmt.Errorf("error when trying connect to mongo: %w", err)
 	}
 
 	// Check the connection
 	err = client.Ping(ctx, nil)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error when trying ping mongo: %w", err)
+		return nil, fmt.Errorf("error when trying ping mongo: %w", err)
 	}
 
 	return &MongoClient{mongo: client}, nil
@@ -119,7 +119,11 @@ func (repo *mongoShoppingListsRepository) AddOrUpdate(ctx context.Context, baske
 	filter := bson.M{"_id": basket.CustomerID}
 	opt := options.Update().SetUpsert(true)
 	model := newMongoCustomerShoppingList(basket)
-	_, err := col.UpdateOne(ctx, filter, model, opt)
+	document := bson.M{
+		"_id":   model.CustomerID,
+		"items": model.Items,
+	}
+	_, err := col.UpdateOne(ctx, filter, bson.M{"$set": document}, opt)
 	if err != nil {
 		return fmt.Errorf("error when trying add or update customer shopping list, id: %d, Error: %w", basket.CustomerID, err)
 	}
