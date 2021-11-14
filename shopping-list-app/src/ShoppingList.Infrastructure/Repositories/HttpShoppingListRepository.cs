@@ -17,9 +17,10 @@ namespace ShoppingList.Infrastructure.Repositories
             _client = client;
         }
 
-        public Task Change(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
+        public async Task Change(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
-            return Task.CompletedTask;
+            var request = customerShopping.Items.Select(item => new ItemRequest(item.Id.Value, item.ProductQuantity.Value)).ToArray();
+            await _client.ChangeCustomerShoppingList(customerShopping.CustomerId.Value, new ChangeCustomerShoppingListRequest(request));
         }
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
@@ -32,9 +33,9 @@ namespace ShoppingList.Infrastructure.Repositories
             return new CustomerShoppingList(new CustomerId(result.CustomerId), items);
         }
 
-        public Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
+        public async Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
-            return Task.CompletedTask;
+            await _client.RemoveCustomerShoppingList(customerShopping.CustomerId.Value);
         }
     }
 }
