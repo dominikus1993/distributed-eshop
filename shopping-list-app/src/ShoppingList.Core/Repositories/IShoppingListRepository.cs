@@ -15,6 +15,7 @@ namespace ShoppingList.Core.Repositories
     {
         Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default);
     }
+    
     public interface IShoppingListRepository : IShoppingListWriter, IShoppingListReader
     {
     }
