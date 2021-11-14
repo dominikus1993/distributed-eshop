@@ -17,7 +17,7 @@ namespace ShoppingList.Infrastructure.Repositories
             _client = client;
         }
 
-        public Task AddOrUpdate(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
+        public Task Change(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

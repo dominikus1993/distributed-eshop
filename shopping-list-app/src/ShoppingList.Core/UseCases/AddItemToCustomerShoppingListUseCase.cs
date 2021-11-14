@@ -34,7 +34,7 @@ namespace ShoppingList.Core.UseCases
 
             basket.AddItem(new Item(new ItemId(addItem.ItemId), new ItemQuantity(addItem.ItemQuantity)));
 
-            await _repository.AddOrUpdate(basket, cancellationToken);
+            await _repository.Change(basket, cancellationToken);
         }
     }
 }

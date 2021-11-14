@@ -5,10 +5,17 @@ using ShoppingList.Core.Model;
 
 namespace ShoppingList.Core.Repositories
 {
-    public interface IShoppingListRepository
+    public interface IShoppingListWriter
     {
-        Task AddOrUpdate(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default);
+        Task Change(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default);
         Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default);
+    }
+
+    public interface IShoppingListReader
+    {
         Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default);
+    }
+    public interface IShoppingListRepository : IShoppingListWriter, IShoppingListReader
+    {
     }
 }
