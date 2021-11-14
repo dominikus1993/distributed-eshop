@@ -128,12 +128,12 @@ func (repo *mongoShoppingListsRepository) Get(ctx context.Context, customerId in
 	return toCustomerShoppingList(res), nil
 }
 
-func (repo *mongoShoppingListsRepository) Remove(ctx context.Context, basket *model.CustomerShoppingList) error {
+func (repo *mongoShoppingListsRepository) Remove(ctx context.Context, customerId int) error {
 	col := repo.getCollection()
-	filter := bson.M{"_id": basket.CustomerID}
+	filter := bson.M{"_id": customerId}
 	_, err := col.DeleteOne(ctx, filter)
 	if err != nil {
-		return fmt.Errorf("error when trying delete customer shopping list, id: %d, Error: %w", basket.CustomerID, err)
+		return fmt.Errorf("error when trying delete customer shopping list, id: %d, Error: %w", customerId, err)
 	}
 	return nil
 }

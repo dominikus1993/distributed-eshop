@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/core/model"
 	r "github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/core/repositories"
@@ -16,10 +17,17 @@ type Customer struct {
 	ID int `uri:"id" binding:"required"`
 }
 
+type ItemRequest struct {
+	ItemID       int `form:"itemId" json:"itemId" xml:"itemId"  binding:"required"`
+	ItemQuantity int `form:"itemQuantity" json:"itemQuantity" xml:"itemQuantity" binding:"required"`
+}
+
+type ChangeCustomerShoppingListRequest struct {
+	Items []ItemRequest `form:"items" json:"items" xml:"items" binding:"required"`
+}
+
 type Api struct {
 	mongoClient                       *repositories.MongoClient
-	reader                            *r.CustomerShoppingListReader
-	writer                            *r.CustomerShoppingListWriter
 	getCustomerShoppingListUseCase    *usecase.GetCustomerShoppingListUseCase
 	removeCustomerShoppingListUseCase *usecase.RemoveCustomerShoppingListUseCase
 	changeCustomerShoppingListUseCase *usecase.ChangeCustomerShoppingListUseCase
@@ -36,12 +44,13 @@ func Init() (*Api, error) {
 	}
 	repo := repositories.NewMongoShoppingListsRepository(client)
 	getCustomerShoppingListUseCase := usecase.NewGetCustomerShoppingListUseCase(repo)
-
+	changeCustomerShoppingListUseCase := usecase.NewChangeCustomerShoppingListUseCase(repo)
+	removeCustomerShoppingListUseCase := usecase.NewRemoveCustomerShoppingListUseCase(repo)
 	err = initData(repo)
 	if err != nil {
 		return nil, fmt.Errorf("error when trying save initial data, ERR: %w", err)
 	}
-	return &Api{mongoClient: client, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase}, nil
+	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase}, nil
 }
 
 func (api *Api) Start(ctx context.Context) error {
@@ -86,6 +95,46 @@ func (api *Api) Start(ctx context.Context) error {
 			"customerId": res.CustomerID,
 			"items":      items,
 		})
+	})
+
+	r.DELETE("/shoppingLists/:id", func(c *gin.Context) {
+		var customer Customer
+		if err := c.ShouldBindUri(&customer); err != nil {
+			c.JSON(400, gin.H{"msg": err.Error()})
+			return
+		}
+		err := api.removeCustomerShoppingListUseCase.Execute(c.Request.Context(), customer.ID)
+		if err != nil {
+			c.Error(err)
+			c.Status(500)
+			return
+		}
+		c.Status(204)
+	})
+
+	r.POST("/shoppingLists/:id", func(c *gin.Context) {
+		var customer Customer
+		if err := c.ShouldBindUri(&customer); err != nil {
+			c.JSON(400, gin.H{"msg": err.Error()})
+			return
+		}
+		var json ChangeCustomerShoppingListRequest
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		items := make([]model.Item, len(json.Items))
+		for i, item := range json.Items {
+			items[i] = *model.NewItem(item.ItemID, item.ItemQuantity)
+		}
+		model := model.NewCustomerShoppingList(customer.ID, items)
+		err := api.changeCustomerShoppingListUseCase.Execute(c.Request.Context(), model)
+		if err != nil {
+			c.Error(err)
+			c.Status(500)
+			return
+		}
+		c.Status(201)
 	})
 	return r.Run(":9000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

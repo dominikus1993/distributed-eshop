@@ -43,6 +43,6 @@ func NewRemoveCustomerShoppingListUseCase(repo repositories.CustomerShoppingList
 	return &RemoveCustomerShoppingListUseCase{repo: repo}
 }
 
-func (uc *RemoveCustomerShoppingListUseCase) Execute(ctx context.Context, basket *model.CustomerShoppingList) error {
-	return uc.repo.Remove(ctx, basket)
+func (uc *RemoveCustomerShoppingListUseCase) Execute(ctx context.Context, customerId int) error {
+	return uc.repo.Remove(ctx, customerId)
 }

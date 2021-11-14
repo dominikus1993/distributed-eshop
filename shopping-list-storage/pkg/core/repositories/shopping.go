@@ -11,7 +11,7 @@ type CustomerShoppingListReader interface {
 }
 
 type CustomerShoppingListWriter interface {
-	Remove(ctx context.Context, basket *model.CustomerShoppingList) error
+	Remove(ctx context.Context, customerId int) error
 	AddOrUpdate(ctx context.Context, basket *model.CustomerShoppingList) error
 }
 
