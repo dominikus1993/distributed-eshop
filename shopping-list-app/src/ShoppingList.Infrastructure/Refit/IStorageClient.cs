@@ -9,7 +9,7 @@ internal record ChangeCustomerShoppingListRequest(ItemRequest[] Items);
 internal interface IStorageClient
 {
     [Get("/shoppingLists/{customerId}")]
-    Task<CustomerShoppingListDto?> GetCustomerShoppingList(int customerId);
+    Task<ApiResponse<CustomerShoppingListDto?>> GetCustomerShoppingList(int customerId);
     
     [Post("/shoppingLists/{customerId}")]
     Task<CustomerShoppingListDto?> ChangeCustomerShoppingList(int customerId, [Body]ChangeCustomerShoppingListRequest request);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Net;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
@@ -25,12 +26,23 @@ namespace ShoppingList.Infrastructure.Repositories
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
             var result = await _client.GetCustomerShoppingList(id.Value);
-            if (result?.Items is null)
+            if (result.IsSuccessStatusCode)
+            {
+                var response = result.Content;
+                if (response?.Items is null)
+                {
+                    return None;
+                }
+                var items = response.Items.Select(x => new Item(new ItemId(x.ItemId), new ItemQuantity(x.ItemQuantity))).ToList();
+                return new CustomerShoppingList(new CustomerId(response.CustomerId), items);
+            }
+
+            if (result.StatusCode == HttpStatusCode.NotFound)
             {
                 return None;
             }
-            var items = result.Items.Select(x => new Item(new ItemId(x.ItemId), new ItemQuantity(x.ItemQuantity))).ToList();
-            return new CustomerShoppingList(new CustomerId(result.CustomerId), items);
+
+            throw new System.Exception($"Response is not successfull, StatusCode: {result.StatusCode}, Reason: {result.ReasonPhrase}");
         }
 
         public async Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
