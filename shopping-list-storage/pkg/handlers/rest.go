@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/common"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/core/model"
 	r "github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/core/repositories"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/core/usecase"
@@ -37,8 +38,8 @@ func initData(repo r.CustomerShoppingListWriter) error {
 	return repo.AddOrUpdate(context.Background(), model.NewCustomerShoppingList(10, []model.Item{{ItemID: 1, ItemQuantity: 332}, {ItemID: 423, ItemQuantity: 323}}))
 }
 
-func Init() (*Api, error) {
-	client, err := repositories.NewTracedClient(context.TODO(), "mongodb://127.0.0.1:27017")
+func InitApi() (*Api, error) {
+	client, err := repositories.NewTracedClient(context.TODO(), common.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://127.0.0.1:27017"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
