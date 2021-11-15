@@ -29,6 +29,7 @@ func (p *RunGinApiServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...int
 		tracer.WithServiceVersion("v1.1.1"),
 	)
 	defer tracer.Stop()
+	log.Println("Start")
 	api, err := handlers.InitApi()
 	if err != nil {
 		log.Fatalln(err)
@@ -38,7 +39,7 @@ func (p *RunGinApiServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...int
 	defer api.Close(ctx)
 
 	if err := api.Start(ctx); err != nil {
-		log.Fatalf("error when trying start api, Err: %w", err)
+		log.Fatal(err)
 		return subcommands.ExitFailure
 	}
 	return subcommands.ExitSuccess

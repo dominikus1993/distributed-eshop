@@ -38,7 +38,7 @@ func (p *RunGrpcServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...inter
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
 	if err != nil {
-		log.Fatalf("failed to listen: %w", err)
+		log.Fatalf("failed to listen: %v", err)
 		return subcommands.ExitFailure
 	}
 	server, err := handlers.InitRpc()
@@ -52,7 +52,7 @@ func (p *RunGrpcServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...inter
 	reflection.Register(grpcServer)
 	shoppinglist.RegisterShoppingListsStorageServer(grpcServer, server)
 	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %w", err)
+		log.Fatalf("failed to serve: %v", err)
 		return subcommands.ExitFailure
 	}
 	return subcommands.ExitSuccess

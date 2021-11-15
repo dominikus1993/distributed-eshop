@@ -12,7 +12,7 @@ internal interface IStorageClient
     Task<ApiResponse<CustomerShoppingListDto?>> GetCustomerShoppingList(int customerId);
     
     [Post("/shoppingLists/{customerId}")]
-    Task<CustomerShoppingListDto?> ChangeCustomerShoppingList(int customerId, [Body]ChangeCustomerShoppingListRequest request);
+    Task ChangeCustomerShoppingList(int customerId, [Body]ChangeCustomerShoppingListRequest request);
     
     [Delete("/shoppingLists/{customerId}")]
     Task RemoveCustomerShoppingList(int customerId);
