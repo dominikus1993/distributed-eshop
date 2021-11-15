@@ -1,0 +1,41 @@
+syntax = "proto3";
+package shoppinglist;
+option go_package = "/shoppinglist";
+option csharp_namespace = "ShoppingListsStorage";
+
+message GetCustomerShoppingListRequest {
+    int32 customer_id = 1;
+}
+
+message RemoveCustomerShoppingListRequest {
+    int32 customer_id = 1;
+}
+
+message ChangeCustomerShoppingListRequest {
+    int32 customer_id = 1;
+    CustomerShoppingList shopping_list = 2;
+}
+
+message ChangeCustomerShoppingListResponse {
+    bool success = 1;
+}
+
+message RemoveCustomerShoppingListResponse {
+    bool success = 1;
+}
+
+message CustomerShoppingList {
+    message Item {
+        int32 item_id = 1;
+        int32 item_quantity = 2;
+    }
+    int32 customer_id = 1;
+    repeated Item items = 2;
+    
+}
+
+service ShoppingListsStorage {
+  rpc GetCustomerShoppingList(GetCustomerShoppingListRequest) returns (CustomerShoppingList) {}
+  rpc ChangeCustomerShoppingList(ChangeCustomerShoppingListRequest) returns (ChangeCustomerShoppingListResponse) {}
+  rpc RemoveCustomerShoppingList(RemoveCustomerShoppingListRequest) returns (RemoveCustomerShoppingListResponse) {}
+}
