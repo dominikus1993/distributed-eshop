@@ -18,6 +18,7 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
         <PackageReference Include="Refit" Version="6.1.15" />
         <PackageReference Include="Refit.HttpClientFactory" Version="6.1.15" />
+        <PackageReference Include="Scrutor" Version="3.3.0" />
     </ItemGroup>
     <ItemGroup>
         <Protobuf Include="shopping-lists.proto" GrpcServices="Client" />

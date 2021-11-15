@@ -7,6 +7,23 @@ message GetCustomerShoppingListRequest {
     int32 customer_id = 1;
 }
 
+message RemoveCustomerShoppingListRequest {
+    int32 customer_id = 1;
+}
+
+message ChangeCustomerShoppingListRequest {
+    int32 customer_id = 1;
+    CustomerShoppingList shopping_list = 2;
+}
+
+message ChangeCustomerShoppingListResponse {
+    bool success = 1;
+}
+
+message RemoveCustomerShoppingListResponse {
+    bool success = 1;
+}
+
 message CustomerShoppingList {
     message Item {
         int32 item_id = 1;
@@ -19,4 +36,6 @@ message CustomerShoppingList {
 
 service ShoppingListsStorage {
   rpc GetCustomerShoppingList(GetCustomerShoppingListRequest) returns (CustomerShoppingList) {}
+  rpc ChangeCustomerShoppingList(ChangeCustomerShoppingListRequest) returns (ChangeCustomerShoppingListResponse) {}
+  rpc RemoveCustomerShoppingList(RemoveCustomerShoppingListRequest) returns (RemoveCustomerShoppingListResponse) {}
 }
