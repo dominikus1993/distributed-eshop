@@ -26,7 +26,7 @@ namespace ShoppingList.Infrastructure.Repositories
             var items = customerShopping.Items.Select(item => new ShoppingListsStorage.CustomerShoppingList.Types.Item { ItemId = item.Id.Value, ItemQuantity = item.ProductQuantity.Value });
             var shoppingList = new ShoppingListsStorage.CustomerShoppingList() { CustomerId = customerShopping.CustomerId.Value };
             shoppingList.Items.AddRange(items);
-            await _client.ChangeCustomerShoppingListAsync(new ShoppingListsStorage.ChangeCustomerShoppingListRequest { ShoppingList = shoppingList});
+            await _client.ChangeCustomerShoppingListAsync(new ShoppingListsStorage.ChangeCustomerShoppingListRequest { CustomerId = customerShopping.CustomerId.Value, ShoppingList = shoppingList});
         }
 
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)

@@ -29,7 +29,7 @@ namespace ShoppingList.Core.UseCases
 
             basket.RemoveItem(new Item(new ItemId(removeItem.ItemId), new ItemQuantity(removeItem.ItemQuantity)));
 
-            await _repository.Remove(basket, cancellationToken);
+            await _repository.Change(basket, cancellationToken);
         }
     }
 

@@ -19,6 +19,6 @@ Content-Type: application/json
 
 {
   "itemId": 1,
-  "itemQuantity": 1
+  "itemQuantity": 100
 }
 
