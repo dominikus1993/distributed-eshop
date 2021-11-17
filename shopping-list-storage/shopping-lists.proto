@@ -31,11 +31,15 @@ message CustomerShoppingList {
     }
     int32 customer_id = 1;
     repeated Item items = 2;
-    
+}
+
+message GetCustomerShoppingListResponse {
+    bool Empty = 1;
+    CustomerShoppingList customer_shopping_list = 2;
 }
 
 service ShoppingListsStorage {
-  rpc GetCustomerShoppingList(GetCustomerShoppingListRequest) returns (CustomerShoppingList) {}
+  rpc GetCustomerShoppingList(GetCustomerShoppingListRequest) returns (GetCustomerShoppingListResponse) {}
   rpc ChangeCustomerShoppingList(ChangeCustomerShoppingListRequest) returns (ChangeCustomerShoppingListResponse) {}
   rpc RemoveCustomerShoppingList(RemoveCustomerShoppingListRequest) returns (RemoveCustomerShoppingListResponse) {}
 }

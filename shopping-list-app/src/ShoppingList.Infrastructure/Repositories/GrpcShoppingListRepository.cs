@@ -32,12 +32,13 @@ namespace ShoppingList.Infrastructure.Repositories
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
             var result = await _client.GetCustomerShoppingListAsync(new ShoppingListsStorage.GetCustomerShoppingListRequest() { CustomerId = id.Value }, cancellationToken: cancellationToken);
-            if (result is null)
+            if (result is null || result.Empty)
             {
                 return None;
             }
-            var items = result.Items.Select(x => new Item(new ItemId(x.ItemId), new ItemQuantity(x.ItemQuantity))).ToList();
-            return new CustomerShoppingList(new CustomerId(result.CustomerId), items);
+            var response = result.CustomerShoppingList;
+            var items = response.Items.Select(x => new Item(new ItemId(x.ItemId), new ItemQuantity(x.ItemQuantity))).ToList();
+            return new CustomerShoppingList(new CustomerId(response.CustomerId), items);
         }
 
         public async Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)

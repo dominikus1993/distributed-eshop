@@ -34,19 +34,19 @@ func InitRpc() (*RpcServer, error) {
 	return &RpcServer{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase}, nil
 }
 
-func (serv *RpcServer) GetCustomerShoppingList(ctx context.Context, req *shoppinglist.GetCustomerShoppingListRequest) (*shoppinglist.CustomerShoppingList, error) {
+func (serv *RpcServer) GetCustomerShoppingList(ctx context.Context, req *shoppinglist.GetCustomerShoppingListRequest) (*shoppinglist.GetCustomerShoppingListResponse, error) {
 	res, err := serv.getCustomerShoppingListUseCase.Execute(ctx, int(req.CustomerId))
 	if err != nil {
 		return nil, err
 	}
 	if res == nil {
-		return nil, nil
+		return &shoppinglist.GetCustomerShoppingListResponse{Empty: true}, nil
 	}
 	items := make([]*shoppinglist.CustomerShoppingList_Item, len(res.Items))
 	for i, item := range res.Items {
 		items[i] = &shoppinglist.CustomerShoppingList_Item{ItemId: int32(item.ItemID), ItemQuantity: int32(item.ItemQuantity)}
 	}
-	return &shoppinglist.CustomerShoppingList{CustomerId: req.CustomerId, Items: items}, nil
+	return &shoppinglist.GetCustomerShoppingListResponse{Empty: false, CustomerShoppingList: &shoppinglist.CustomerShoppingList{CustomerId: req.CustomerId, Items: items}}, nil
 }
 
 func (s *RpcServer) ChangeCustomerShoppingList(ctx context.Context, basket *shoppinglist.ChangeCustomerShoppingListRequest) (*shoppinglist.ChangeCustomerShoppingListResponse, error) {
