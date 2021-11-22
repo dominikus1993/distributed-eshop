@@ -17,7 +17,7 @@ services:
   analytyst:
     image: mcr.microsoft.com/vscode/devcontainers/python:3.10-bullseye
     ports:
-      - "3000:80"
+      - "3000:3000"
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace:cached
@@ -27,7 +27,7 @@ services:
       DD_TRACE_ENABLED: "true"
     command: /bin/sh -c "while sleep 1000; do :; done"
     links:
-     - storage 
+     - rabbitmq 
   storage:
     image: mcr.microsoft.com/vscode/devcontainers/go:1.17-bullseye
     ports:
@@ -41,7 +41,8 @@ services:
       DD_TRACE_ENABLED: "true"
     command: /bin/sh -c "while sleep 1000; do :; done"
     links:
-     - db 
+     - db
+     - rabbitmq
   ddagent: 
     image: datadog/agent:latest
     volumes:
@@ -52,7 +53,8 @@ services:
       - "8126:8126"
     links:
      - web 
-     - storage 
+     - storage
+     - analytyst
     environment:
       DD_API_KEY: ${DD_API_KEY}
       DD_APM_ENABLED: "true"
@@ -64,6 +66,11 @@ services:
       - mongodb-data:/data/db
     ports:
       - "27017:27017"
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
 volumes:
   mongodb-data:
 
