@@ -1,5 +1,5 @@
-@BASE_URL=http://localhost:5000
-@customer_id=2
+@BASE_URL=http://localhost:5192
+@customer_id=10
 ###
 
 GET {{BASE_URL}}/shoppingLists/{{customer_id}}/items HTTP/1.1
@@ -19,6 +19,6 @@ Content-Type: application/json
 
 {
   "itemId": 1,
-  "itemQuantity": 1
+  "itemQuantity": 100
 }
 

@@ -1,0 +1,25 @@
+{
+    "name": "ShoppingListAnalytyst",
+    "dockerComposeFile": ["../docker-compose.dev.yml"],
+    "service": "analytyst",
+    "shutdownAction": "none",
+    "extensions": ["ms-python.python", "humao.rest-client", "ms-python.vscode-pylance", "wakatime.vscode-wakatime"],
+    "forwardPorts": [5000],
+    "workspaceFolder": "/workspace/shopping-list-analytyst",
+    "settings": { 
+		"python.pythonPath": "/usr/local/bin/python",
+		"python.languageServer": "Pylance",
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
+		"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+		"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
+		"python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
+		"python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
+		"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
+		"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
+		"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
+		"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+		"python.testing.pytestPath": "/usr/local/py-utils/bin/pytest"
+	},
+  }

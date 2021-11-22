@@ -1,40 +1,49 @@
-﻿using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
-using ShoppingList.Infrastructure.Refit;
 using static LanguageExt.Prelude;
+
 namespace ShoppingList.Infrastructure.Repositories
 {
-    internal class HttpShoppingListRepository : IShoppingListRepository
+    public class GrpcShoppingListRepository : IShoppingListRepository
     {
-        private readonly IStorageClient _client;
+        private readonly ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient _client;
 
-        public HttpShoppingListRepository(IStorageClient client)
+        public GrpcShoppingListRepository(ShoppingListsStorage.ShoppingListsStorage.ShoppingListsStorageClient client)
         {
             _client = client;
         }
 
-        public Task AddOrUpdate(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
+        public async Task Change(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
-            return Task.CompletedTask;
+            var items = customerShopping.Items.Select(item => new ShoppingListsStorage.CustomerShoppingList.Types.Item { ItemId = item.Id.Value, ItemQuantity = item.ProductQuantity.Value });
+            var shoppingList = new ShoppingListsStorage.CustomerShoppingList() { CustomerId = customerShopping.CustomerId.Value };
+            shoppingList.Items.AddRange(items);
+            await _client.ChangeCustomerShoppingListAsync(new ShoppingListsStorage.ChangeCustomerShoppingListRequest { CustomerId = customerShopping.CustomerId.Value, ShoppingList = shoppingList});
         }
+
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
-            var result = await _client.GetCustomerShoppingList(id.Value);
-            if (result?.Items is null)
+            var result = await _client.GetCustomerShoppingListAsync(new ShoppingListsStorage.GetCustomerShoppingListRequest() { CustomerId = id.Value }, cancellationToken: cancellationToken);
+            if (result is null || result.Empty)
             {
                 return None;
             }
-            var items = result.Items.Select(x => new Item(new ItemId(x.ItemId), new ItemQuantity(x.ItemQuantity))).ToList();
-            return new CustomerShoppingList(new CustomerId(result.CustomerId), items);
+            var response = result.CustomerShoppingList;
+            var items = response.Items.Select(x => new Item(new ItemId(x.ItemId), new ItemQuantity(x.ItemQuantity))).ToList();
+            return new CustomerShoppingList(new CustomerId(response.CustomerId), items);
         }
 
-        public Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
+        public async Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
-            return Task.CompletedTask;
+            await _client.RemoveCustomerShoppingListAsync(new ShoppingListsStorage.RemoveCustomerShoppingListRequest() { CustomerId = customerShopping.CustomerId.Value }, cancellationToken: cancellationToken);
         }
     }
 }

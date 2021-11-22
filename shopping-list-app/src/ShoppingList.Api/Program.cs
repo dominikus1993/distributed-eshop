@@ -19,7 +19,7 @@ builder.Services.AddTransient<RemoveItemFromCustomerShoppingList>();
 builder.Services.AddTransient<GetCustomerShoppingListItemsUseCase>();
 builder.Services.AddTransient<RemoveCustomerShoppingListUseCase>();
 // Infastructure
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddGrpcInfrastructure(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
