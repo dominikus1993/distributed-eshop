@@ -32,6 +32,8 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rabbitmq/amqp091-go v1.2.0 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/tinylib/msgp v1.1.6 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
@@ -41,7 +43,7 @@ require (
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9 // indirect
-	golang.org/x/sys v0.0.0-20211113001501-0c823b97ae02 // indirect
+	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
