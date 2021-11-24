@@ -5,6 +5,7 @@ import (
 
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/repositories"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/services"
 )
 
 type GetCustomerShoppingListUseCase struct {
@@ -24,15 +25,21 @@ func (uc *GetCustomerShoppingListUseCase) Execute(ctx context.Context, customerI
 }
 
 type ChangeCustomerShoppingListUseCase struct {
-	repo repositories.CustomerShoppingListWriter
+	repo      repositories.CustomerShoppingListWriter
+	publisher services.CustomerBasketChangedEventPublisher
 }
 
-func NewChangeCustomerShoppingListUseCase(repo repositories.CustomerShoppingListWriter) *ChangeCustomerShoppingListUseCase {
-	return &ChangeCustomerShoppingListUseCase{repo: repo}
+func NewChangeCustomerShoppingListUseCase(repo repositories.CustomerShoppingListWriter, publisher services.CustomerBasketChangedEventPublisher) *ChangeCustomerShoppingListUseCase {
+	return &ChangeCustomerShoppingListUseCase{repo: repo, publisher: publisher}
 }
 
 func (uc *ChangeCustomerShoppingListUseCase) Execute(ctx context.Context, basket *model.CustomerShoppingList) error {
-	return uc.repo.AddOrUpdate(ctx, basket)
+	err := uc.repo.AddOrUpdate(ctx, basket)
+	if err != nil {
+		return err
+	}
+
+	return uc.publisher.Publish(&services.BasketChanged{CustomerShoppingList: basket})
 }
 
 type RemoveCustomerShoppingListUseCase struct {

@@ -1,14 +1,19 @@
 package services
 
+import "github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
+
 type BasketRemoved struct {
 	CustomerId int
 }
 
 type BasketChanged struct {
-	CustomerId int
+	*model.CustomerShoppingList
 }
 
-type CustomerBasketEventPublisher interface {
-	PublishRemoved(rem *BasketRemoved) error
-	PublishChanged(changed *BasketChanged) error
+type CustomerBasketChangedEventPublisher interface {
+	Publish(changed *BasketChanged) error
+}
+
+type CustomerBasketRemovedEventPublisher interface {
+	Publish(rem *BasketRemoved) error
 }

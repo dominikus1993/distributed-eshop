@@ -7,6 +7,7 @@ import (
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/common"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/usecase"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/infrastructure/messaging"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/infrastructure/repositories"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
 )
@@ -24,8 +25,9 @@ func InitRpc() (*RpcServer, error) {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
 	repo := repositories.NewMongoShoppingListsRepository(client)
+	publisher := messaging.NewRabbitmMqCustomerBasketChangedEventPublisher()
 	getCustomerShoppingListUseCase := usecase.NewGetCustomerShoppingListUseCase(repo)
-	changeCustomerShoppingListUseCase := usecase.NewChangeCustomerShoppingListUseCase(repo)
+	changeCustomerShoppingListUseCase := usecase.NewChangeCustomerShoppingListUseCase(repo, publisher)
 	removeCustomerShoppingListUseCase := usecase.NewRemoveCustomerShoppingListUseCase(repo)
 	err = initData(repo)
 	if err != nil {

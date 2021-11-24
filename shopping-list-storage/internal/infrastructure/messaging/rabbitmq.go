@@ -1,6 +1,7 @@
 package messaging
 
 import (
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/services"
 	amqp "github.com/rabbitmq/amqp091-go"
 	log "github.com/sirupsen/logrus"
 )
@@ -31,4 +32,15 @@ func (client *RabbitMqClient) Close() {
 	if err != nil {
 		log.WithError(err).Fatalln("client connection close error")
 	}
+}
+
+type RabbitmMqCustomerBasketChangedEventPublisher struct {
+}
+
+func NewRabbitmMqCustomerBasketChangedEventPublisher() *RabbitmMqCustomerBasketChangedEventPublisher {
+	return &RabbitmMqCustomerBasketChangedEventPublisher{}
+}
+
+func (p *RabbitmMqCustomerBasketChangedEventPublisher) Publish(changed *services.BasketChanged) error {
+	return nil
 }
