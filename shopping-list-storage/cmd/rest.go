@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/handlers"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/handlers"
 	"github.com/google/subcommands"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )

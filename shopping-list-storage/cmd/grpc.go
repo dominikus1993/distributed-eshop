@@ -7,7 +7,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/handlers"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/handlers"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
 	"github.com/google/subcommands"
 	"google.golang.org/grpc"
