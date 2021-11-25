@@ -1,9 +1,13 @@
 package services
 
-import "github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
+import (
+	"context"
+
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
+)
 
 type BasketRemoved struct {
-	CustomerId int
+	CustomerID int
 }
 
 type BasketChanged struct {
@@ -11,9 +15,9 @@ type BasketChanged struct {
 }
 
 type CustomerBasketChangedEventPublisher interface {
-	Publish(changed *BasketChanged) error
+	PublishChanged(context context.Context, changed *BasketChanged) error
 }
 
 type CustomerBasketRemovedEventPublisher interface {
-	Publish(rem *BasketRemoved) error
+	PublishRemoved(context context.Context, rem *BasketRemoved) error
 }

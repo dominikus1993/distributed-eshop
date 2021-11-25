@@ -39,17 +39,23 @@ func (uc *ChangeCustomerShoppingListUseCase) Execute(ctx context.Context, basket
 		return err
 	}
 
-	return uc.publisher.Publish(&services.BasketChanged{CustomerShoppingList: basket})
+	return uc.publisher.PublishChanged(ctx, &services.BasketChanged{CustomerShoppingList: basket})
 }
 
 type RemoveCustomerShoppingListUseCase struct {
-	repo repositories.CustomerShoppingListWriter
+	repo      repositories.CustomerShoppingListWriter
+	publisher services.CustomerBasketRemovedEventPublisher
 }
 
-func NewRemoveCustomerShoppingListUseCase(repo repositories.CustomerShoppingListWriter) *RemoveCustomerShoppingListUseCase {
-	return &RemoveCustomerShoppingListUseCase{repo: repo}
+func NewRemoveCustomerShoppingListUseCase(repo repositories.CustomerShoppingListWriter, publisher services.CustomerBasketRemovedEventPublisher) *RemoveCustomerShoppingListUseCase {
+	return &RemoveCustomerShoppingListUseCase{repo: repo, publisher: publisher}
 }
 
 func (uc *RemoveCustomerShoppingListUseCase) Execute(ctx context.Context, customerId int) error {
-	return uc.repo.Remove(ctx, customerId)
+	err := uc.repo.Remove(ctx, customerId)
+	if err != nil {
+		return err
+	}
+
+	return uc.publisher.PublishRemoved(ctx, &services.BasketRemoved{CustomerID: customerId})
 }

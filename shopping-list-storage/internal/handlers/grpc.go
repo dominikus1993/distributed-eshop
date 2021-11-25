@@ -17,6 +17,7 @@ type RpcServer struct {
 	getCustomerShoppingListUseCase    *usecase.GetCustomerShoppingListUseCase
 	removeCustomerShoppingListUseCase *usecase.RemoveCustomerShoppingListUseCase
 	changeCustomerShoppingListUseCase *usecase.ChangeCustomerShoppingListUseCase
+	rabbitmq                          messaging.RabbitMqClient
 }
 
 func InitRpc() (*RpcServer, error) {
@@ -25,15 +26,19 @@ func InitRpc() (*RpcServer, error) {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
 	repo := repositories.NewMongoShoppingListsRepository(client)
-	publisher := messaging.NewRabbitmMqCustomerBasketChangedEventPublisher()
+	rabbitmq, err := messaging.NewRabbitMqClient(common.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@localhost:5672/"))
+	if err != nil {
+		return nil, fmt.Errorf("error when trying connect to rabbitmq, ERR: %w", err)
+	}
+	publisher := messaging.NewRabbitmMqCustomerBasketChangedEventPublisher(rabbitmq, &messaging.RabbitMqConfig{ExchangeName: "basket", Topic: "changed"}, &messaging.RabbitMqConfig{ExchangeName: "basket", Topic: "removed"})
 	getCustomerShoppingListUseCase := usecase.NewGetCustomerShoppingListUseCase(repo)
 	changeCustomerShoppingListUseCase := usecase.NewChangeCustomerShoppingListUseCase(repo, publisher)
-	removeCustomerShoppingListUseCase := usecase.NewRemoveCustomerShoppingListUseCase(repo)
+	removeCustomerShoppingListUseCase := usecase.NewRemoveCustomerShoppingListUseCase(repo, publisher)
 	err = initData(repo)
 	if err != nil {
 		return nil, fmt.Errorf("error when trying save initial data, ERR: %w", err)
 	}
-	return &RpcServer{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase}, nil
+	return &RpcServer{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitmq: rabbitmq}, nil
 }
 
 func (serv *RpcServer) GetCustomerShoppingList(ctx context.Context, req *shoppinglist.GetCustomerShoppingListRequest) (*shoppinglist.GetCustomerShoppingListResponse, error) {
@@ -75,4 +80,5 @@ func (s *RpcServer) RemoveCustomerShoppingList(ctx context.Context, req *shoppin
 
 func (ser *RpcServer) Close(ctx context.Context) {
 	ser.mongoClient.Close(ctx)
+	ser.rabbitmq.Close()
 }
