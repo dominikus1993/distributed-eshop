@@ -76,7 +76,7 @@ func (client *rabbitMqClient) Publish(ctx context.Context, exchangeName string, 
 	if err != nil {
 		return fmt.Errorf("marshal json error, %w", err)
 	}
-	return client.Channel.Publish(exchangeName, log.ErrorKey, false, false, amqp.Publishing{ContentType: "application/json", Body: jsonBody})
+	return client.Channel.Publish(exchangeName, topic, false, false, amqp.Publishing{ContentType: "application/json", Body: jsonBody})
 }
 
 type RabbitmMqCustomerBasketEventPublisher struct {

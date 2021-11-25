@@ -21,12 +21,12 @@ type RpcServer struct {
 }
 
 func InitRpc() (*RpcServer, error) {
-	client, err := repositories.NewTracedClient(context.TODO(), common.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://127.0.0.1:27017"))
+	client, err := repositories.NewTracedClient(context.TODO(), common.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
 	repo := repositories.NewMongoShoppingListsRepository(client)
-	rabbitmq, err := messaging.NewRabbitMqClient(common.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@localhost:5672/"))
+	rabbitmq, err := messaging.NewRabbitMqClient(common.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to rabbitmq, ERR: %w", err)
 	}
