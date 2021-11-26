@@ -15,7 +15,7 @@ type RabbitMqClient interface {
 	GetChannel() *amqp.Channel
 	Close()
 	DeclareExchange(exchangeName string) error
-	Publish(ctx context.Context, exchangeName string, topic string, msg interface{}) error
+	Publish(ctx context.Context, exchangeName string, topic string, msg amqp.Publishing) error
 }
 
 type rabbitMqClient struct {
@@ -71,12 +71,13 @@ func (client *rabbitMqClient) DeclareExchange(exchangeName string) error {
 	)
 }
 
-func (client *rabbitMqClient) Publish(ctx context.Context, exchangeName string, topic string, msg interface{}) error {
-	jsonBody, err := json.Marshal(msg)
+func (client *rabbitMqClient) Publish(ctx context.Context, exchangeName string, topic string, msg amqp.Publishing) error {
+	err := client.DeclareExchange(exchangeName)
 	if err != nil {
-		return fmt.Errorf("marshal json error, %w", err)
+		return fmt.Errorf("error when declare exchange %w", err)
 	}
-	return client.Channel.Publish(exchangeName, topic, false, false, amqp.Publishing{ContentType: "application/json", Body: jsonBody})
+
+	return client.Channel.Publish(exchangeName, topic, false, false, msg)
 }
 
 type RabbitmMqCustomerBasketEventPublisher struct {
@@ -90,11 +91,6 @@ func NewRabbitmMqCustomerBasketChangedEventPublisher(rabbitmq RabbitMqClient, cu
 }
 
 func (p *RabbitmMqCustomerBasketEventPublisher) PublishChanged(context context.Context, changed *services.BasketChanged) error {
-	err := p.rabbitmq.DeclareExchange(p.customerBsketChangedConfig.ExchangeName)
-	if err != nil {
-		return fmt.Errorf("error when publish message to rabbitmq %w", err)
-	}
-
 	items := make([]struct {
 		ItemID       int `json:"itemId"`
 		ItemQuantity int `json:"itemQuantity"`
@@ -117,20 +113,25 @@ func (p *RabbitmMqCustomerBasketEventPublisher) PublishChanged(context context.C
 		CustomerId: changed.CustomerID,
 		Items:      items,
 	}
+	jsonBody, err := json.Marshal(jsonMsg)
+	if err != nil {
+		return fmt.Errorf("marshal json error, %w", err)
+	}
 
-	return p.rabbitmq.Publish(context, p.customerBsketChangedConfig.ExchangeName, p.customerBsketChangedConfig.Topic, jsonMsg)
+	return p.rabbitmq.Publish(context, p.customerBsketChangedConfig.ExchangeName, p.customerBsketChangedConfig.Topic, amqp.Publishing{ContentType: "application/json", Body: jsonBody})
 }
 
 func (p *RabbitmMqCustomerBasketEventPublisher) PublishRemoved(context context.Context, rem *services.BasketRemoved) error {
-	err := p.rabbitmq.DeclareExchange(p.customerBsketChangedConfig.ExchangeName)
-	if err != nil {
-		return fmt.Errorf("error when publish message to rabbitmq %w", err)
-	}
 	jsonMsg := struct {
 		CustomerId int `json:"customerId"`
 	}{
 		CustomerId: rem.CustomerID,
 	}
 
-	return p.rabbitmq.Publish(context, p.customerBsketRemovedConfig.ExchangeName, p.customerBsketRemovedConfig.Topic, jsonMsg)
+	jsonBody, err := json.Marshal(jsonMsg)
+	if err != nil {
+		return fmt.Errorf("marshal json error, %w", err)
+	}
+
+	return p.rabbitmq.Publish(context, p.customerBsketRemovedConfig.ExchangeName, p.customerBsketRemovedConfig.Topic, amqp.Publishing{ContentType: "application/json", Body: jsonBody})
 }
