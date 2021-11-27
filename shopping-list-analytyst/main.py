@@ -5,8 +5,8 @@ from ddtrace import patch, config, tracer
 from aio_pika import IncomingMessage
 import pymongo
 from common.env import get_env_or_default
-from core.usecase import StoreCustomerShoppingListHistoryUseCase
-from handlers.worker import CustomerBasketChangedHandler
+from core.usecase import StoreCustomerChangedEventUseCase, StoreCustomerRemovedEventUseCase
+from handlers.worker import CustomerBasketChangedHandler, CustomerBasketRemovedHandler
 from infrastructure.data import MongoCustomerShoppingListHistoryWriter
 from infrastructure.rabbitmq import RabbitMqClient, connect
 
@@ -19,8 +19,11 @@ client: RabbitMqClient | None = None
 
 patch(pymongo=True)
 mongo = pymongo.MongoClient(get_env_or_default("MONGO_CONNECTION", "mongodb://db:27017/"))
-usecase = StoreCustomerShoppingListHistoryUseCase(MongoCustomerShoppingListHistoryWriter(mongo))
-handler = CustomerBasketChangedHandler(usecase)
+writer = MongoCustomerShoppingListHistoryWriter(mongo)
+store_customer_changed_event_usecase = StoreCustomerChangedEventUseCase(writer)
+customer_basket_changed_handler = CustomerBasketChangedHandler(store_customer_changed_event_usecase)
+store_customer_removed_event_usecase = StoreCustomerRemovedEventUseCase(writer)
+customer_basket_removed_handler = CustomerBasketRemovedHandler(store_customer_removed_event_usecase)
 
 @app.get("/")
 async def read_root():
@@ -46,7 +49,10 @@ async def print_msg(msg: IncomingMessage):
 async def init_consumer(loop):
     client = await connect(loop=loop)
     # use the same loop to consume
-    await client.consume("basket", "test", "changed", handler.handle)       
+    await asyncio.gather(
+         client.consume("basket", "analytyst_basket_changed", "changed", customer_basket_changed_handler.handle),
+         client.consume("basket", "analytyst_basket_removed", "removed", customer_basket_removed_handler.handle)   
+    )    
     
 
 @app.on_event("shutdown")
