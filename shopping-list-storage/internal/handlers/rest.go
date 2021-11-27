@@ -65,7 +65,7 @@ func (api *Api) Start(ctx context.Context) error {
 	tgin.WithAnalytics(true)
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
-	r.Use(tgin.Middleware("shopping-list-storage"))
+	r.Use(tgin.Middleware("shopping-list-storage-api"))
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{

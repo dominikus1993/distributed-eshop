@@ -25,7 +25,7 @@ func (p *RunGinApiServer) SetFlags(f *flag.FlagSet) {
 func (p *RunGinApiServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	tracer.Start(
 		tracer.WithEnv("local"),
-		tracer.WithService("shopping-list-storage"),
+		tracer.WithService("shopping-list-storage-api"),
 		tracer.WithServiceVersion("v1.1.1"),
 	)
 	defer tracer.Stop()

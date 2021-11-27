@@ -41,7 +41,7 @@ func NewTracedClient(ctx context.Context, connectionString string) (*MongoClient
 
 	// Set client options
 	clientOptions := options.Client().ApplyURI(connectionString)
-	clientOptions.Monitor = mongotrace.NewMonitor()
+	clientOptions.Monitor = mongotrace.NewMonitor(mongotrace.WithServiceName("shopping-list-storage-api"), mongotrace.WithAnalytics(true))
 
 	// connect to MongoDB
 	client, err := mongo.Connect(ctx, clientOptions)

@@ -31,7 +31,7 @@ func (p *RunGrpcServer) SetFlags(f *flag.FlagSet) {
 func (p *RunGrpcServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	tracer.Start(
 		tracer.WithEnv("local"),
-		tracer.WithService("shopping-list-storage"),
+		tracer.WithService("shopping-list-storage-api"),
 		tracer.WithServiceVersion("v1.1.1"),
 	)
 	defer tracer.Stop()
@@ -46,8 +46,8 @@ func (p *RunGrpcServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...inter
 		log.Fatalln(err)
 	}
 	defer server.Close(ctx)
-	si := grpctrace.StreamServerInterceptor(grpctrace.WithServiceName("shopping-list-storage"))
-	ui := grpctrace.UnaryServerInterceptor(grpctrace.WithServiceName("shopping-list-storage"))
+	si := grpctrace.StreamServerInterceptor(grpctrace.WithServiceName("shopping-list-storage-api"))
+	ui := grpctrace.UnaryServerInterceptor(grpctrace.WithServiceName("shopping-list-storage-api"))
 	grpcServer := grpc.NewServer(grpc.StreamInterceptor(si), grpc.UnaryInterceptor(ui))
 	reflection.Register(grpcServer)
 	shoppinglist.RegisterShoppingListsStorageServer(grpcServer, server)
