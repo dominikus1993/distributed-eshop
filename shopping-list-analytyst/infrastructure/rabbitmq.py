@@ -2,9 +2,10 @@ from asyncio.events import AbstractEventLoop
 import aio_pika
 from typing import Callable, Coroutine
 from common.env import get_env_or_default
+from aio_pika import IncomingMessage
 from aio_pika.exchange import ExchangeType
 from aio_pika.robust_connection import RobustConnection
-
+from ddtrace import tracer
 
 class RabbitMqClient:
     __connection: RobustConnection
@@ -14,15 +15,12 @@ class RabbitMqClient:
         self.__connection = conn
         self.__channel = ch
 
-    async def consume(self, exchange: str, queue: str, routing_key: str, consume: Callable[[str], Coroutine]):
+    async def consume(self, exchange: str, queue: str, routing_key: str, consume: Callable[[IncomingMessage], Coroutine]):
         channel = self.__channel
         exch = await channel.declare_exchange(exchange, ExchangeType.TOPIC, durable=True)
         q = await channel.declare_queue(queue, durable=True, exclusive=False, auto_delete=False)
         await q.bind(exchange=exch, routing_key=routing_key)
-        async with q.iterator() as queue_iter:
-            async for message in queue_iter:
-                async with message.process():
-                    await consume(message.body)
+        await q.consume(consume)
 
     async def close(self):
         await self.__connection.close()
