@@ -16,6 +16,8 @@ patch(fastapi=True)
 app = FastAPI()
 
 client: RabbitMqClient | None = None
+
+patch(pymongo=True)
 mongo = pymongo.MongoClient(get_env_or_default("MONGO_CONNECTION", "mongodb://db:27017/"))
 usecase = StoreCustomerShoppingListHistoryUseCase(MongoCustomerShoppingListHistoryWriter(mongo))
 handler = CustomerBasketChangedHandler(usecase)
