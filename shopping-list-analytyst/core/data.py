@@ -37,5 +37,5 @@ class CustomerShoppingListRemoved:
 
 class CustomerShoppingListHistoryReader(ABC):
     @abstractmethod
-    def get(self, customer_id: int) -> AsyncIterable[CustomerShoppingListChanged | CustomerShoppingListRemoved]:
+    def read(self, customer_id: int) -> AsyncIterable[CustomerShoppingListChanged | CustomerShoppingListRemoved]:
         pass

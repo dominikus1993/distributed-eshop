@@ -13,13 +13,11 @@ class CustomerBasketChangedHandler:
     @tracer.wrap("rabbitmq_consume", 'shopping-list-analytyst')
     async def handle(self, msg: IncomingMessage): 
         async with msg.process():
-            print("[x] %r" % msg.body.decode('utf-8'))
             data = json.loads(msg.body.decode('utf-8'))
             items = []
             for item in data["items"]:
                 items.append(Item(item["itemId"], item["itemQuantity"]))
             evt = CustomerShoppingList(data["customerId"], items)
-            print("xD", evt)
             await self.__usecase.execute(evt)
 
 class CustomerBasketRemovedHandler:

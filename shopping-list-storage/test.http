@@ -14,7 +14,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "items": [{ "itemId": 1, "itemQuantity": 12 }, { "itemId": 2, "itemQuantity": 12 }]
+  "items": [{ "itemId": 21, "itemQuantity": 12 }, { "itemId": 22, "itemQuantity": 132 }]
 }
 
 ###

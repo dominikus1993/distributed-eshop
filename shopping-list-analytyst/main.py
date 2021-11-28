@@ -4,10 +4,11 @@ from fastapi import FastAPI
 from ddtrace import patch, config, tracer
 from aio_pika import IncomingMessage
 import pymongo
+from starlette.responses import StreamingResponse
 from common.env import get_env_or_default
-from core.usecase import StoreCustomerChangedEventUseCase, StoreCustomerRemovedEventUseCase
+from core.usecase import ReadCustomerShoppingListHistoryUseCase, StoreCustomerChangedEventUseCase, StoreCustomerRemovedEventUseCase
 from handlers.worker import CustomerBasketChangedHandler, CustomerBasketRemovedHandler
-from infrastructure.data import MongoCustomerShoppingListHistoryWriter
+from infrastructure.data import MongoCustomerShoppingListHistoryReader, MongoCustomerShoppingListHistoryWriter
 from infrastructure.rabbitmq import RabbitMqClient, connect
 
 config.fastapi['service_name'] = 'shopping-list-analytyst'
@@ -24,15 +25,18 @@ store_customer_changed_event_usecase = StoreCustomerChangedEventUseCase(writer)
 customer_basket_changed_handler = CustomerBasketChangedHandler(store_customer_changed_event_usecase)
 store_customer_removed_event_usecase = StoreCustomerRemovedEventUseCase(writer)
 customer_basket_removed_handler = CustomerBasketRemovedHandler(store_customer_removed_event_usecase)
+reader = MongoCustomerShoppingListHistoryReader(mongo)
+read_customer_shopping_list_history_usecase = ReadCustomerShoppingListHistoryUseCase(reader)
 
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/logs/{customer_id}")
+async def read_item(customer_id: int, q: Optional[str] = None):
+    result = [log async for log in read_customer_shopping_list_history_usecase.execute(customer_id)]
+    return result
 
 @app.get("/items")
 async def read_items(q: Optional[str] = None):
@@ -51,7 +55,7 @@ async def init_consumer(loop):
     # use the same loop to consume
     await asyncio.gather(
          client.consume("basket", "analytyst_basket_changed", "changed", customer_basket_changed_handler.handle),
-         client.consume("basket", "analytyst_basket_removed", "removed", customer_basket_removed_handler.handle)   
+         client.consume("basket", "analytyst_basket_removed", "removed", customer_basket_removed_handler.handle),
     )    
     
 
@@ -60,6 +64,7 @@ async def shutdown_event():
     if client is not None:
         print("Close RabbitMq connection")
         await client.close()
+    mongo.close()
 
 
 
