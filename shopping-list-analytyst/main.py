@@ -9,7 +9,7 @@ from common.env import get_env_or_default
 from core.usecase import ReadCustomerShoppingListHistoryUseCase, StoreCustomerChangedEventUseCase, StoreCustomerRemovedEventUseCase
 from handlers.worker import CustomerBasketChangedHandler, CustomerBasketRemovedHandler
 from infrastructure.data import MongoCustomerShoppingListHistoryReader, MongoCustomerShoppingListHistoryWriter
-from infrastructure.rabbitmq import RabbitMqClient, connect
+from infrastructure.rabbitmq import RabbitMqClient, connect_traced
 
 config.fastapi['service_name'] = 'shopping-list-analytyst'
 
@@ -44,16 +44,14 @@ async def read_items(q: Optional[str] = None):
         yield { "item_id": x}
 
 
-@tracer.wrap("rabbitmq_consume", 'shopping-list-analytyst')
 async def handle_basket_removed(msg: IncomingMessage):
     await customer_basket_removed_handler.handle(msg)
 
-@tracer.wrap("rabbitmq_consume", 'shopping-list-analytyst')
 async def handle_basket_changed(msg: IncomingMessage):
     await customer_basket_changed_handler.handle(msg)
 
 async def init_consumer(loop):
-    client = await connect(loop=loop)
+    client = await connect_traced(loop=loop)
     # use the same loop to consume
     await asyncio.gather(
          client.consume("basket", "analytyst_basket_changed", "changed", handle_basket_changed),

@@ -27,7 +27,6 @@ class MongoCustomerShoppingListHistoryWriter(CustomerShoppingListHistoryWriter):
                                      "changed_at": datetime.datetime.utcnow(), "event_type": "CustomerShoppingListChanged"})
 
     async def store_deletion(self, customer_id: int):
-        items = []
         self.__collection.insert_one({"customer_id": customer_id, "removed_at": datetime.datetime.utcnow(
         ), "event_type": "CustomerShoppingListRemoved"})
 
