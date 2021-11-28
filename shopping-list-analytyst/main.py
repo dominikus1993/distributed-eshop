@@ -45,17 +45,19 @@ async def read_items(q: Optional[str] = None):
 
 
 @tracer.wrap("rabbitmq_consume", 'shopping-list-analytyst')
-async def print_msg(msg: IncomingMessage):
-    async with msg.process():
-        print("[x] %r" % msg.body)
+async def handle_basket_removed(msg: IncomingMessage):
+    await customer_basket_removed_handler.handle(msg)
 
+@tracer.wrap("rabbitmq_consume", 'shopping-list-analytyst')
+async def handle_basket_changed(msg: IncomingMessage):
+    await customer_basket_changed_handler.handle(msg)
 
 async def init_consumer(loop):
     client = await connect(loop=loop)
     # use the same loop to consume
     await asyncio.gather(
-         client.consume("basket", "analytyst_basket_changed", "changed", customer_basket_changed_handler.handle),
-         client.consume("basket", "analytyst_basket_removed", "removed", customer_basket_removed_handler.handle),
+         client.consume("basket", "analytyst_basket_changed", "changed", handle_basket_changed),
+         client.consume("basket", "analytyst_basket_removed", "removed", handle_basket_removed),
     )    
     
 
