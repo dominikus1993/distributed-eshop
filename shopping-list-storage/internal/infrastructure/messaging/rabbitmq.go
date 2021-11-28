@@ -14,7 +14,7 @@ type RabbitMqClient interface {
 	GetConnection() *amqp.Connection
 	GetChannel() *amqp.Channel
 	Close()
-	DeclareExchange(exchangeName string) error
+	DeclareExchange(ctx context.Context, exchangeName string) error
 	Publish(ctx context.Context, exchangeName string, topic string, msg amqp.Publishing) error
 }
 
@@ -59,7 +59,7 @@ func (client *rabbitMqClient) Close() {
 	}
 }
 
-func (client *rabbitMqClient) DeclareExchange(exchangeName string) error {
+func (client *rabbitMqClient) DeclareExchange(ctx context.Context, exchangeName string) error {
 	return client.Channel.ExchangeDeclare(
 		exchangeName, // name
 		"topic",      // type
@@ -72,7 +72,7 @@ func (client *rabbitMqClient) DeclareExchange(exchangeName string) error {
 }
 
 func (client *rabbitMqClient) Publish(ctx context.Context, exchangeName string, topic string, msg amqp.Publishing) error {
-	err := client.DeclareExchange(exchangeName)
+	err := client.DeclareExchange(ctx, exchangeName)
 	if err != nil {
 		return fmt.Errorf("error when declare exchange %w", err)
 	}

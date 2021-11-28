@@ -46,7 +46,7 @@ func InitApi() (*Api, error) {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
 	repo := repositories.NewMongoShoppingListsRepository(client)
-	rabbitmq, err := messaging.NewRabbitMqClient(common.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
+	rabbitmq, err := messaging.NewTracedRabbitMqClient(common.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to rabbitmq, ERR: %w", err)
 	}
