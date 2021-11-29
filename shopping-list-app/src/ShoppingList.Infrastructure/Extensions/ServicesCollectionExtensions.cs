@@ -5,6 +5,8 @@ using ShoppingList.Core.Repositories;
 using ShoppingList.Infrastructure.Repositories;
 using Refit;
 using ShoppingList.Infrastructure.Refit;
+using ShoppingList.Infrastructure.DataDog;
+using ShoppingList.Core.UseCases;
 
 namespace ShoppingList.Infrastructure.Extensions
 {
@@ -30,6 +32,7 @@ namespace ShoppingList.Infrastructure.Extensions
                 options.Address = new Uri(config.GetConnectionString("Storage"));
             });
             services.AddTransient<IShoppingListRepository, GrpcShoppingListRepository>();
+            services.Decorate<GetCustomerShoppingListUseCase,TracedGetCustomerShoppingListUseCase>();
             return services;
         }
     }
