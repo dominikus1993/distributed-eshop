@@ -11,6 +11,8 @@ services:
       DD_AGENT_HOST: ddagent
       DD_ENV: "local"
       DD_TRACE_ENABLED: "true"
+      CORECLR_ENABLE_PROFILING: 1
+      CORECLR_PROFILER: "{846F5F1C-F9AE-4B07-969E-05C26BC060D8}"
     command: /bin/sh -c "while sleep 1000; do :; done"
     links:
      - storage 
