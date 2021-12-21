@@ -16,7 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Datadog.Monitoring.Distribution" Version="2.0.0-prerelease-beta01" />
+        <PackageReference Include="Datadog.Monitoring.Distribution" Version="2.0.1-beta01" />
         <PackageReference Include="LanguageExt.Core" Version="4.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
