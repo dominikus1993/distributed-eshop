@@ -71,6 +71,10 @@ namespace ShoppingList.Core.Model
 
         protected bool Equals(Item other)
         {
+            if(other is null)
+            {
+                return false;
+            }
             return Id.Equals(other.Id);
         }
 
@@ -112,7 +116,6 @@ namespace ShoppingList.Core.Model
         public bool IsEmpty() => ProductQuantity.IsZero();
     }
 
-
     public class CustomerShoppingList
     {
         private readonly List<Item> _items;
@@ -122,7 +125,7 @@ namespace ShoppingList.Core.Model
 
         public bool IsEmpty() => _items.Count == 0;
 
-        public CustomerShoppingList(CustomerId customerId,List<Item> items)
+        public CustomerShoppingList(CustomerId customerId, List<Item> items)
         {
             _items = items ?? new List<Item>();
             CustomerId = customerId;

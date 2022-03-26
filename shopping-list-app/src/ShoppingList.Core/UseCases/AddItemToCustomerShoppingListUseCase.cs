@@ -25,9 +25,10 @@ namespace ShoppingList.Core.UseCases
             {
                 throw new ArgumentNullException(nameof(addItem));
             }
-
-            _logger.LogWarning("Adding item to shoppinglist, item: {Item}", addItem);
-
+            if(_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("Adding item to shoppinglist, item: {Item}", addItem);
+            }
             var customerId = new CustomerId(addItem.CustomerId);
             var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
             var basket = basketOpt.IfNone(() => CustomerShoppingList.Empty(customerId));
