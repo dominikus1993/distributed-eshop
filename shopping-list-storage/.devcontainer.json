@@ -3,7 +3,7 @@
     "dockerComposeFile": ["../docker-compose.dev.yml"],
     "service": "storage",
     "shutdownAction": "none",
-    "extensions": ["golang.Go", "wakatime.vscode-wakatime"],
+    "extensions": ["golang.Go", "wakatime.vscode-wakatime", "GitHub.copilot"],
     "settings": {
 		"go.toolsManagement.checkForUpdates": "local",
 		"go.useLanguageServer": true,

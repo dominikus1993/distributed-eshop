@@ -3,7 +3,7 @@
     "dockerComposeFile": ["../docker-compose.dev.yml"],
     "service": "analytyst",
     "shutdownAction": "none",
-    "extensions": ["ms-python.python", "humao.rest-client", "ms-python.vscode-pylance", "wakatime.vscode-wakatime"],
+    "extensions": ["ms-python.python", "humao.rest-client", "ms-python.vscode-pylance", "GitHub.copilot", "wakatime.vscode-wakatime"],
     "forwardPorts": [5000],
     "workspaceFolder": "/workspace/shopping-list-analytyst",
     "settings": { 
