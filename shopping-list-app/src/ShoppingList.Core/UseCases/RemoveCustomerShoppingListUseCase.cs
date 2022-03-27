@@ -4,22 +4,21 @@ using ShoppingList.Core.Dto;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
 
-namespace ShoppingList.Core.UseCases
+namespace ShoppingList.Core.UseCases;
+
+public sealed class RemoveCustomerShoppingListUseCase
 {
-    public sealed class RemoveCustomerShoppingListUseCase
+    private IShoppingListRepository _repository;
+
+    public RemoveCustomerShoppingListUseCase(IShoppingListRepository repository)
     {
-        private IShoppingListRepository _repository;
+        _repository = repository;
+    }
 
-        public RemoveCustomerShoppingListUseCase(IShoppingListRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public async Task Execute(RemoveCustomerShoppingList rm, CancellationToken cancellationToken = default)
-        {
-            var customerId = new CustomerId(rm.CustomerId);
-            var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);           
-            await basketOpt.IfSomeAsync(async basket => await _repository.Remove(basket));
-        }
+    public async Task Execute(RemoveCustomerShoppingList rm, CancellationToken cancellationToken = default)
+    {
+        var customerId = new CustomerId(rm.CustomerId);
+        var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);           
+        await basketOpt.IfSomeAsync(async basket => await _repository.Remove(basket));
     }
 }

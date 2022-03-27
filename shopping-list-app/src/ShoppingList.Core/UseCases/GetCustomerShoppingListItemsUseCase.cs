@@ -9,33 +9,31 @@ using ShoppingList.Core.Dto;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
 
-namespace ShoppingList.Core.UseCases
+namespace ShoppingList.Core.UseCases;
+
+public class GetCustomerShoppingListItemsUseCase
 {
+    private IShoppingListRepository _repository;
 
-    public class GetCustomerShoppingListItemsUseCase
+    public GetCustomerShoppingListItemsUseCase(IShoppingListRepository repository)
     {
-        private IShoppingListRepository _repository;
+        _repository = repository;
+    }
 
-        public GetCustomerShoppingListItemsUseCase(IShoppingListRepository repository)
+    public async IAsyncEnumerable<ItemDto> Execute(GetCustomerBasket query, [EnumeratorCancellation]CancellationToken cancellationToken = default)
+    {
+        var customerId = new CustomerId(query.CustomerId);
+        var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
+        var items = basketOpt.Where(b => b.Items.Count > 0).Map(b => b.Items).IfNone(() => new List<Item>(0));
+
+        if (items.Count == 0)
         {
-            _repository = repository;
+            yield break;
         }
 
-        public async IAsyncEnumerable<ItemDto> Execute(GetCustomerBasket query, [EnumeratorCancellation]CancellationToken cancellationToken = default)
+        foreach (var item in items)
         {
-            var customerId = new CustomerId(query.CustomerId);
-            var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
-            var items = basketOpt.Where(b => b.Items.Count > 0).Map(b => b.Items).IfNone(() => new List<Item>(0));
-
-            if (items.Count == 0)
-            {
-                yield break;
-            }
-
-            foreach (var item in items)
-            {
-                yield return new ItemDto(item);
-            }
+            yield return new ItemDto(item);
         }
     }
 }

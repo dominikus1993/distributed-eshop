@@ -1,41 +1,47 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using LanguageExt.UnsafeValueAccess;
+
 using ShoppingList.Core.Dto;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
 
-namespace ShoppingList.Core.UseCases
-{
-    public class RemoveItemFromCustomerShoppingList
-    {
-        private IShoppingListRepository _repository;
+namespace ShoppingList.Core.UseCases;
 
-        public RemoveItemFromCustomerShoppingList(IShoppingListRepository repository)
+public class RemoveItemFromCustomerShoppingList
+{
+    private IShoppingListRepository _repository;
+
+    public RemoveItemFromCustomerShoppingList(IShoppingListRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task Execute(RemoveItem removeItem, CancellationToken cancellationToken = default)
+    {
+        if (removeItem is null)
         {
-            _repository = repository;
+            throw new ArgumentNullException(nameof(removeItem));
         }
 
-        public async Task Execute(RemoveItem removeItem, CancellationToken cancellationToken = default)
+        var customerId = new CustomerId(removeItem.CustomerId);
+        var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
+
+        if (basketOpt.IsNone)
         {
-            if (removeItem is null)
-            {
-                throw new ArgumentNullException(nameof(removeItem));
-            }
+            return;
+        }
 
-            var customerId = new CustomerId(removeItem.CustomerId);
-            var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
-            var basket = basketOpt.IfNone(() => CustomerShoppingList.Empty(customerId));
+        var basket = basketOpt.ValueUnsafe();
 
-            if (basket.IsEmpty())
-            {
-                return;
-            }
-            
+        await basketOpt.IfSomeAsync(async basket =>
+        {
             basket.RemoveItem(new Item(new ItemId(removeItem.ItemId), new ItemQuantity(removeItem.ItemQuantity)));
 
             await _repository.Change(basket, cancellationToken);
-        }
+        });
     }
-
 }
+
