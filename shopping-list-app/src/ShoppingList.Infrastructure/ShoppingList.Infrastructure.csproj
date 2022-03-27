@@ -11,22 +11,22 @@
         <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Google.Protobuf" Version="3.19.3" />
-        <PackageReference Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.41.0" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.41.0" />
-        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.41.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.43.0">
+        <PackageReference Include="Google.Protobuf" Version="3.19.4" />
+        <PackageReference Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.44.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.44.0" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.44.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.45.0">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Datadog.Trace" Version="2.1.0" />
+        <PackageReference Include="Datadog.Trace" Version="2.5.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-        <PackageReference Include="LanguageExt.Core" Version="4.0.3" />
+        <PackageReference Include="LanguageExt.Core" Version="4.0.4" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-        <PackageReference Include="Refit" Version="6.1.15" />
-        <PackageReference Include="Refit.HttpClientFactory" Version="6.1.15" />
-        <PackageReference Include="Scrutor" Version="3.3.0" />
+        <PackageReference Include="Refit" Version="6.3.2" />
+        <PackageReference Include="Refit.HttpClientFactory" Version="6.3.2" />
+        <PackageReference Include="Scrutor" Version="4.1.0" />
     </ItemGroup>
     <ItemGroup>
         <Protobuf Include="shopping-lists.proto" GrpcServices="Client" />
