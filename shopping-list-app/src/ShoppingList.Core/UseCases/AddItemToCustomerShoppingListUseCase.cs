@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ShoppingList.Core.Dto;
+using ShoppingList.Core.Logging;
 using ShoppingList.Core.Model;
 using ShoppingList.Core.Repositories;
 
@@ -25,10 +26,9 @@ namespace ShoppingList.Core.UseCases
             {
                 throw new ArgumentNullException(nameof(addItem));
             }
-            if(_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug("Adding item to shoppinglist, item: {Item}", addItem);
-            }
+
+            _logger.LogAddItem(addItem);
+
             var customerId = new CustomerId(addItem.CustomerId);
             var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
             var basket = basketOpt.IfNone(() => CustomerShoppingList.Empty(customerId));

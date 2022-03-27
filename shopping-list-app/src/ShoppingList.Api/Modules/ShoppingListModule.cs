@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Api.Request;
 using ShoppingList.Core.Dto;
@@ -11,39 +7,36 @@ namespace ShoppingList.Api.Modules
 {
     public static class CustomerShoppingList
     {
-        public static async Task<IResult> GetCustomerShoppingList(int customerId, GetCustomerShoppingListUseCase usecase)
+        public static async Task<IResult> GetCustomerShoppingList(int customerId, GetCustomerShoppingListUseCase usecase, CancellationToken cancellationToken)
         {
             var basket = await usecase.Execute(new GetCustomerBasket(customerId));
             return Results.Ok(basket);
         }
 
-        public static async IAsyncEnumerable<ItemDto> GetCustomerShoppingListItems(int customerId, GetCustomerShoppingListItemsUseCase usecase)
+        public static IAsyncEnumerable<ItemDto> GetCustomerShoppingListItems(int customerId, GetCustomerShoppingListItemsUseCase usecase, CancellationToken cancellationToken)
         {
-            await foreach (var item in usecase.Execute(new GetCustomerBasket(customerId)))
-            {
-                yield return item;
-            }
+            return usecase.Execute(new GetCustomerBasket(customerId), cancellationToken);
         }
 
-        public static async Task<IResult> AddItemToCustomerShoppingList(int customerId, AddItemRequest addItem, AddItemToCustomerShoppingListUseCase usecase)
+        public static async Task<IResult> AddItemToCustomerShoppingList(int customerId, AddItemRequest addItem, AddItemToCustomerShoppingListUseCase usecase, CancellationToken cancellationToken)
         {
             if (addItem is null)
             {
                 return Results.BadRequest("Item can't be null");
             }
-            await usecase.Execute(new AddItem(customerId, addItem.ItemId, addItem.ItemQuantity));
+            await usecase.Execute(new AddItem(customerId, addItem.ItemId, addItem.ItemQuantity), cancellationToken);
             return Results.Accepted();
         }
 
-        public static async Task<IResult> RemoveItemFromCustomerShoppingList(int customerId, [FromBody]RemoveItemRequest removeItem, [FromServices]RemoveItemFromCustomerShoppingList usecase)
+        public static async Task<IResult> RemoveItemFromCustomerShoppingList(int customerId, [FromBody]RemoveItemRequest removeItem, [FromServices]RemoveItemFromCustomerShoppingList usecase, CancellationToken cancellationToken)
         {
-            await usecase.Execute(new RemoveItem(customerId, removeItem.ItemId, removeItem.ItemQuantity));
+            await usecase.Execute(new RemoveItem(customerId, removeItem.ItemId, removeItem.ItemQuantity), cancellationToken);
             return Results.NoContent();
         }
 
-        public static async Task<IResult> RemoveCustomerShoppingList(int customerId,  RemoveCustomerShoppingListUseCase usecase)
+        public static async Task<IResult> RemoveCustomerShoppingList(int customerId,  RemoveCustomerShoppingListUseCase usecase, CancellationToken cancellationToken)
         {
-            await usecase.Execute(new RemoveCustomerShoppingList(customerId));
+            await usecase.Execute(new RemoveCustomerShoppingList(customerId), cancellationToken);
             return Results.NoContent();
         }
     }

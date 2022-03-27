@@ -36,7 +36,6 @@ namespace ShoppingList.Core.UseCases
             {
                 yield return new ItemDto(item);
             }
-           
         }
     }
 }

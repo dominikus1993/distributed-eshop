@@ -21,11 +21,11 @@ namespace ShoppingList.Infrastructure.Repositories
         public async Task Change(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
             var request = customerShopping.Items.Select(item => new ItemRequest(item.Id.Value, item.ProductQuantity.Value)).ToArray();
-            await _client.ChangeCustomerShoppingList(customerShopping.CustomerId.Value, new ChangeCustomerShoppingListRequest(request));
+            await _client.ChangeCustomerShoppingList(customerShopping.CustomerId.Value, new ChangeCustomerShoppingListRequest(request), cancellationToken);
         }
         public async Task<Option<CustomerShoppingList>> GetByCustomerId(CustomerId id, CancellationToken cancellationToken = default)
         {
-            var result = await _client.GetCustomerShoppingList(id.Value);
+            var result = await _client.GetCustomerShoppingList(id.Value, cancellationToken);
             if (result.IsSuccessStatusCode)
             {
                 var response = result.Content;
@@ -47,7 +47,7 @@ namespace ShoppingList.Infrastructure.Repositories
 
         public async Task Remove(CustomerShoppingList customerShopping, CancellationToken cancellationToken = default)
         {
-            await _client.RemoveCustomerShoppingList(customerShopping.CustomerId.Value);
+            await _client.RemoveCustomerShoppingList(customerShopping.CustomerId.Value, cancellationToken);
         }
     }
 }

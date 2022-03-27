@@ -27,6 +27,11 @@ namespace ShoppingList.Core.UseCases
             var basketOpt = await _repository.GetByCustomerId(customerId, cancellationToken);
             var basket = basketOpt.IfNone(() => CustomerShoppingList.Empty(customerId));
 
+            if (basket.IsEmpty())
+            {
+                return;
+            }
+            
             basket.RemoveItem(new Item(new ItemId(removeItem.ItemId), new ItemQuantity(removeItem.ItemQuantity)));
 
             await _repository.Change(basket, cancellationToken);
