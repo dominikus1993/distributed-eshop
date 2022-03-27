@@ -3,9 +3,9 @@ package usecase
 import (
 	"context"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/repositories"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/services"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/repositories"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/services"
 )
 
 type GetCustomerShoppingListUseCase struct {

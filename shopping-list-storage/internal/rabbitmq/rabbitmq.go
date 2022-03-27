@@ -1,11 +1,11 @@
-package messaging
+package rabbitmq
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/services"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/services"
 	amqp "github.com/rabbitmq/amqp091-go"
 	log "github.com/sirupsen/logrus"
 )

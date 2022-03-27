@@ -4,33 +4,33 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/common"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/usecase"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/infrastructure/messaging"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/infrastructure/repositories"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/env"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/mongodb"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/rabbitmq"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/usecase"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
 )
 
 type RpcServer struct {
-	mongoClient                       *repositories.MongoClient
+	mongoClient                       *mongodb.MongoClient
 	getCustomerShoppingListUseCase    *usecase.GetCustomerShoppingListUseCase
 	removeCustomerShoppingListUseCase *usecase.RemoveCustomerShoppingListUseCase
 	changeCustomerShoppingListUseCase *usecase.ChangeCustomerShoppingListUseCase
-	rabbitmq                          messaging.RabbitMqClient
+	rabbitmq                          rabbitmq.RabbitMqClient
 }
 
 func InitRpc() (*RpcServer, error) {
-	client, err := repositories.NewTracedClient(context.TODO(), common.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
+	client, err := mongodb.NewTracedClient(context.TODO(), env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
-	repo := repositories.NewMongoShoppingListsRepository(client)
-	rabbitmq, err := messaging.NewRabbitMqClient(common.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
+	repo := mongodb.NewMongoShoppingListsRepository(client)
+	rabbitmqclient, err := rabbitmq.NewRabbitMqClient(env.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to rabbitmq, ERR: %w", err)
 	}
-	publisher := messaging.NewRabbitmMqCustomerBasketChangedEventPublisher(rabbitmq, &messaging.RabbitMqConfig{ExchangeName: "basket", Topic: "changed"}, &messaging.RabbitMqConfig{ExchangeName: "basket", Topic: "removed"})
+	publisher := rabbitmq.NewRabbitmMqCustomerBasketChangedEventPublisher(rabbitmqclient, &rabbitmq.RabbitMqConfig{ExchangeName: "basket", Topic: "changed"}, &rabbitmq.RabbitMqConfig{ExchangeName: "basket", Topic: "removed"})
 	getCustomerShoppingListUseCase := usecase.NewGetCustomerShoppingListUseCase(repo)
 	changeCustomerShoppingListUseCase := usecase.NewChangeCustomerShoppingListUseCase(repo, publisher)
 	removeCustomerShoppingListUseCase := usecase.NewRemoveCustomerShoppingListUseCase(repo, publisher)
@@ -38,7 +38,7 @@ func InitRpc() (*RpcServer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error when trying save initial data, ERR: %w", err)
 	}
-	return &RpcServer{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitmq: rabbitmq}, nil
+	return &RpcServer{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitmq: rabbitmqclient}, nil
 }
 
 func (serv *RpcServer) GetCustomerShoppingList(ctx context.Context, req *shoppinglist.GetCustomerShoppingListRequest) (*shoppinglist.GetCustomerShoppingListResponse, error) {

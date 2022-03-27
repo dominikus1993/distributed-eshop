@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
 )
 
 type CustomerShoppingListReader interface {

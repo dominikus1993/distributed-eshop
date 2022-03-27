@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/common"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
-	r "github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/repositories"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/usecase"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/infrastructure/messaging"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/infrastructure/repositories"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/env"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/mongodb"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/rabbitmq"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/repositories"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/usecase"
 	"github.com/gin-gonic/gin"
 	tgin "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
 )
@@ -29,28 +29,28 @@ type ChangeCustomerShoppingListRequest struct {
 }
 
 type Api struct {
-	mongoClient                       *repositories.MongoClient
+	mongoClient                       *mongodb.MongoClient
 	getCustomerShoppingListUseCase    *usecase.GetCustomerShoppingListUseCase
 	removeCustomerShoppingListUseCase *usecase.RemoveCustomerShoppingListUseCase
 	changeCustomerShoppingListUseCase *usecase.ChangeCustomerShoppingListUseCase
-	rabbitMq                          messaging.RabbitMqClient
+	rabbitMq                          rabbitmq.RabbitMqClient
 }
 
-func initData(repo r.CustomerShoppingListWriter) error {
+func initData(repo repositories.CustomerShoppingListWriter) error {
 	return repo.AddOrUpdate(context.Background(), model.NewCustomerShoppingList(10, []model.Item{{ItemID: 1, ItemQuantity: 332}, {ItemID: 423, ItemQuantity: 323}}))
 }
 
 func InitApi() (*Api, error) {
-	client, err := repositories.NewTracedClient(context.TODO(), common.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
+	client, err := mongodb.NewTracedClient(context.TODO(), env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
-	repo := repositories.NewMongoShoppingListsRepository(client)
-	rabbitmq, err := messaging.NewTracedRabbitMqClient(common.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
+	repo := mongodb.NewMongoShoppingListsRepository(client)
+	rabbitmqClient, err := rabbitmq.NewTracedRabbitMqClient(env.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to rabbitmq, ERR: %w", err)
 	}
-	publisher := messaging.NewRabbitmMqCustomerBasketChangedEventPublisher(rabbitmq, &messaging.RabbitMqConfig{ExchangeName: "basket", Topic: "changed"}, &messaging.RabbitMqConfig{ExchangeName: "basket", Topic: "removed"})
+	publisher := rabbitmq.NewRabbitmMqCustomerBasketChangedEventPublisher(rabbitmqClient, &rabbitmq.RabbitMqConfig{ExchangeName: "basket", Topic: "changed"}, &rabbitmq.RabbitMqConfig{ExchangeName: "basket", Topic: "removed"})
 	getCustomerShoppingListUseCase := usecase.NewGetCustomerShoppingListUseCase(repo)
 	changeCustomerShoppingListUseCase := usecase.NewChangeCustomerShoppingListUseCase(repo, publisher)
 	removeCustomerShoppingListUseCase := usecase.NewRemoveCustomerShoppingListUseCase(repo, publisher)
@@ -58,7 +58,7 @@ func InitApi() (*Api, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error when trying save initial data, ERR: %w", err)
 	}
-	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitMq: rabbitmq}, nil
+	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitMq: rabbitmqClient}, nil
 }
 
 func (api *Api) Start(ctx context.Context) error {

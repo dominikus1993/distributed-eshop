@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/core/model"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
 )
 
 type BasketRemoved struct {
