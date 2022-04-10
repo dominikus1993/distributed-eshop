@@ -8,11 +8,15 @@ import (
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/env"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/mongodb"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/rabbitmq"
+	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/tracing"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/repositories"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/usecase"
 	"github.com/gin-gonic/gin"
-	tgin "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type Customer struct {
@@ -40,8 +44,22 @@ func initData(repo repositories.CustomerShoppingListWriter) error {
 	return repo.AddOrUpdate(context.Background(), model.NewCustomerShoppingList(10, []model.Item{{ItemID: 1, ItemQuantity: 332}, {ItemID: 423, ItemQuantity: 323}}))
 }
 
-func InitApi() (*Api, error) {
-	client, err := mongodb.NewTracedClient(context.TODO(), env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
+func InitApi(ctx context.Context) (*Api, error) {
+	exp, err := tracing.NewShoppingListStorageExporter(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tp := trace.NewTracerProvider(
+		trace.WithBatcher(exp),
+		trace.WithResource(tracing.NewShoppingListStorageResource()),
+	)
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			log.WithError(err).Fatal("failed to shutdown tracing")
+		}
+	}()
+	otel.SetTracerProvider(tp)
+	client, err := mongodb.NewTracedClient(ctx, env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"), tp)
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
@@ -61,12 +79,10 @@ func InitApi() (*Api, error) {
 	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitMq: rabbitmqClient}, nil
 }
 
-func (api *Api) Start(ctx context.Context) error {
-	tgin.WithAnalytics(true)
+func (api *Api) Start(ctx context.Context, tp trace.TracerProvider) error {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
-	r.Use(tgin.Middleware("shopping-list-storage-api"))
-
+	r.Use(otelgin.Middleware("shopping-list-storage", otelgin.WithTracerProvider(tp)))
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",

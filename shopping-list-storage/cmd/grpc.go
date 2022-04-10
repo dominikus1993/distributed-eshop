@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"net"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/handlers"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
