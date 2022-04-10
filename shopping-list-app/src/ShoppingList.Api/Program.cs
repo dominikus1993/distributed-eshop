@@ -1,5 +1,6 @@
 ﻿using OpenTelemetry.Trace;
 using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
 using ShoppingList.Api.Modules;
 using ShoppingList.Core.UseCases;
 using ShoppingList.Infrastructure.Extensions;
@@ -10,9 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var otelCollector = builder.Configuration.GetConnectionString("OtelCollector");
+
+builder.Services.AddOpenTelemetryMetrics(b =>
+{
+    b.AddHttpClientInstrumentation();
+    b.AddAspNetCoreInstrumentation();
+    b.AddMeter(nameof(CustomerShoppingList));
+    b.AddOtlpExporter(options => options.Endpoint = new Uri(otelCollector));
+});
+
 builder.Services.AddOpenTelemetryTracing(b => {
     b.AddHttpClientInstrumentation();
     b.AddAspNetCoreInstrumentation();
+    b.AddGrpcClientInstrumentation();
+    b.AddSource(nameof(GetCustomerShoppingListUseCase));
     b.AddOtlpExporter(options => options.Endpoint = new Uri(otelCollector));
 });
 

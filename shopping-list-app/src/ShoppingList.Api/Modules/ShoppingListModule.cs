@@ -1,3 +1,5 @@
+using System.Diagnostics.Metrics;
+
 using Microsoft.AspNetCore.Mvc;
 using ShoppingList.Api.Request;
 using ShoppingList.Core.Dto;
@@ -7,8 +9,11 @@ namespace ShoppingList.Api.Modules
 {
     public static class CustomerShoppingList
     {
+        private static Meter _meter = new Meter(nameof(CustomerShoppingList), "1.0.0");
+        private static Counter<int> _counter = _meter.CreateCounter<int>("shopinglists_requests");
         public static async Task<IResult> GetCustomerShoppingList(int customerId, GetCustomerShoppingListUseCase usecase, CancellationToken cancellationToken)
         {
+            _counter.Add(1);
             var basket = await usecase.Execute(new GetCustomerBasket(customerId));
             return Results.Ok(basket);
         }

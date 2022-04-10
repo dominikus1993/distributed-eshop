@@ -10,7 +10,7 @@ namespace ShoppingList.Infrastructure.OpenTelemetry
 {
     public class TracedGetCustomerShoppingListUseCase : GetCustomerShoppingListUseCase
     {
-        private static ActivitySource source = new ActivitySource("GetCustomerShoppingListUseCase", "1.0.0");
+        private static ActivitySource source = new ActivitySource(nameof(GetCustomerShoppingListUseCase), "1.0.0");
         public TracedGetCustomerShoppingListUseCase(IShoppingListRepository repository) : base(repository)
         {
         }
