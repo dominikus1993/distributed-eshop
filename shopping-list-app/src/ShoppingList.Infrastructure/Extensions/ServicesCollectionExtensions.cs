@@ -5,7 +5,7 @@ using ShoppingList.Core.Repositories;
 using ShoppingList.Infrastructure.Repositories;
 using Refit;
 using ShoppingList.Infrastructure.Refit;
-using ShoppingList.Infrastructure.DataDog;
+using ShoppingList.Infrastructure.OpenTelemetry;
 using ShoppingList.Core.UseCases;
 
 namespace ShoppingList.Infrastructure.Extensions

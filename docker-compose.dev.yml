@@ -74,6 +74,7 @@ services:
       - "13133:13133" # health_check extension
       - "9411"   # Zipkin receiver
       - "55679:55679" # zpages extension
+      - "4317:4317"
     depends_on:
       - jaeger
       - zipkin

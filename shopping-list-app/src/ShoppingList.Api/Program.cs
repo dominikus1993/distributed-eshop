@@ -1,4 +1,6 @@
-﻿using ShoppingList.Api.Modules;
+﻿using OpenTelemetry.Trace;
+using OpenTelemetry.Logs;
+using ShoppingList.Api.Modules;
 using ShoppingList.Core.UseCases;
 using ShoppingList.Infrastructure.Extensions;
 AppContext.SetSwitch( "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
@@ -6,6 +8,22 @@ AppContext.SetSwitch( "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSuppor
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var otelCollector = builder.Configuration.GetConnectionString("OtelCollector");
+builder.Services.AddOpenTelemetryTracing(b => {
+    b.AddHttpClientInstrumentation();
+    b.AddAspNetCoreInstrumentation();
+    b.AddOtlpExporter(options => options.Endpoint = new Uri(otelCollector));
+});
+
+builder.Logging.AddOpenTelemetry(b =>
+{
+    b.IncludeFormattedMessage = true;
+    b.IncludeScopes = true;
+    b.ParseStateValues = true;
+    b.AddOtlpExporter(options => options.Endpoint = new Uri(otelCollector));
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

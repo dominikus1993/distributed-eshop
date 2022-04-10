@@ -1,26 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Datadog.Trace;
+
 using ShoppingList.Core.Dto;
 using ShoppingList.Core.Repositories;
 using ShoppingList.Core.UseCases;
 
-namespace ShoppingList.Infrastructure.DataDog
+namespace ShoppingList.Infrastructure.OpenTelemetry
 {
     public class TracedGetCustomerShoppingListUseCase : GetCustomerShoppingListUseCase
     {
+        private static ActivitySource source = new ActivitySource("GetCustomerShoppingListUseCase", "1.0.0");
         public TracedGetCustomerShoppingListUseCase(IShoppingListRepository repository) : base(repository)
         {
         }
 
         public new async Task<CustomerShoppingListDto> Execute(GetCustomerBasket query, CancellationToken cancellationToken = default)
         {
-            using var scope = Tracer.Instance.StartActive("get.customer.shoppinglist");
-            var span = scope.Span;
-            span.SetTag("customer.id", query.CustomerId.ToString());
+            using var activity = source.StartActivity();
+            activity?.SetTag("customer.id", query.CustomerId.ToString());
             return await base.Execute(query, cancellationToken);
         }
     }
