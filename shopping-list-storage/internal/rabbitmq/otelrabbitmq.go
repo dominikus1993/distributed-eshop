@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"context"
+	"fmt"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 	"go.opentelemetry.io/otel/attribute"
@@ -52,4 +53,38 @@ func (client *tracedRabbitMqClient) Publish(ctx context.Context, exchangeName st
 		return err
 	}
 	return nil
+}
+
+type RabbitMqCarrier struct {
+	msg *amqp.Publishing
+}
+
+// NewConsumerMessageCarrier creates a new ConsumerMessageCarrier.
+func NewConsumerMessageCarrier(msg *amqp.Publishing) RabbitMqCarrier {
+	return RabbitMqCarrier{msg: msg}
+}
+
+// Get retrieves a single value for a given key.
+func (c RabbitMqCarrier) Get(key string) string {
+	for k, value := range c.msg.Headers {
+		if string(k) == key {
+			return fmt.Sprint(value)
+		}
+	}
+	return ""
+}
+
+// Set sets a header.
+func (c RabbitMqCarrier) Set(key, val string) {
+	// Ensure uniqueness of keys
+	for i := 0; i < len(c.msg.Headers); i++ {
+		if c.msg.Headers[i] != nil && string(c.msg.Headers[i].Key) == key {
+			c.msg.Headers = append(c.msg.Headers[:i], c.msg.Headers[i+1:]...)
+			i--
+		}
+	}
+	c.msg.Headers = append(c.msg.Headers, &sarama.RecordHeader{
+		Key:   []byte(key),
+		Value: []byte(val),
+	})
 }
