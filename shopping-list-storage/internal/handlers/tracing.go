@@ -7,6 +7,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
@@ -24,7 +25,7 @@ func initPrivder(ctx context.Context) func() {
 		sdktrace.WithResource(newShoppingListStorageResource()),
 	)
 	otel.SetTracerProvider(tp)
-
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 	return func() {
 		if err := tp.Shutdown(context.Background()); err != nil {
 			log.WithError(err).Fatal("failed to shutdown tracing")

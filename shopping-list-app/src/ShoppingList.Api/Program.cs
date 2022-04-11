@@ -10,7 +10,7 @@ using HealthChecks.UI.Client;
 
 AppContext.SetSwitch( "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-const string ServiceName = "ShoppingList.Api";
+const string ServiceName = "shopping.list.api";
 const string ServiceVersion = "1.0.0";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +34,7 @@ builder.Services.AddOpenTelemetryTracing(b => {
     b.SetResourceBuilder(
         ResourceBuilder.CreateDefault()
             .AddService(serviceName: ServiceName, serviceVersion: ServiceVersion));
-    b.AddSource(nameof(GetCustomerShoppingListUseCase));
+    b.AddSource(ServiceName, nameof(GetCustomerShoppingListUseCase));
     b.AddOtlpExporter(options => options.Endpoint = new Uri(otelCollector));
 });
 
