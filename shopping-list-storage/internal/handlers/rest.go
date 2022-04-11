@@ -8,15 +8,13 @@ import (
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/env"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/mongodb"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/rabbitmq"
-	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/tracing"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/repositories"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/usecase"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
+	ginlogrus "github.com/toorop/gin-logrus"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type Customer struct {
@@ -38,6 +36,7 @@ type Api struct {
 	removeCustomerShoppingListUseCase *usecase.RemoveCustomerShoppingListUseCase
 	changeCustomerShoppingListUseCase *usecase.ChangeCustomerShoppingListUseCase
 	rabbitMq                          rabbitmq.RabbitMqClient
+	shudownTracing                    func()
 }
 
 func initData(repo repositories.CustomerShoppingListWriter) error {
@@ -45,26 +44,14 @@ func initData(repo repositories.CustomerShoppingListWriter) error {
 }
 
 func InitApi(ctx context.Context) (*Api, error) {
-	exp, err := tracing.NewShoppingListStorageExporter(ctx)
-	if err != nil {
-		return nil, err
-	}
-	tp := trace.NewTracerProvider(
-		trace.WithBatcher(exp),
-		trace.WithResource(tracing.NewShoppingListStorageResource()),
-	)
-	defer func() {
-		if err := tp.Shutdown(context.Background()); err != nil {
-			log.WithError(err).Fatal("failed to shutdown tracing")
-		}
-	}()
-	otel.SetTracerProvider(tp)
-	client, err := mongodb.NewTracedClient(ctx, env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"), tp)
+	shoutdown := initPrivder(ctx)
+
+	client, err := mongodb.NewTracedClient(ctx, env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"), otel.GetTracerProvider())
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
 	repo := mongodb.NewMongoShoppingListsRepository(client)
-	rabbitmqClient, err := rabbitmq.NewTracedRabbitMqClient(env.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
+	rabbitmqClient, err := rabbitmq.NewTracedRabbitMqClient(env.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"), otel.GetTracerProvider())
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to rabbitmq, ERR: %w", err)
 	}
@@ -76,13 +63,14 @@ func InitApi(ctx context.Context) (*Api, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error when trying save initial data, ERR: %w", err)
 	}
-	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitMq: rabbitmqClient}, nil
+	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitMq: rabbitmqClient, shudownTracing: shoutdown}, nil
 }
 
-func (api *Api) Start(ctx context.Context, tp trace.TracerProvider) error {
+func (api *Api) Start(ctx context.Context) error {
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
-	r.Use(otelgin.Middleware("shopping-list-storage", otelgin.WithTracerProvider(tp)))
+	log := initLogger()
+	r.Use(ginlogrus.Logger(log), gin.Recovery())
+	r.Use(otelgin.Middleware("shopping.list.storage", otelgin.WithTracerProvider(otel.GetTracerProvider())))
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
@@ -166,4 +154,5 @@ func (api *Api) Start(ctx context.Context, tp trace.TracerProvider) error {
 func (api *Api) Close(ctx context.Context) {
 	api.mongoClient.Close(ctx)
 	api.rabbitMq.Close()
+	api.shudownTracing()
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/model"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/usecase"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
+	"go.opentelemetry.io/otel"
 )
 
 type RpcServer struct {
@@ -20,8 +21,10 @@ type RpcServer struct {
 	rabbitmq                          rabbitmq.RabbitMqClient
 }
 
-func InitRpc() (*RpcServer, error) {
-	client, err := mongodb.NewTracedClient(context.TODO(), env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
+func InitRpc(ctx context.Context) (*RpcServer, error) {
+	shutdown := initPrivder(ctx)
+	defer shutdown()
+	client, err := mongodb.NewTracedClient(context.TODO(), env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"), otel.GetTracerProvider())
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}

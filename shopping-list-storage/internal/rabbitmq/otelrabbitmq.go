@@ -4,7 +4,6 @@ import (
 	"context"
 
 	amqp "github.com/rabbitmq/amqp091-go"
-	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
@@ -31,7 +30,7 @@ func NewTracedRabbitMqClient(connStr string, traceProvider trace.TracerProvider)
 
 func (client *tracedRabbitMqClient) Publish(ctx context.Context, exchangeName string, topic string, msg amqp.Publishing) error {
 	var span trace.Span
-	ctx, span = otel.Tracer("rabbitmq").Start(ctx, "send")
+	ctx, span = client.traceProvider.Tracer("rabbitmq").Start(ctx, "send")
 	defer span.End()
 	span.SetAttributes(
 		attribute.KeyValue{Key: "messaging.rabbitmq.routing_key", Value: attribute.StringValue(topic)},
