@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Immutable;
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShoppingList.Core.Repositories;
@@ -7,6 +8,7 @@ using Refit;
 using ShoppingList.Infrastructure.Refit;
 using ShoppingList.Infrastructure.OpenTelemetry;
 using ShoppingList.Core.UseCases;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace ShoppingList.Infrastructure.Extensions
 {
@@ -32,8 +34,20 @@ namespace ShoppingList.Infrastructure.Extensions
                 options.Address = new Uri(config.GetConnectionString("Storage"));
             });
             services.AddTransient<IShoppingListRepository, GrpcShoppingListRepository>();
-            services.Decorate<GetCustomerShoppingListUseCase,TracedGetCustomerShoppingListUseCase>();
+            services.Decorate<GetCustomerShoppingListUseCase, TracedGetCustomerShoppingListUseCase>();
             return services;
+        }
+
+        public static IHealthChecksBuilder AddApiHealthCheck(this IHealthChecksBuilder builder, IConfiguration config)
+        {
+            var sUrl = new Uri(config.GetConnectionString("Storage"));
+            var pingUrl = new Uri(sUrl, "ping");
+            builder.AddUrlGroup(
+                pingUrl,
+                name: "Storage",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new string[] { "storage" });
+            return builder;
         }
     }
 }

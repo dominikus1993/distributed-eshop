@@ -4,7 +4,14 @@ using OpenTelemetry.Metrics;
 using ShoppingList.Api.Modules;
 using ShoppingList.Core.UseCases;
 using ShoppingList.Infrastructure.Extensions;
+using OpenTelemetry.Resources;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
+
 AppContext.SetSwitch( "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+const string ServiceName = "ShoppingList.Api";
+const string ServiceVersion = "1.0.0";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +31,9 @@ builder.Services.AddOpenTelemetryTracing(b => {
     b.AddHttpClientInstrumentation();
     b.AddAspNetCoreInstrumentation();
     b.AddGrpcClientInstrumentation();
+    b.SetResourceBuilder(
+        ResourceBuilder.CreateDefault()
+            .AddService(serviceName: ServiceName, serviceVersion: ServiceVersion));
     b.AddSource(nameof(GetCustomerShoppingListUseCase));
     b.AddOtlpExporter(options => options.Endpoint = new Uri(otelCollector));
 });
@@ -49,7 +59,8 @@ builder.Services.AddTransient<RemoveItemFromCustomerShoppingList>();
 builder.Services.AddTransient<GetCustomerShoppingListItemsUseCase>();
 builder.Services.AddTransient<RemoveCustomerShoppingListUseCase>();
 // Infastructure
-builder.Services.AddGrpcInfrastructure(builder.Configuration);
+builder.Services.AddApiInfrastructure(builder.Configuration);
+builder.Services.AddHealthChecks().AddApiHealthCheck(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,7 +75,12 @@ app.MapDelete("/shoppingLists/{customerId}", CustomerShoppingList.RemoveCustomer
 app.MapPost("/shoppingLists/{customerId}/items", CustomerShoppingList.AddItemToCustomerShoppingList);
 app.MapDelete("/shoppingLists/{customerId}/items", CustomerShoppingList.RemoveItemFromCustomerShoppingList);
 app.MapGet("/shoppingLists/{customerId}/items", CustomerShoppingList.GetCustomerShoppingListItems);
-
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    AllowCachingResponses = false,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+app.MapGet("/ping", () => "pong");
 app.UseAuthorization();
 
 app.MapControllers();
