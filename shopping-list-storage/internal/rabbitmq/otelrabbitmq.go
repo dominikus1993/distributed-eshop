@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
@@ -30,29 +31,37 @@ func NewTracedRabbitMqClient(connStr string, traceProvider trace.TracerProvider)
 }
 
 func (client *tracedRabbitMqClient) Publish(ctx context.Context, exchangeName string, topic string, msg amqp.Publishing) error {
-	var span trace.Span
-	ctx, span = client.traceProvider.Tracer("rabbitmq").Start(ctx, "send")
-	defer span.End()
-	span.SetAttributes(
-		attribute.KeyValue{Key: "messaging.rabbitmq.routing_key", Value: attribute.StringValue(topic)},
-		attribute.KeyValue{Key: "messaging.destination", Value: attribute.StringValue(exchangeName)},
-		attribute.KeyValue{Key: "messaging.system", Value: attribute.StringValue("rabbitmq")},
-		attribute.KeyValue{Key: "messaging.destination_kind", Value: attribute.StringValue("topic")},
-		attribute.KeyValue{Key: "messaging.protocol", Value: attribute.StringValue("AMQP")},
-		attribute.KeyValue{Key: "messaging.protocol_version", Value: attribute.StringValue("0.9.1")},
-		attribute.KeyValue{Key: "messaging.url", Value: attribute.StringValue(client.connStr)},
-	)
-	newMsg := msg
-	carrier := NewRabbitMqCarrier(&newMsg)
-	c := propagation.ExtractHTTP(context.Background(), cfg.Propagators, carrier)
-	newMsg.Headers = headers
-	err := client.rabbitMqClient.Publish(ctx, exchangeName, topic, newMsg)
+	span := client.startRabbitMqSpan(ctx, exchangeName, topic, &msg)
+	defer client.finishSpan(span)
+	err := client.rabbitMqClient.Publish(ctx, exchangeName, topic, msg)
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 		return err
 	}
 	return nil
+}
+
+func (client *tracedRabbitMqClient) startRabbitMqSpan(ctx context.Context, exchange, topic string, msg *amqp.Publishing) trace.Span {
+	carrier := NewRabbitMqCarrier(msg)
+	propagator := otel.GetTextMapPropagator()
+	ctx = propagator.Extract(ctx, carrier)
+	ctx, span := client.traceProvider.Tracer("rabbitmq").Start(ctx, "send")
+	span.SetAttributes(
+		attribute.KeyValue{Key: "messaging.rabbitmq.routing_key", Value: attribute.StringValue(topic)},
+		attribute.KeyValue{Key: "messaging.destination", Value: attribute.StringValue(exchange)},
+		attribute.KeyValue{Key: "messaging.system", Value: attribute.StringValue("rabbitmq")},
+		attribute.KeyValue{Key: "messaging.destination_kind", Value: attribute.StringValue("topic")},
+		attribute.KeyValue{Key: "messaging.protocol", Value: attribute.StringValue("AMQP")},
+		attribute.KeyValue{Key: "messaging.protocol_version", Value: attribute.StringValue("0.9.1")},
+		attribute.KeyValue{Key: "messaging.url", Value: attribute.StringValue(client.connStr)},
+	)
+	propagator.Inject(ctx, carrier)
+	return span
+}
+
+func (client *tracedRabbitMqClient) finishSpan(span trace.Span) {
+	span.End()
 }
 
 type RabbitMqCarrier struct {
@@ -84,3 +93,13 @@ func (c RabbitMqCarrier) Set(key, val string) {
 	}
 	c.msg.Headers[key] = val
 }
+
+func (c RabbitMqCarrier) Keys() []string {
+	keys := make([]string, 0, len(c.msg.Headers))
+	for k := range c.msg.Headers {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+const defaultTracerName = "rabbitmq"
