@@ -42,9 +42,9 @@ func (client *tracedRabbitMqClient) Publish(ctx context.Context, exchangeName st
 		attribute.KeyValue{Key: "messaging.protocol_version", Value: attribute.StringValue("0.9.1")},
 		attribute.KeyValue{Key: "messaging.url", Value: attribute.StringValue(client.connStr)},
 	)
-	spanId := span.SpanContext().SpanID()
 	newMsg := msg
-	var headers = map[string]interface{}{"span_id": spanId.String()}
+	carrier := NewRabbitMqCarrier(&newMsg)
+	c := propagation.ExtractHTTP(context.Background(), cfg.Propagators, carrier)
 	newMsg.Headers = headers
 	err := client.rabbitMqClient.Publish(ctx, exchangeName, topic, newMsg)
 	if err != nil {
@@ -60,7 +60,7 @@ type RabbitMqCarrier struct {
 }
 
 // NewConsumerMessageCarrier creates a new ConsumerMessageCarrier.
-func NewConsumerMessageCarrier(msg *amqp.Publishing) RabbitMqCarrier {
+func NewRabbitMqCarrier(msg *amqp.Publishing) RabbitMqCarrier {
 	return RabbitMqCarrier{msg: msg}
 }
 
@@ -77,14 +77,10 @@ func (c RabbitMqCarrier) Get(key string) string {
 // Set sets a header.
 func (c RabbitMqCarrier) Set(key, val string) {
 	// Ensure uniqueness of keys
-	for i := 0; i < len(c.msg.Headers); i++ {
-		if c.msg.Headers[i] != nil && string(c.msg.Headers[i].Key) == key {
-			c.msg.Headers = append(c.msg.Headers[:i], c.msg.Headers[i+1:]...)
-			i--
+	for k := range c.msg.Headers {
+		if k == key {
+			delete(c.msg.Headers, k)
 		}
 	}
-	c.msg.Headers = append(c.msg.Headers, &sarama.RecordHeader{
-		Key:   []byte(key),
-		Value: []byte(val),
-	})
+	c.msg.Headers[key] = val
 }
