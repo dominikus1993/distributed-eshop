@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	amqp "github.com/rabbitmq/amqp091-go"
+	log "github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -31,6 +32,7 @@ func NewTracedRabbitMqClient(connStr string, traceProvider trace.TracerProvider)
 }
 
 func (client *tracedRabbitMqClient) Publish(ctx context.Context, exchangeName string, topic string, msg amqp.Publishing) error {
+	log.Infoln("Publish")
 	span := client.startRabbitMqSpan(ctx, exchangeName, topic, &msg)
 	defer client.finishSpan(span)
 	err := client.rabbitMqClient.Publish(ctx, exchangeName, topic, msg)
@@ -46,7 +48,7 @@ func (client *tracedRabbitMqClient) startRabbitMqSpan(ctx context.Context, excha
 	carrier := NewRabbitMqCarrier(msg)
 	propagator := otel.GetTextMapPropagator()
 	ctx = propagator.Extract(ctx, carrier)
-	ctx, span := client.traceProvider.Tracer("rabbitmq").Start(ctx, "send")
+	ctx, span := client.traceProvider.Tracer(defaultTracerName).Start(ctx, "send")
 	span.SetAttributes(
 		attribute.KeyValue{Key: "messaging.rabbitmq.routing_key", Value: attribute.StringValue(topic)},
 		attribute.KeyValue{Key: "messaging.destination", Value: attribute.StringValue(exchange)},
@@ -70,7 +72,14 @@ type RabbitMqCarrier struct {
 
 // NewConsumerMessageCarrier creates a new ConsumerMessageCarrier.
 func NewRabbitMqCarrier(msg *amqp.Publishing) RabbitMqCarrier {
+	setHeaderIfEmpty(msg)
 	return RabbitMqCarrier{msg: msg}
+}
+
+func setHeaderIfEmpty(msg *amqp.Publishing) {
+	if msg.Headers == nil {
+		msg.Headers = amqp.Table{}
+	}
 }
 
 // Get retrieves a single value for a given key.
