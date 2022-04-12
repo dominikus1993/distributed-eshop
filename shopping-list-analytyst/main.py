@@ -1,24 +1,20 @@
 from typing import Optional
 import asyncio
 from fastapi import FastAPI
-from ddtrace import patch, config, tracer
 from aio_pika import IncomingMessage
 import pymongo
-from starlette.responses import StreamingResponse
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from common.env import get_env_or_default
 from core.usecase import ReadCustomerShoppingListHistoryUseCase, StoreCustomerChangedEventUseCase, StoreCustomerRemovedEventUseCase
 from handlers.worker import CustomerBasketChangedHandler, CustomerBasketRemovedHandler
 from infrastructure.data import MongoCustomerShoppingListHistoryReader, MongoCustomerShoppingListHistoryWriter
 from infrastructure.rabbitmq import RabbitMqClient, connect_traced
+from opentelemetry.instrumentation.pymongo import PymongoInstrumentor
 
-config.fastapi['service_name'] = 'shopping-list-analytyst'
-
-patch(fastapi=True)
 app = FastAPI()
 
 client: RabbitMqClient | None = None
-
-patch(pymongo=True)
+PymongoInstrumentor().instrument()
 mongo = pymongo.MongoClient(get_env_or_default("MONGO_CONNECTION", "mongodb://db:27017/"))
 writer = MongoCustomerShoppingListHistoryWriter(mongo)
 store_customer_changed_event_usecase = StoreCustomerChangedEventUseCase(writer)
@@ -70,5 +66,6 @@ async def shutdown_event():
 
 @app.on_event('startup')
 async def startup():
+    FastAPIInstrumentor.instrument_app(app)
     loop = asyncio.get_event_loop()
     asyncio.ensure_future(init_consumer(loop))
