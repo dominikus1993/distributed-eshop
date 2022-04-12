@@ -10,6 +10,23 @@ from handlers.worker import CustomerBasketChangedHandler, CustomerBasketRemovedH
 from infrastructure.data import MongoCustomerShoppingListHistoryReader, MongoCustomerShoppingListHistoryWriter
 from infrastructure.rabbitmq import RabbitMqClient, connect_traced
 from opentelemetry.instrumentation.pymongo import PymongoInstrumentor
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+
+# Service name is required for most backends,
+# and although it's not necessary for console export,
+# it's good to set service name anyways.
+resource = Resource(attributes={
+    SERVICE_NAME: "shopping.list.analytyst"
+})
+
+provider = TracerProvider(resource=resource)
+processor = BatchSpanProcessor(OTLPSpanExporter("http://otel-collector:4317"))
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
 
 app = FastAPI()
 
@@ -47,6 +64,7 @@ async def handle_basket_changed(msg: IncomingMessage):
     await customer_basket_changed_handler.handle(msg)
 
 async def init_consumer(loop):
+    global client
     client = await connect_traced(loop=loop)
     # use the same loop to consume
     await asyncio.gather(
