@@ -24,12 +24,14 @@ opentelemetry-instrumentation==0.29b0
 opentelemetry-instrumentation-asgi==0.29b0
 opentelemetry-instrumentation-fastapi==0.29b0
 opentelemetry-instrumentation-pymongo==0.29b0
+opentelemetry-propagator-b3==1.10.0
 opentelemetry-proto==1.10.0
 opentelemetry-sdk==1.10.0
 opentelemetry-semantic-conventions==0.29b0
 opentelemetry-util-http==0.29b0
 packaging==21.3
 pamqp==2.3.0
+pika==1.2.0
 protobuf==3.19.1
 pydantic==1.8.2
 pymongo==3.12.1

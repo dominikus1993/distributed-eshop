@@ -15,7 +15,10 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.propagate import set_global_textmap
+from opentelemetry.propagators.b3 import B3Format
 
+set_global_textmap(B3Format())
 # Service name is required for most backends,
 # and although it's not necessary for console export,
 # it's good to set service name anyways.
@@ -27,7 +30,6 @@ provider = TracerProvider(resource=resource)
 processor = BatchSpanProcessor(OTLPSpanExporter("http://otel-collector:4317"))
 provider.add_span_processor(processor)
 trace.set_tracer_provider(provider)
-
 app = FastAPI()
 
 client: RabbitMqClient | None = None
@@ -35,7 +37,7 @@ PymongoInstrumentor().instrument()
 mongo = pymongo.MongoClient(get_env_or_default("MONGO_CONNECTION", "mongodb://db:27017/"))
 writer = MongoCustomerShoppingListHistoryWriter(mongo)
 store_customer_changed_event_usecase = StoreCustomerChangedEventUseCase(writer)
-customer_basket_changed_handler = CustomerBasketChangedHandler(store_customer_changed_event_usecase)
+customer_basket_changed_handler = CustomerBasketChangedHandler(store_customer_changed_event_usecase, provider)
 store_customer_removed_event_usecase = StoreCustomerRemovedEventUseCase(writer)
 customer_basket_removed_handler = CustomerBasketRemovedHandler(store_customer_removed_event_usecase)
 reader = MongoCustomerShoppingListHistoryReader(mongo)
