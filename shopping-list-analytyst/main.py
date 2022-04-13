@@ -16,9 +16,9 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.propagate import set_global_textmap
-from opentelemetry.propagators.b3 import B3Format
+from opentelemetry.propagators.b3 import B3MultiFormat
 from opentelemetry.propagators.textmap import TextMapPropagator
-set_global_textmap(B3Format())
+set_global_textmap(B3MultiFormat())
 
 # Service name is required for most backends,
 # and although it's not necessary for console export,
