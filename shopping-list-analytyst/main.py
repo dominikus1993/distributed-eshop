@@ -17,8 +17,9 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.propagate import set_global_textmap
 from opentelemetry.propagators.b3 import B3Format
-
+from opentelemetry.propagators.textmap import TextMapPropagator
 set_global_textmap(B3Format())
+
 # Service name is required for most backends,
 # and although it's not necessary for console export,
 # it's good to set service name anyways.
@@ -67,7 +68,7 @@ async def handle_basket_changed(msg: IncomingMessage):
 
 async def init_consumer(loop):
     global client
-    client = await connect_traced(loop=loop)
+    client = await connect_traced(loop=loop, tp=provider)
     # use the same loop to consume
     await asyncio.gather(
          client.consume("basket", "analytyst_basket_changed", "changed", handle_basket_changed),
