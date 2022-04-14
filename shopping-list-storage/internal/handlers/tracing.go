@@ -4,6 +4,7 @@ import (
 	"context"
 
 	log "github.com/sirupsen/logrus"
+	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
@@ -25,7 +26,8 @@ func initPrivder(ctx context.Context) func() {
 		sdktrace.WithResource(newShoppingListStorageResource()),
 	)
 	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+	b3p := b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader | b3.B3SingleHeader))
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}, b3p))
 	return func() {
 		if err := tp.Shutdown(context.Background()); err != nil {
 			log.WithError(err).Fatal("failed to shutdown tracing")

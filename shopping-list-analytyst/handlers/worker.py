@@ -7,10 +7,8 @@ from opentelemetry.sdk.trace import TracerProvider
 
 class CustomerBasketChangedHandler:
     __usecase :StoreCustomerChangedEventUseCase
-    __provider: TracerProvider
-    def __init__(self, usecase :StoreCustomerChangedEventUseCase, tp: TracerProvider) -> None:
+    def __init__(self, usecase :StoreCustomerChangedEventUseCase) -> None:
         self.__usecase = usecase
-        self.__provider = tp
 
     async def handle(self, msg: IncomingMessage): 
         async with msg.process():

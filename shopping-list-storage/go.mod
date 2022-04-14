@@ -61,6 +61,7 @@ require (
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/xdg-go/stringprep v1.0.3 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
+	go.opentelemetry.io/contrib/propagators/b3 v1.6.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.6.3 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.6.3 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.6.3 // indirect

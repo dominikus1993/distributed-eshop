@@ -37,6 +37,8 @@ class _PikaGetter(Getter):  # type: ignore
         print(f'_PikaGetter.get: {key}={value}')
         if value is None:
             return None
+        if isinstance(value, (bytes, bytearray)):
+            return [value.decode('utf-8')]
         return [value]
 
     def keys(self, carrier: Any) -> List[str]:
