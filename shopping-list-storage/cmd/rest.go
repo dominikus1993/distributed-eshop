@@ -3,11 +3,11 @@ package cmd
 import (
 	"context"
 	"flag"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/handlers"
 	"github.com/google/subcommands"
-	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 type RunGinApiServer struct {
@@ -23,14 +23,8 @@ func (p *RunGinApiServer) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *RunGinApiServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	tracer.Start(
-		tracer.WithEnv("local"),
-		tracer.WithService("shopping-list-storage-api"),
-		tracer.WithServiceVersion("v1.1.1"),
-	)
-	defer tracer.Stop()
 	log.Println("Start")
-	api, err := handlers.InitApi()
+	api, err := handlers.InitApi(ctx)
 	if err != nil {
 		log.Fatalln(err)
 		return subcommands.ExitFailure

@@ -6,7 +6,8 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	mongotrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/go.mongodb.org/mongo-driver/mongo"
+	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type MongoClient struct {
@@ -35,11 +36,11 @@ func NewClient(ctx context.Context, connectionString string) (*MongoClient, erro
 	return &MongoClient{mongo: client}, nil
 }
 
-func NewTracedClient(ctx context.Context, connectionString string) (*MongoClient, error) {
+func NewTracedClient(ctx context.Context, connectionString string, provider trace.TracerProvider) (*MongoClient, error) {
 
 	// Set client options
 	clientOptions := options.Client().ApplyURI(connectionString)
-	clientOptions.Monitor = mongotrace.NewMonitor(mongotrace.WithServiceName("shopping-list-storage-api"), mongotrace.WithAnalytics(true))
+	clientOptions.Monitor = otelmongo.NewMonitor(otelmongo.WithTracerProvider(provider))
 
 	// connect to MongoDB
 	client, err := mongo.Connect(ctx, clientOptions)

@@ -1,24 +1,40 @@
 from typing import Optional
 import asyncio
 from fastapi import FastAPI
-from ddtrace import patch, config, tracer
 from aio_pika import IncomingMessage
 import pymongo
-from starlette.responses import StreamingResponse
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from common.env import get_env_or_default
 from core.usecase import ReadCustomerShoppingListHistoryUseCase, StoreCustomerChangedEventUseCase, StoreCustomerRemovedEventUseCase
 from handlers.worker import CustomerBasketChangedHandler, CustomerBasketRemovedHandler
 from infrastructure.data import MongoCustomerShoppingListHistoryReader, MongoCustomerShoppingListHistoryWriter
 from infrastructure.rabbitmq import RabbitMqClient, connect_traced
+from opentelemetry.instrumentation.pymongo import PymongoInstrumentor
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.propagate import set_global_textmap
+from opentelemetry.propagators.b3 import B3MultiFormat
+from opentelemetry.propagators.textmap import TextMapPropagator
+set_global_textmap(B3MultiFormat())
 
-config.fastapi['service_name'] = 'shopping-list-analytyst'
+# Service name is required for most backends,
+# and although it's not necessary for console export,
+# it's good to set service name anyways.
+resource = Resource(attributes={
+    SERVICE_NAME: "shopping.list.analytyst"
+})
 
-patch(fastapi=True)
+provider = TracerProvider(resource=resource)
+processor = BatchSpanProcessor(OTLPSpanExporter("http://otel-collector:4317"))
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
 app = FastAPI()
 
 client: RabbitMqClient | None = None
-
-patch(pymongo=True)
+PymongoInstrumentor().instrument()
 mongo = pymongo.MongoClient(get_env_or_default("MONGO_CONNECTION", "mongodb://db:27017/"))
 writer = MongoCustomerShoppingListHistoryWriter(mongo)
 store_customer_changed_event_usecase = StoreCustomerChangedEventUseCase(writer)
@@ -51,7 +67,8 @@ async def handle_basket_changed(msg: IncomingMessage):
     await customer_basket_changed_handler.handle(msg)
 
 async def init_consumer(loop):
-    client = await connect_traced(loop=loop)
+    global client
+    client = await connect_traced(loop=loop, tp=provider)
     # use the same loop to consume
     await asyncio.gather(
          client.consume("basket", "analytyst_basket_changed", "changed", handle_basket_changed),
@@ -70,5 +87,6 @@ async def shutdown_event():
 
 @app.on_event('startup')
 async def startup():
+    FastAPIInstrumentor.instrument_app(app)
     loop = asyncio.get_event_loop()
     asyncio.ensure_future(init_consumer(loop))

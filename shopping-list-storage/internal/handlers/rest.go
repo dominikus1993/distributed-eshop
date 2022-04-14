@@ -12,7 +12,9 @@ import (
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/repositories"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/pkg/usecase"
 	"github.com/gin-gonic/gin"
-	tgin "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
+	ginlogrus "github.com/toorop/gin-logrus"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"go.opentelemetry.io/otel"
 )
 
 type Customer struct {
@@ -34,19 +36,22 @@ type Api struct {
 	removeCustomerShoppingListUseCase *usecase.RemoveCustomerShoppingListUseCase
 	changeCustomerShoppingListUseCase *usecase.ChangeCustomerShoppingListUseCase
 	rabbitMq                          rabbitmq.RabbitMqClient
+	shudownTracing                    func()
 }
 
 func initData(repo repositories.CustomerShoppingListWriter) error {
 	return repo.AddOrUpdate(context.Background(), model.NewCustomerShoppingList(10, []model.Item{{ItemID: 1, ItemQuantity: 332}, {ItemID: 423, ItemQuantity: 323}}))
 }
 
-func InitApi() (*Api, error) {
-	client, err := mongodb.NewTracedClient(context.TODO(), env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"))
+func InitApi(ctx context.Context) (*Api, error) {
+	shoutdown := initPrivder(ctx)
+
+	client, err := mongodb.NewTracedClient(ctx, env.GetEnvOrDefault("MONGODB_CONNECTION", "mongodb://db:27017"), otel.GetTracerProvider())
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to mongo, ERR: %w", err)
 	}
 	repo := mongodb.NewMongoShoppingListsRepository(client)
-	rabbitmqClient, err := rabbitmq.NewTracedRabbitMqClient(env.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"))
+	rabbitmqClient, err := rabbitmq.NewTracedRabbitMqClient(env.GetEnvOrDefault("RABBITMQ_CONNECTION", "amqp://guest:guest@rabbitmq:5672/"), otel.GetTracerProvider())
 	if err != nil {
 		return nil, fmt.Errorf("error when trying connect to rabbitmq, ERR: %w", err)
 	}
@@ -58,15 +63,14 @@ func InitApi() (*Api, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error when trying save initial data, ERR: %w", err)
 	}
-	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitMq: rabbitmqClient}, nil
+	return &Api{mongoClient: client, removeCustomerShoppingListUseCase: removeCustomerShoppingListUseCase, getCustomerShoppingListUseCase: getCustomerShoppingListUseCase, changeCustomerShoppingListUseCase: changeCustomerShoppingListUseCase, rabbitMq: rabbitmqClient, shudownTracing: shoutdown}, nil
 }
 
 func (api *Api) Start(ctx context.Context) error {
-	tgin.WithAnalytics(true)
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
-	r.Use(tgin.Middleware("shopping-list-storage-api"))
-
+	log := initLogger()
+	r.Use(ginlogrus.Logger(log), gin.Recovery())
+	r.Use(otelgin.Middleware("shopping.list.storage", otelgin.WithTracerProvider(otel.GetTracerProvider())))
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
@@ -150,4 +154,5 @@ func (api *Api) Start(ctx context.Context) error {
 func (api *Api) Close(ctx context.Context) {
 	api.mongoClient.Close(ctx)
 	api.rabbitMq.Close()
+	api.shudownTracing()
 }

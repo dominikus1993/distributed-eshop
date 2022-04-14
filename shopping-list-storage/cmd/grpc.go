@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"net"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/internal/handlers"
 	"github.com/dominikus1993/distributed-tracing-sample/shopping-list-storage/shoppinglist"
@@ -13,7 +14,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	grpctrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc"
-	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 type RunGrpcServer struct {
@@ -29,19 +29,13 @@ func (p *RunGrpcServer) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *RunGrpcServer) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	tracer.Start(
-		tracer.WithEnv("local"),
-		tracer.WithService("shopping-list-storage-api"),
-		tracer.WithServiceVersion("v1.1.1"),
-	)
-	defer tracer.Stop()
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 		return subcommands.ExitFailure
 	}
-	server, err := handlers.InitRpc()
+	server, err := handlers.InitRpc(ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}

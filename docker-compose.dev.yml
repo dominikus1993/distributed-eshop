@@ -15,7 +15,8 @@ services:
       CORECLR_PROFILER: "{846F5F1C-F9AE-4B07-969E-05C26BC060D8}"
     command: /bin/sh -c "while sleep 1000; do :; done"
     links:
-     - storage 
+     - storage
+     - otel-collector
   analytyst:
     image: mcr.microsoft.com/vscode/devcontainers/python:3.10-bullseye
     ports:
@@ -29,7 +30,8 @@ services:
       DD_TRACE_ENABLED: "true"
     command: /bin/sh -c "while sleep 1000; do :; done"
     links:
-     - rabbitmq 
+     - rabbitmq
+     - otel-collector
   storage:
     image: mcr.microsoft.com/vscode/devcontainers/go:1.18-bullseye
     ports:
@@ -45,22 +47,37 @@ services:
     links:
      - db
      - rabbitmq
-  ddagent: 
-    image: datadog/agent:latest
-    volumes:
-     - /var/run/docker.sock:/var/run/docker.sock
-     - /proc/:/host/proc/:ro
-     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+     - otel-collector
+  # Jaeger
+  jaeger:
+    image: jaegertracing/all-in-one:latest
     ports:
-      - "8126:8126"
-    links:
-     - web 
-     - storage
-     - analytyst
-    environment:
-      DD_API_KEY: ${DD_API_KEY}
-      DD_APM_ENABLED: "true"
-      DD_APM_NON_LOCAL_TRAFFIC: "true"
+      - "16686:16686"
+      - "14250"
+
+  #Zipkin
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - 9411:9411
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.48.0
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector
+      - "8889:8889"   # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "9411"   # Zipkin receiver
+      - "55679:55679" # zpages extension
+      - "4317:4317"
+    depends_on:
+      - jaeger
+      - zipkin
   db:
     image: mongo:latest
     restart: unless-stopped
@@ -69,7 +86,7 @@ services:
     ports:
       - "27017:27017"
   rabbitmq:
-    image: rabbitmq:3.8-management
+    image: rabbitmq:3.9-management
     ports:
       - '5672:5672'
       - '15672:15672'
