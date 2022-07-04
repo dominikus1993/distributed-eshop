@@ -17,7 +17,6 @@ services:
     links:
      - storage
      - otel-collector
-     - ddagent
   analytyst:
     image: mcr.microsoft.com/vscode/devcontainers/python:3.10-bullseye
     ports:
@@ -33,7 +32,6 @@ services:
     links:
      - rabbitmq
      - otel-collector
-     - ddagent
   storage:
     image: mcr.microsoft.com/vscode/devcontainers/go:1.18-bullseye
     ports:
@@ -50,7 +48,6 @@ services:
      - db
      - rabbitmq
      - otel-collector
-     - ddagent
   # Jaeger
   jaeger:
     image: jaegertracing/all-in-one:latest
