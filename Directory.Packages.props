@@ -1,0 +1,38 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Nuke.Common" Version="6.2.1" />
+    <PackageVersion Include="docfx.console" Version="2.59.4" ExcludeAssets="build">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="Serilog" Version="2.12.0" />
+    <PackageVersion Include="ZooKeeperNetEx" Version="3.4.12.4" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageVersion Include="SolrNet.Core" Version="1.1.1" />
+    <PackageVersion Include="SolrNet" Version="1.1.1" />
+    <PackageVersion Include="Testcontainers" Version="2.2.0" />
+    <PackageVersion Include="NBench" Version="2.0.1" />
+    <PackageVersion Include="xunit.assert" Version="2.4.1" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageVersion Include="Shouldly" Version="4.1.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    <PackageVersion Include="xunit" Version="2.4.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageVersion>
+    <PackageVersion Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageVersion>
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
