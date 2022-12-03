@@ -1,0 +1,14 @@
+source https://api.nuget.org/v3/index.json
+
+storage: none
+framework: net7.0
+
+nuget AutoFixture
+nuget Shouldly
+nuget xunit
+nuget xunit.runner.visualstudio
+nuget Moq
+nuget coverlet.collector
+nuget Testcontainers
+nuget Microsoft.NET.Test.Sdk
+nuget Ogooreck
