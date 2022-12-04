@@ -1,8 +1,6 @@
-Microsoft.Extensions.Logging
-Microsoft.Extensions.Configuration
+Microsoft.Extensions.Hosting
 OpenTelemetry.Extensions
 OpenTelemetry.Extensions.Hosting
 OpenTelemetry.Instrumentation.AspNetCore
 OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs
 OpenTelemetry.Exporter.OpenTelemetryProtocol
-OpenTelemetry.Exporter.Console

@@ -1,3 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
+
+using Hosting.OpenTelemetry;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -8,20 +12,32 @@ namespace Logging.Extensions;
 
 public static class AspNetCoreExtensions
 {
-    public static WebApplicationBuilder UseOpenTelemetryLogging(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddOpenTelemetryLogging(this WebApplicationBuilder builder, [NotNull]Service service)
     {
-        builder.Logging.AddOpenTelemetry(b =>
+        ArgumentNullException.ThrowIfNull(service);
+        
+        if (service.OpenTelemetryConfiguration.OpenTelemetryLoggingEnabled)
         {
-            b.IncludeFormattedMessage = true;
-            b.IncludeScopes = true;
-            b.ParseStateValues = true;
-            var value = builder.Configuration.Get<bool>("dsadsasad");
-            if (builder.Configuration.GetValue<bool>(""))
+            builder.Logging.AddOpenTelemetry(b =>
             {
-                
-            }
-            b.AddOtlpExporter();
-        });
+                b.IncludeFormattedMessage = true;
+                b.IncludeScopes = true;
+                b.ParseStateValues = true;
+                b.AttachLogsToActivityEvent();
+                b.SetResourceBuilder(
+                    ResourceBuilderExtensions.GetResourceBuilder(service, builder.Environment.EnvironmentName));
+            
+                if (service.OpenTelemetryConfiguration.OltpExporterEnabled)
+                {
+                    b.AddOtlpExporter();
+                }
 
+                if (service.OpenTelemetryConfiguration.ConsoleExporterEnabled)
+                {
+                    b.AddConsoleExporter();
+                }
+            });
+        }
+        return builder;
     }
 }
