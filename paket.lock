@@ -188,6 +188,8 @@ NUGET
       FluentAssertions (>= 6.8)
       Microsoft.AspNetCore.Mvc.Testing (>= 7.0)
       Newtonsoft.Json (>= 13.0.1)
+    OneOf (3.0.223)
+    OneOf.SourceGenerator (3.0.223)
     OpenTelemetry (1.4.0-beta.3)
       Microsoft.Extensions.Configuration.EnvironmentVariables (>= 3.1)
       Microsoft.Extensions.Logging (>= 3.1)

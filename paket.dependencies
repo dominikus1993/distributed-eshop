@@ -3,6 +3,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net7.0
 
+nuget OneOf
+nuget OneOf.SourceGenerator
 nuget EasyNetQ
 nuget EasyNetQ.DI.Microsoft
 nuget EasyNetQ.Logging.Microsoft
