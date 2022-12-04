@@ -3,6 +3,14 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net7.0
 
+nuget Microsoft.Extensions.Configuration
+nuget Microsoft.Extensions.Logging
+nuget OpenTelemetry.Extensions
+nuget OpenTelemetry.Extensions.Hosting
+nuget OpenTelemetry.Instrumentation.AspNetCore
+nuget OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs
+nuget OpenTelemetry.Exporter.OpenTelemetryProtocol
+
 nuget AutoFixture
 nuget Shouldly
 nuget xunit
