@@ -1,12 +1,22 @@
 using OneOf;
 
+using StronglyTypedIds;
+
 namespace Basket.Model;
 
-public readonly record struct CustomerId(Guid Value);
+[StronglyTypedId]
+public readonly partial struct CustomerId
+{
+    
+}
 
 public readonly record struct EmptyBasket(CustomerId CustomerId);
 
-public readonly record struct ItemId(Guid Id);
+[StronglyTypedId]
+public readonly partial struct ItemId
+{
+    
+}
 
 public readonly record struct ItemQuantity(uint Value);
 
@@ -14,6 +24,7 @@ public sealed record BasketItem(ItemId ItemId, ItemQuantity Quantity);
 
 public sealed class ActiveBasket
 {
+    
     public required CustomerId CustomerId { get; init; }
     public required IReadOnlyCollection<BasketItem> Items { get; init; }
 
@@ -33,5 +44,7 @@ public sealed class ActiveBasket
 [GenerateOneOf]
 public sealed partial class CustomerBasket: OneOfBase<EmptyBasket, ActiveBasket>
 {
+    public IReadOnlyCollection<BasketItem> Items => base.IsT0 ? Array.Empty<BasketItem>() : base.AsT1.Items;
     
+    public static CustomerBasket Empty(CustomerId id) => new EmptyBasket(id);
 }

@@ -3,5 +3,8 @@
     <PropertyGroup>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\Modules\Basket\Basket.csproj" />
+    </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

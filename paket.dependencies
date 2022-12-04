@@ -3,6 +3,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net7.0
 
+nuget StronglyTypedId prerelease
 nuget OneOf
 nuget OneOf.SourceGenerator
 nuget EasyNetQ
