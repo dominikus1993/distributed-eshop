@@ -12,7 +12,10 @@ public readonly partial struct CustomerId
     
 }
 
-public readonly record struct EmptyBasket(CustomerId CustomerId);
+public readonly record struct EmptyBasket(CustomerId CustomerId)
+{
+    public static EmptyBasket Zero(CustomerId customerId) => new(customerId);
+}
 
 
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, converters: StronglyTypedIdConverter.SystemTextJson)]
@@ -94,12 +97,14 @@ public sealed record ActiveBasket(CustomerId CustomerId, BasketItems Items)
 [GenerateOneOf]
 public sealed partial class CustomerBasket: OneOfBase<EmptyBasket, ActiveBasket>
 {
-    public BasketItems Items => base.IsT0 ? BasketItems.Empty(): base.AsT1.Items;
-    
-    public static CustomerBasket Empty(CustomerId id) => new EmptyBasket(id);
+    public bool IsEmpty => IsT0;
+
+    public static CustomerBasket Empty(CustomerId id) => EmptyBasket.Zero(id);
 
     public CustomerBasket AddItem(BasketItem item)
     {
         return Match(b => ActiveBasket.Zero(b.CustomerId).AddItem(item), b => b.AddItem(item));
     }
+
+    public BasketItems GetItems() => Match(e => BasketItems.Empty(), b => b.Items);
 }

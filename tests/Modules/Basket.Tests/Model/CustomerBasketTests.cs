@@ -15,7 +15,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.Items;
+        var subject = basket.GetItems();
         
         // Assert
 
@@ -32,7 +32,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.Items;
+        var subject = basket.GetItems();
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
@@ -50,7 +50,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.Items;
+        var subject = basket.GetItems();
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
