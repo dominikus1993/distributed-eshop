@@ -57,4 +57,42 @@ public class CustomerBasketTests
         subject.Items.ShouldNotBeEmpty();
         subject.Items.ShouldContain(new BasketItem(new ItemId(1), new ItemQuantity(4)));
     }
+    
+    
+    [Fact]
+    public void TestRemoveItemWhenCustomerBasketIsNotEmptyAndItemExists__ShouldReturnNotEmptyBasket()
+    {
+        // Arrange 
+
+        var itemId = new ItemId(1);
+        var item = new BasketItem(itemId, new ItemQuantity(2));
+        var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
+        
+        // Act
+
+        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(1))).GetItems();
+        
+        // Assert
+        subject.IsEmpty.ShouldBeFalse();
+        subject.Items.ShouldNotBeEmpty();
+        subject.Items.ShouldContain(new BasketItem(itemId, new ItemQuantity(3)));
+    }
+    
+    [Fact]
+    public void TestRemoveItemWhenCustomerBasketIsNotEmptyAndItemExists__ShouldReturnEmptyBasket()
+    {
+        // Arrange 
+
+        var itemId = new ItemId(1);
+        var item = new BasketItem(itemId, new ItemQuantity(2));
+        var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
+        
+        // Act
+
+        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(4))).GetItems();
+        
+        // Assert
+        subject.IsEmpty.ShouldBeTrue();
+        subject.Items.ShouldBeEmpty();
+    }
 }
