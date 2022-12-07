@@ -178,7 +178,7 @@ NUGET
       Microsoft.TestPlatform.ObjectModel (>= 17.4)
       Newtonsoft.Json (>= 13.0.1)
     Microsoft.Win32.SystemEvents (7.0)
-    Moq (4.18.2)
+    Moq (4.18.3)
       Castle.Core (>= 5.1)
     NETStandard.Library (2.0.3)
       Microsoft.NETCore.Platforms (>= 1.1)
