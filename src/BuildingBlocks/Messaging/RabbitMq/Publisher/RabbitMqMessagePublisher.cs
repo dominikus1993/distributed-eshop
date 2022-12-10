@@ -10,7 +10,7 @@ using Messaging.RabbitMq.Telemetry;
 
 namespace Messaging.RabbitMq.Publisher;
 
-public sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T>
+internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T>
 {
     
     private static readonly string MessageName = typeof(T).FullName!;
