@@ -8,9 +8,11 @@ using Messaging.Abstraction;
 using Messaging.RabbitMq.Configuration;
 using Messaging.RabbitMq.Telemetry;
 
+using IMessage = Messaging.Abstraction.IMessage;
+
 namespace Messaging.RabbitMq.Publisher;
 
-internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T>
+internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T : IMessage
 {
     
     private static readonly string MessageName = typeof(T).FullName!;
