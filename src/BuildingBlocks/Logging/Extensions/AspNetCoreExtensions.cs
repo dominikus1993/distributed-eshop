@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using Hosting.OpenTelemetry;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using OpenTelemetry.Logs;

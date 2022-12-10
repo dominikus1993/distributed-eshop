@@ -32,7 +32,7 @@ NUGET
     Fare (2.2.1)
     FluentAssertions (6.8)
       System.Configuration.ConfigurationManager (>= 4.4)
-    Google.Protobuf (3.21.10)
+    Google.Protobuf (3.21.11)
     Grpc.Core.Api (2.50)
       System.Memory (>= 4.5.3)
     Grpc.Net.Client (2.50)
