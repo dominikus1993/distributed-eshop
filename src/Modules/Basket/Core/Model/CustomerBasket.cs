@@ -153,6 +153,8 @@ public sealed partial class CustomerBasket: OneOfBase<EmptyBasket, ActiveBasket>
     
     public static CustomerBasket Empty(CustomerId id) => EmptyBasket.Zero(id);
 
+    public static CustomerBasket Active(CustomerId id, BasketItems items) => new ActiveBasket(id, items);
+    
     public CustomerBasket AddItem(BasketItem item)
     {
         return Match(b => ActiveBasket.Zero(b.CustomerId).AddItem(item), b => b.AddItem(item));

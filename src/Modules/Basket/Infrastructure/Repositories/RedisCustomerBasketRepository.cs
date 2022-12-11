@@ -1,13 +1,40 @@
 using Basket.Core.Model;
 using Basket.Core.Repositories;
+using Basket.Infrastructure.Extensions;
+using Basket.Infrastructure.Serialization;
+
+using StackExchange.Redis;
 
 namespace Basket.Infrastructure.Repositories;
 
 internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICustomerBasketWriter
 {
-    public Task<CustomerBasket?> Find(CustomerId customerId, CancellationToken cancellationToken = default)
+    private readonly IConnectionMultiplexer _connectionMultiplexer;
+    private readonly IRedisObjectDeserializer _redisObjectDeserializer;
+    public RedisCustomerBasketRepository(IConnectionMultiplexer connectionMultiplexer, IRedisObjectDeserializer redisObjectDeserializer)
     {
-        throw new NotImplementedException();
+        _connectionMultiplexer = connectionMultiplexer;
+        _redisObjectDeserializer = redisObjectDeserializer;
+    }
+
+    public async Task<CustomerBasket?> Find(CustomerId customerId, CancellationToken cancellationToken = default)
+    {
+        var db = _connectionMultiplexer.GetDatabase();
+        var result = await db.StringGetAsync(customerId.ToRedisKey());
+        if (!result.TryGetValue(out var json))
+        {
+            return null;
+        }
+        var model = _redisObjectDeserializer.Deserialize(json);
+        if (model is null)
+        {
+            return null;
+        }
+
+        var items = model.Items.Select(item => new BasketItem(new ItemId(item.ItemId), new ItemQuantity(item.Quantity)))
+            .ToArray();
+
+        return CustomerBasket.Active(customerId, new BasketItems(items));
     }
 
     public Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default)

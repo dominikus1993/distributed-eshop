@@ -15,12 +15,12 @@ internal static class RedisExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryGetValue(this RedisValue value, [NotNullWhen(true)]out string? result)
     {
-        if (value.HasValue)
+        if (value.IsNullOrEmpty)
         {
-            result = value!;
-            return true;
+            result = null;
+            return false;
         }
-        result = null;
-        return false;
+        result = value!;
+        return true;
     }
 }
