@@ -1,8 +1,8 @@
-using Basket.Model;
+using Basket.Core.Model;
 
 using Shouldly;
 
-namespace Basket.Tests.Model;
+namespace Basket.Tests.Core.Model;
 
 public class ItemQuantityTests
 {

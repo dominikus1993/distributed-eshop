@@ -1,7 +1,7 @@
-using Basket.Model;
+using Basket.Core.Model;
 
 using Mediator;
 
-namespace Basket.Commands;
+namespace Basket.Core.Commands;
 
 public sealed record AddItemToBasketCommand(CustomerId CustomerId, BasketItem Item) : IRequest;

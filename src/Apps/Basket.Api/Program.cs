@@ -1,4 +1,4 @@
-using Basket.Extensions;
+using Basket.Core.Extensions;
 
 using FastEndpoints;
 

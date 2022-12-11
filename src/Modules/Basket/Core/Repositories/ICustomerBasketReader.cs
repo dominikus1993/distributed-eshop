@@ -1,10 +1,8 @@
-using System.Runtime.Serialization;
-
-using Basket.Model;
+using Basket.Core.Model;
 
 using OneOf;
 
-namespace Basket.Repositories;
+namespace Basket.Core.Repositories;
 
 public interface ICustomerBasketReader
 {

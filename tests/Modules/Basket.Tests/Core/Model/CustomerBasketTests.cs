@@ -1,8 +1,12 @@
-using Basket.Model;
+using Basket.Core.Model;
 
 using Shouldly;
 
-namespace Basket.Tests.Model;
+using CustomerBasket = Basket.Core.Model.CustomerBasket;
+using CustomerId = Basket.Core.Model.CustomerId;
+using ItemId = Basket.Core.Model.ItemId;
+
+namespace Basket.Tests.Core.Model;
 
 public class CustomerBasketTests
 {

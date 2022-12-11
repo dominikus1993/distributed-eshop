@@ -1,9 +1,9 @@
-using Basket.Commands;
-using Basket.Repositories;
+using Basket.Core.Commands;
+using Basket.Core.Repositories;
 
 using Mediator;
 
-namespace Basket.CommandHandlers;
+namespace Basket.Core.CommandHandlers;
 
 public sealed class AddItemToBasketCommandHandler : IRequestHandler<AddItemToBasketCommand>
 {

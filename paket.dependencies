@@ -34,4 +34,4 @@ nuget Moq
 nuget coverlet.collector
 nuget Testcontainers
 nuget Microsoft.NET.Test.Sdk
-nuget Ogooreck
+nuget Alba

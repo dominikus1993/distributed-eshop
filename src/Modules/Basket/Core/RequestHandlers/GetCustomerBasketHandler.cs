@@ -1,10 +1,10 @@
-using Basket.Model;
-using Basket.Repositories;
-using Basket.Requests;
+using Basket.Core.Model;
+using Basket.Core.Repositories;
+using Basket.Core.Requests;
 
 using Mediator;
 
-namespace Basket.RequestHandlers;
+namespace Basket.Core.RequestHandlers;
 
 public sealed class GetCustomerBasketHandler : IRequestHandler<GetCustomerBasket, CustomerBasket?>
 {

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Basket.Extensions;
+namespace Basket.Core.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

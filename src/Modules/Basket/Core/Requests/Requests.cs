@@ -1,7 +1,7 @@
-using Basket.Model;
+using Basket.Core.Model;
 
 using Mediator;
 
-namespace Basket.Requests;
+namespace Basket.Core.Requests;
 
 public sealed record GetCustomerBasket(CustomerId CustomerId) : IRequest<CustomerBasket?>;
