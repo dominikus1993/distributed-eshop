@@ -3,3 +3,4 @@ OneOf.SourceGenerator
 StronglyTypedId
 Mediator.Abstractions
 Mediator.SourceGenerator
+Microsoft.Extensions.Hosting
