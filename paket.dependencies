@@ -3,6 +3,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net7.0
 
+nuget StackExchange.Redis
 nuget Mediator.Abstractions
 nuget Mediator.SourceGenerator
 nuget FastEndpoints

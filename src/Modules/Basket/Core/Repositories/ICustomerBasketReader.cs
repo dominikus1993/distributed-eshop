@@ -47,5 +47,5 @@ public sealed partial class UpdateCustomerBasketResult : OneOfBase<UpdateBasketS
 
 public interface ICustomerBasketWriter
 {
-    Task<UpdateCustomerBasketResult> Find(CustomerBasket basket, CancellationToken cancellationToken = default);
+    Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default);
 }

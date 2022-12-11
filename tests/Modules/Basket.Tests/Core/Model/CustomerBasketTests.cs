@@ -19,7 +19,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.GetItems();
+        var subject = basket.BasketItems;
         
         // Assert
 
@@ -36,7 +36,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.GetItems();
+        var subject = basket.BasketItems;
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
@@ -54,7 +54,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.GetItems();
+        var subject = basket.BasketItems;
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
@@ -74,7 +74,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(1))).GetItems();
+        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(1))).BasketItems;
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
@@ -93,7 +93,7 @@ public class CustomerBasketTests
         
         // Act
 
-        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(4))).GetItems();
+        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(4))).BasketItems;
         
         // Assert
         subject.IsEmpty.ShouldBeTrue();

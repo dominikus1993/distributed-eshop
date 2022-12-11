@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Numerics;
 
 using OneOf;
@@ -171,5 +172,5 @@ public sealed partial class CustomerBasket: OneOfBase<EmptyBasket, ActiveBasket>
         });
     }
 
-    public BasketItems GetItems() => Match(_ => BasketItems.Empty, b => b.Items);
+    public BasketItems BasketItems => Match(_ => BasketItems.Empty, b => b.Items);
 }
