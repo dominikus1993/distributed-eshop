@@ -8,6 +8,8 @@ builder.Services.AddFastEndpoints();
 builder.Services.AddBasket(builder.Configuration);
 var app = builder.Build();
 
+app.UseHttpLogging();
+
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
