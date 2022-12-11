@@ -1,3 +1,4 @@
+using Basket.Core.Dtos;
 using Basket.Core.Model;
 using Basket.Core.Repositories;
 using Basket.Core.Requests;
@@ -6,17 +7,18 @@ using Mediator;
 
 namespace Basket.Core.RequestHandlers;
 
-public sealed class GetCustomerBasketHandler : IRequestHandler<GetCustomerBasket, CustomerBasket?>
+public sealed class GetCustomerBasketHandler : IRequestHandler<GetCustomerBasket, CustomerBasketDto?>
 {
-    private ICustomerBasketReader _customerBasketReader;
+    private readonly ICustomerBasketReader _customerBasketReader;
 
     public GetCustomerBasketHandler(ICustomerBasketReader customerBasketReader)
     {
         _customerBasketReader = customerBasketReader;
     }
 
-    public ValueTask<CustomerBasket?> Handle(GetCustomerBasket request, CancellationToken cancellationToken)
+    public async ValueTask<CustomerBasketDto?> Handle(GetCustomerBasket request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var result = await _customerBasketReader.Find(request.CustomerId, cancellationToken);
+        return result is null ? null : new CustomerBasketDto(result);
     }
 }

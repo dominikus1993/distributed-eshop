@@ -6,7 +6,7 @@ namespace Basket.Core.Repositories;
 
 public interface ICustomerBasketReader
 {
-    Task<CustomerBasket> Find(CustomerId customerId, CancellationToken cancellationToken = default);
+    Task<CustomerBasket?> Find(CustomerId customerId, CancellationToken cancellationToken = default);
 }
 
 public sealed class UpdateBasketException : Exception 
