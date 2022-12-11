@@ -1,3 +1,5 @@
 OneOf
 OneOf.SourceGenerator
 StronglyTypedId
+Mediator.Abstractions
+Mediator.SourceGenerator
