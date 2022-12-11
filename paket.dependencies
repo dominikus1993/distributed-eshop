@@ -8,6 +8,7 @@ nuget Mediator.Abstractions
 nuget Mediator.SourceGenerator
 nuget FastEndpoints
 nuget FastEndpoints.Swagger
+nuget FastEndpoints.Security
 nuget FluentValidation
 nuget StronglyTypedId prerelease
 nuget OneOf
