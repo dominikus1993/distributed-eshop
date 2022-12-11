@@ -6,8 +6,5 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\Modules\Basket\Basket.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Core" />
-    </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
