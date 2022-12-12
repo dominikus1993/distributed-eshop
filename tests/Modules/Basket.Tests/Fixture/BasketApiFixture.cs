@@ -8,6 +8,7 @@ using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
 using StackExchange.Redis;
@@ -31,9 +32,10 @@ public class BasketApiFixture : IAsyncLifetime, IDisposable
 
     public async Task<IAlbaHost> GetHost(JwtSecurityStub stub)
     {
-        return await AlbaHost.For<Program>(host =>
+        return await AlbaHost.For<Program>(h =>
         {
-            host.ConfigureAppConfiguration((ctx, builder) =>
+            h.UseSetting("ConnectionStrings:BasketDb", Redis.ConnectionString);
+            h.ConfigureAppConfiguration((_, builder) =>
             {
                 builder.SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("./Api/appsettings.json", optional: false, reloadOnChange: true);

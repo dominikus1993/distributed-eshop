@@ -19,8 +19,8 @@ app.UseHttpLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSwaggerGen();
 app.UseFastEndpoints();
+app.UseSwaggerGen();
 app.Run();
 
 public partial class Program {}

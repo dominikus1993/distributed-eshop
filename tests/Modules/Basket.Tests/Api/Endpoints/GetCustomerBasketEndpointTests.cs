@@ -22,7 +22,7 @@ public class GetCustomerBasketEndpointTests : IClassFixture<BasketApiFixture>
     }
     
     [Fact]
-    public async Task TestWhenCustomerBasketNotExists_ShouldReturnNull()
+    public async Task TestWhenCustomerBasketNotExists_StatusCodeShouldBeNotFound()
     {
         // Arrange
         var customerId = Guid.NewGuid();
@@ -39,7 +39,7 @@ public class GetCustomerBasketEndpointTests : IClassFixture<BasketApiFixture>
         var resp = await host.Scenario(s =>
         {
             s.Get.Url("/api/Basket");
-            s.StatusCodeShouldBeOk();
+            s.StatusCodeShouldBe(404);
         });
     }
 }
