@@ -9,6 +9,7 @@ namespace Basket.Infrastructure.Serialization;
 internal interface IRedisObjectDeserializer
 {
     RedisCustomerBasket? Deserialize(string json);
+    string Serialize(RedisCustomerBasket obj);
 }
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
@@ -23,5 +24,10 @@ internal sealed class SystemTextRedisObjectDeserializer : IRedisObjectDeserializ
     public RedisCustomerBasket? Deserialize(string json)
     {
         return JsonSerializer.Deserialize(json, RedisJsonContext.Default.RedisCustomerBasket);
+    }
+
+    public string Serialize(RedisCustomerBasket obj)
+    {
+        return JsonSerializer.Serialize(obj, RedisJsonContext.Default.RedisCustomerBasket);
     }
 }

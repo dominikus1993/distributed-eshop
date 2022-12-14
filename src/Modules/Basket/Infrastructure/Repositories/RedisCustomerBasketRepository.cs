@@ -1,6 +1,7 @@
 using Basket.Core.Model;
 using Basket.Core.Repositories;
 using Basket.Infrastructure.Extensions;
+using Basket.Infrastructure.Model;
 using Basket.Infrastructure.Serialization;
 
 using StackExchange.Redis;
@@ -37,8 +38,15 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
         return CustomerBasket.Active(customerId, new BasketItems(items));
     }
 
-    public Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default)
+    public async Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var redisBasket = new RedisCustomerBasket(basket);
+
+        var json = _redisObjectDeserializer.Serialize(redisBasket);
+
+        var db = _connectionMultiplexer.GetDatabase();
+        await db.StringSetAsync(basket.CustomerId.ToRedisKey(), json);
+
+        return UpdateBasketSuccess.Instance;
     }
 }
