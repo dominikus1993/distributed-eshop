@@ -49,4 +49,13 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
 
         return UpdateBasketSuccess.Instance;
     }
+
+    public async Task<RemoveCustomerBasketResult> Remove(CustomerId customerId, CancellationToken cancellationToken = default)
+    {
+        var key = customerId.ToRedisKey();
+        var db = _connectionMultiplexer.GetDatabase();
+        await db.KeyDeleteAsync(key);
+
+        return RemoveBasketSuccess.Instance;
+    }
 }
