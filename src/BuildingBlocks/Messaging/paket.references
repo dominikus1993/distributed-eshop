@@ -1,0 +1,5 @@
+EasyNetQ
+EasyNetQ.DI.Microsoft
+EasyNetQ.Logging.Microsoft
+EasyNetQ.Serialization.SystemTextJson
+Microsoft.Extensions.Configuration
