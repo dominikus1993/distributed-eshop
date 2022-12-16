@@ -39,7 +39,7 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests: IClassFixture<Redi
     }  
     
     [Fact]
-    public async Task TestAddItemToNotEmptyBasket_ShouldReturnBasketWithTwoItems()
+    public async Task TestAddItemToEmptyBasket_AndRemoveOne_ShouldReturnBasketWithThisItemAndSmallerQuantity()
     {
         // Arrange
         var customerId = CustomerId.New();
@@ -48,17 +48,19 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests: IClassFixture<Redi
         var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
         var getCustomerBasket = new GetCustomerBasketHandler(repo);
         var handler = new AddItemToCustomerBasketHandler(repo, repo);
-        await handler.Handle(new AddItemToCustomerBasket(customerId, new BasketItem(new ItemId(2), new ItemQuantity(2))), CancellationToken.None);
+        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(repo, repo);
+        await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem with { Quantity = new ItemQuantity(1) }), CancellationToken.None);
         
         // Act
         await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
+        await removeHandler.Handle(new RemoveItemFromCustomerBasket(customerId, basketItem), CancellationToken.None);
         var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
         
         result.ShouldNotBeNull();
         result.CustomerId.ShouldBe(customerId.Value);
         result.Items.ShouldNotBeEmpty();
-        result.Items.Count.ShouldBe(2);
-        result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == basketItem.Quantity.Value);
+        result.Items.Count.ShouldBe(1);
+        result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == 1);
     }
     
 }

@@ -13,55 +13,53 @@ using Mediator;
 
 namespace Basket.Api.Endpoints;
 
-public sealed class AddItemToCustomerBasketRequest
+public sealed class RemoveItemFromCustomerBasketRequest
 {
     public int Id { get; set; }
     public int Quantity { get; set; }
 }
 
-[JsonSerializable(typeof(AddItemToCustomerBasketRequest))]
+[JsonSerializable(typeof(RemoveItemFromCustomerBasketRequest))]
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
-public partial class AddItemToCustomerBasketEndpointCtx : JsonSerializerContext
+public partial class RemoveItemFromCustomerBasketEndpointCtx : JsonSerializerContext
 {
     
 }
 
-
-public sealed class AddItemToBasketRequestValidator : Validator<AddItemToCustomerBasketRequest>
+public sealed class RemoveItemFromCustomerBasketRequestValidator : Validator<RemoveItemFromCustomerBasketRequest>
 {
-    public AddItemToBasketRequestValidator()
+    public RemoveItemFromCustomerBasketRequestValidator()
     {
         RuleFor(x => x.Id).GreaterThan(0).WithMessage("Invalid product id");
         RuleFor(x => x.Quantity).GreaterThan(0).WithMessage("invalid quantity, should be grater than 0");
     }
 }
 
-
-public sealed class AddItemToCustomerBasketEndpoint : Endpoint<AddItemToCustomerBasketRequest>
+public sealed class RemoveItemFromCustomerBasketEndpoint : Endpoint<RemoveItemFromCustomerBasketRequest>
 {
     private readonly ISender _sender;
 
-    public AddItemToCustomerBasketEndpoint(ISender sender)
+    public RemoveItemFromCustomerBasketEndpoint(ISender sender)
     {
         _sender = sender;
     }
     
     public override void Configure()
     {
-        Post("/api/Basket/items");
-        SerializerContext(AddItemToCustomerBasketEndpointCtx.Default);
-        Validator<AddItemToBasketRequestValidator>();
+        Delete("/api/Basket/items");
+        SerializerContext(RemoveItemFromCustomerBasketEndpointCtx.Default);
+        Validator<RemoveItemFromCustomerBasketRequestValidator>();
         Description(b => b
-            .WithDescription("Add item to basket")
-            .Accepts<AddItemToCustomerBasketRequest>("application/json")
-            .ProducesProblemFE(500)
+            .WithDescription("Remove or Decrease quantity of item in basket")
+            .Accepts<RemoveItemFromCustomerBasketRequest>("application/json")
             .ProducesValidationProblem()
+            .ProducesProblemFE(500)
             .Produces(200)
         );
         DontThrowIfValidationFails();
     }
     
-    public override async Task HandleAsync(AddItemToCustomerBasketRequest r, CancellationToken c)
+    public override async Task HandleAsync(RemoveItemFromCustomerBasketRequest r, CancellationToken c)
     {
         var userId = User.UserId();
         if (ValidationFailed)
@@ -71,9 +69,8 @@ public sealed class AddItemToCustomerBasketEndpoint : Endpoint<AddItemToCustomer
             return;
         }
         
-        await _sender.Send(new AddItemToCustomerBasket(new CustomerId(userId), new BasketItem(new ItemId(r.Id), new ItemQuantity((uint)r.Quantity))), c);
+        await _sender.Send(new RemoveItemFromCustomerBasket(new CustomerId(userId), new BasketItem(new ItemId(r.Id), new ItemQuantity((uint)r.Quantity))), c);
         
         await SendOkAsync(cancellation: c);
     }
-    
 }
