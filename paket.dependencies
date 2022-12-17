@@ -11,6 +11,7 @@ nuget FastEndpoints.Swagger
 nuget FastEndpoints.Security
 nuget FluentValidation
 nuget StronglyTypedId prerelease
+nuget MemoryPack
 nuget OneOf
 nuget OneOf.SourceGenerator
 nuget EasyNetQ

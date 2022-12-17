@@ -2,9 +2,11 @@ using System.Diagnostics.CodeAnalysis;
 
 using Basket.Core.Model;
 
+using MemoryPack;
+
 namespace Basket.Infrastructure.Model;
 
-
+[MemoryPackable]
 internal sealed class RedisBasketItem
 {
     public int ItemId { get; set; }
@@ -23,6 +25,7 @@ internal sealed class RedisBasketItem
 }
 
 
+[MemoryPackable]
 internal sealed class RedisCustomerBasket
 {
     public Guid CustomerId { get; set; }
