@@ -7,11 +7,12 @@ using MemoryPack;
 namespace Basket.Infrastructure.Model;
 
 [MemoryPackable]
-internal sealed class RedisBasketItem
+internal sealed partial class RedisBasketItem
 {
     public int ItemId { get; set; }
     public uint Quantity { get; set; }
 
+    [MemoryPackConstructor]
     public RedisBasketItem()
     {
         
@@ -26,11 +27,12 @@ internal sealed class RedisBasketItem
 
 
 [MemoryPackable]
-internal sealed class RedisCustomerBasket
+internal sealed partial class RedisCustomerBasket
 {
     public Guid CustomerId { get; set; }
     public IReadOnlyCollection<RedisBasketItem> Items { get; set; }
     
+    [MemoryPackConstructor]
     public RedisCustomerBasket()
     {
         
