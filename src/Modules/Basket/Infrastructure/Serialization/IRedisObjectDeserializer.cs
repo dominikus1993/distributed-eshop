@@ -1,15 +1,18 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Basket.Infrastructure.Model;
+
+using StackExchange.Redis;
 
 namespace Basket.Infrastructure.Serialization;
 
 
 internal interface IRedisObjectDeserializer
 {
-    RedisCustomerBasket? Deserialize(string json);
-    string Serialize(RedisCustomerBasket obj);
+    bool Deserialize(RedisValue json, [NotNullWhen(true)]out RedisCustomerBasket? redisCustomerBasket);
+    RedisValue Serialize(RedisCustomerBasket obj);
 }
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
@@ -21,13 +24,26 @@ internal partial class RedisJsonContext : JsonSerializerContext
 
 internal sealed class SystemTextRedisObjectDeserializer : IRedisObjectDeserializer
 {
-    public RedisCustomerBasket? Deserialize(string json)
+    public bool Deserialize(RedisValue json, [NotNullWhen(true)]out RedisCustomerBasket? redisCustomerBasket)
     {
-        return JsonSerializer.Deserialize(json, RedisJsonContext.Default.RedisCustomerBasket);
+        if (json.IsNullOrEmpty)
+        {
+            redisCustomerBasket = null;
+            return false;
+        }
+        ReadOnlyMemory<byte> memory = json;
+        var result = JsonSerializer.Deserialize(memory.Span, RedisJsonContext.Default.RedisCustomerBasket);
+        if (result is null)
+        {
+            redisCustomerBasket = result;
+            return false;
+        }
+        redisCustomerBasket = result!;
+        return true;
     }
 
-    public string Serialize(RedisCustomerBasket obj)
+    public RedisValue Serialize(RedisCustomerBasket obj)
     {
-        return JsonSerializer.Serialize(obj, RedisJsonContext.Default.RedisCustomerBasket);
+        return JsonSerializer.SerializeToUtf8Bytes(obj, RedisJsonContext.Default.RedisCustomerBasket);
     }
 }

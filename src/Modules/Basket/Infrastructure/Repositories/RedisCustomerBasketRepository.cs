@@ -22,12 +22,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
     {
         var db = _connectionMultiplexer.GetDatabase();
         var result = await db.StringGetAsync(customerId.ToRedisKey());
-        if (!result.TryGetValue(out var json))
-        {
-            return null;
-        }
-        var model = _redisObjectDeserializer.Deserialize(json);
-        if (model is null)
+        if (!_redisObjectDeserializer.Deserialize(result, out var model))
         {
             return null;
         }
