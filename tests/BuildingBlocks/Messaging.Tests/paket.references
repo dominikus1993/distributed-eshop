@@ -1,0 +1,9 @@
+AutoFixture
+Shouldly
+xunit
+xunit.runner.visualstudio
+Moq
+coverlet.collector
+Testcontainers
+Microsoft.NET.Test.Sdk
+Alba
