@@ -42,11 +42,11 @@ public static class RabbitMqBuilderExtensions
         return new RabbitMqBuilder() { Services = builder.Services, Configuration = builder.Configuration };
     }
 
-    public static RabbitMqBuilder AddPublisher<T>(this RabbitMqBuilder builder, Action<RabbitMqPublisherConfig<T>> action) where T : IMessage
+    private static RabbitMqBuilder AddPublisher<T>(this RabbitMqBuilder builder, Action<RabbitMqPublisherConfig<T>> action) where T : IMessage
     {
         var cfg = new RabbitMqPublisherConfig<T>();
         action?.Invoke(cfg);
-        builder.Services.AddSingleton<RabbitMqPublisherConfig<T>>(cfg);
+        builder.Services.AddSingleton(cfg);
         builder.Services.AddTransient<IMessagePublisher<T>, RabbitMqMessagePublisher<T>>();
         return builder;
     }
