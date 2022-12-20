@@ -1,6 +1,7 @@
 using System.Text.Json;
 
 using EasyNetQ;
+using EasyNetQ.DI;
 
 using Messaging.Abstraction;
 using Messaging.Configuration;
