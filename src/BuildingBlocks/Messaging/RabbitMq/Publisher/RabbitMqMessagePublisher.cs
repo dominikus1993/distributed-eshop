@@ -25,7 +25,7 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
         _publisherConfig = publisherConfig;
     }
 
-    public async Task Publish([NotNull] T message, IMessageContext ctx, CancellationToken cancellationToken = default)
+    public async Task Publish([NotNull] T message, IMessageContext? ctx = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(message);
         var exchange = await _advancedBus.ExchangeDeclareAsync(_publisherConfig.Exchange, ExchangeType.Topic, true, false,

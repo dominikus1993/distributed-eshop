@@ -1,8 +1,11 @@
+using Basket.Core.Events;
 using Basket.Core.Model;
 using Basket.Core.Repositories;
 using Basket.Core.Requests;
 
 using Mediator;
+
+using Messaging.Abstraction;
 
 namespace Basket.Core.RequestHandlers;
 
@@ -10,11 +13,13 @@ public sealed class AddItemToCustomerBasketHandler : IRequestHandler<AddItemToCu
 {
     private readonly ICustomerBasketReader _customerBasketReader;
     private readonly ICustomerBasketWriter _customerBasketWriter;
+    private readonly IMessagePublisher<BasketItemWasAdded> _messagePublisher;
 
-    public AddItemToCustomerBasketHandler(ICustomerBasketReader customerBasketReader, ICustomerBasketWriter customerBasketWriter)
+    public AddItemToCustomerBasketHandler(ICustomerBasketReader customerBasketReader, ICustomerBasketWriter customerBasketWriter, IMessagePublisher<BasketItemWasAdded> messagePublisher)
     {
         _customerBasketReader = customerBasketReader;
         _customerBasketWriter = customerBasketWriter;
+        _messagePublisher = messagePublisher;
     }
 
     public async ValueTask<Unit> Handle(AddItemToCustomerBasket request, CancellationToken cancellationToken)
@@ -25,7 +30,8 @@ public sealed class AddItemToCustomerBasketHandler : IRequestHandler<AddItemToCu
         basket = basket.AddItem(request.Item);
 
         await _customerBasketWriter.Update(basket, cancellationToken);
-        
+
+        await _messagePublisher.Publish(new BasketItemWasAdded(request.CustomerId, request.Item), cancellationToken: cancellationToken);
         return Unit.Value;
     }
 }
