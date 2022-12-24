@@ -1,9 +1,14 @@
+using Basket.Core.Events;
 using Basket.Core.Model;
 using Basket.Core.RequestHandlers;
 using Basket.Core.Requests;
 using Basket.Infrastructure.Repositories;
 using Basket.Infrastructure.Serialization;
 using Basket.Tests.Fixture;
+
+using Messaging.Abstraction;
+
+using Moq;
 
 using Shouldly;
 
@@ -22,12 +27,16 @@ public class AddItemToCustomerBasketHandlerTests: IClassFixture<RedisFixture>
     public async Task TestAddItemToEmptyBasket_ShouldReturnBasketWithOneItem()
     {
         // Arrange
+        var publisherMock = new Mock<IMessagePublisher<BasketItemWasAdded>>();
+        publisherMock.Setup(x =>
+            x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
+        
         var customerId = CustomerId.New();
         var basketItem = new BasketItem(new ItemId(1), new ItemQuantity(1));
         var deserializer = new SystemTextRedisObjectDeserializer();
         var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
         var getCustomerBasket = new GetCustomerBasketHandler(repo);
-        var handler = new AddItemToCustomerBasketHandler(repo, repo);
+        var handler = new AddItemToCustomerBasketHandler(repo, repo, publisherMock.Object);
         // Act
         await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
         var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
@@ -37,18 +46,24 @@ public class AddItemToCustomerBasketHandlerTests: IClassFixture<RedisFixture>
         result.Items.ShouldNotBeEmpty();
         result.Items.Count.ShouldBe(1);
         result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == basketItem.Quantity.Value);
+        
+        publisherMock.Verify(x => x.Publish(It.IsAny<BasketItemWasAdded>(), null, It.IsAny<CancellationToken>()), Times.Exactly(1));
     }  
     
     [Fact]
     public async Task TestAddItemToNotEmptyBasket_ShouldReturnBasketWithTwoItems()
     {
         // Arrange
+        var publisherMock = new Mock<IMessagePublisher<BasketItemWasAdded>>();
+        publisherMock.Setup(x =>
+            x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
+        
         var customerId = CustomerId.New();
         var basketItem = new BasketItem(new ItemId(1), new ItemQuantity(1));
         var deserializer = new SystemTextRedisObjectDeserializer();
         var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
         var getCustomerBasket = new GetCustomerBasketHandler(repo);
-        var handler = new AddItemToCustomerBasketHandler(repo, repo);
+        var handler = new AddItemToCustomerBasketHandler(repo, repo, publisherMock.Object);
         await handler.Handle(new AddItemToCustomerBasket(customerId, new BasketItem(new ItemId(2), new ItemQuantity(2))), CancellationToken.None);
         
         // Act
@@ -60,5 +75,7 @@ public class AddItemToCustomerBasketHandlerTests: IClassFixture<RedisFixture>
         result.Items.ShouldNotBeEmpty();
         result.Items.Count.ShouldBe(2);
         result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == basketItem.Quantity.Value);
+        
+        publisherMock.Verify(x => x.Publish(It.IsAny<BasketItemWasAdded>(), null, It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
 }

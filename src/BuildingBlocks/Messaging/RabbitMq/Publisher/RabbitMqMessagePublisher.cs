@@ -12,6 +12,24 @@ using IMessage = Messaging.Abstraction.IMessage;
 
 namespace Messaging.RabbitMq.Publisher;
 
+internal sealed class Message<T> : IMessage<T>
+{
+    private static readonly Type CachedType = typeof(T);
+    public MessageProperties? Properties { get; }
+    public Type MessageType { get; }
+    public T Body { get; }
+
+    public object GetBody() { return Body; }
+    
+
+    public Message(T body, MessageProperties properties)
+    {
+        Body = body;
+        Properties = properties;
+        MessageType = CachedType;
+    }
+}
+
 internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T : IMessage
 {
     
