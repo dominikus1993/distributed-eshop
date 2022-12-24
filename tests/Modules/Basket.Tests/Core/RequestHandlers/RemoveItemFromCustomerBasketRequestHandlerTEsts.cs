@@ -49,6 +49,8 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests: IClassFixture<Redi
         var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
         
         result.ShouldBeNull();
+        
+        publisherRemovedMock.Verify(x => x.Publish(It.IsAny<BasketItemWasRemoved>(), null, It.IsAny<CancellationToken>()), Times.Exactly(1));
     }  
     
     [Fact]
@@ -82,6 +84,7 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests: IClassFixture<Redi
         result.Items.ShouldNotBeEmpty();
         result.Items.Count.ShouldBe(1);
         result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == 1);
+        publisherRemovedMock.Verify(x => x.Publish(It.IsAny<BasketItemWasRemoved>(), null, It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
     
 }
