@@ -1,6 +1,7 @@
 namespace Messaging.Abstraction;
 
-public interface IMessageSubscriber
+public interface IMessageSubscriber<T> where T : IMessage
 {
-    Task Handle<T>(T message, CancellationToken cancellationToken = default) where T : IMessage;
+    Task Handle(T message, CancellationToken cancellationToken = default);
 }
+
