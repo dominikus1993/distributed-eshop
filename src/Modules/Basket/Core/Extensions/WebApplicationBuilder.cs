@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -5,9 +6,9 @@ namespace Basket.Core.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {
-    public static IServiceCollection AddBasket(this IServiceCollection services, IConfiguration configuration)
+    public static WebApplicationBuilder AddBasket(this WebApplicationBuilder builder)
     {
-        services.AddMediator();
-        return services;
+        builder.Services.AddMediator();
+        return builder;
     }
 }

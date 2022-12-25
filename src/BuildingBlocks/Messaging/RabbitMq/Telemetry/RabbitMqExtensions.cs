@@ -14,6 +14,11 @@ public static class RabbitMqTelemetry
     internal const string RabbitMqActivitySourceName = $"{nameof(Messaging)}.{nameof(RabbitMq)}";
 
     internal static readonly ActivitySource RabbitMqActivitySource = new(RabbitMqActivitySourceName, "v1.0.0");
+
+    public static Activity? Start(this ActivitySource source, string name = "rabbitmq.publish", ActivityKind kind = ActivityKind.Producer)
+    {
+        return source.StartActivity(name, kind);
+    }
     
     public static TracerProviderBuilder AddRabbitMqTelemetry(this TracerProviderBuilder builder)
     {

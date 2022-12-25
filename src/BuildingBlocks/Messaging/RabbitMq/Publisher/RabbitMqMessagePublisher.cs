@@ -32,7 +32,6 @@ internal sealed class Message<T> : IMessage<T>
 
 internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T : IMessage
 {
-    
     private static readonly string MessageName = typeof(T).FullName!;
     private readonly IAdvancedBus _advancedBus;
     private readonly RabbitMqPublisherConfig<T> _publisherConfig;
@@ -48,11 +47,10 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
         ArgumentNullException.ThrowIfNull(message);
         var exchange = await _advancedBus.ExchangeDeclareAsync(_publisherConfig.Exchange, ExchangeType.Topic, true, false,
             cancellationToken);
-        using var activity = RabbitMqTelemetry.RabbitMqActivitySource.StartActivity("rabbitmq.publish", ActivityKind.Producer);
-        MessageProperties? messageProps = null;
+        using var activity = RabbitMqTelemetry.RabbitMqActivitySource.Start();
+        MessageProperties messageProps = new();
         if (activity is not null)
         {
-            messageProps = new MessageProperties();
             activity.SetTag("messaging.rabbitmq.routing_key", _publisherConfig.Topic);
             activity.SetTag("messaging.destination", _publisherConfig.Exchange);
             activity.SetTag("messaging.system", "rabbitmq");

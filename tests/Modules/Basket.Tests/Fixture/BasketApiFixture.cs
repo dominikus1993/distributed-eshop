@@ -3,6 +3,7 @@ using Alba;
 using Alba.Security;
 
 using Basket.Infrastructure.Redis;
+using Basket.Tests.Infrastructure.Extensions;
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -15,19 +16,26 @@ using StackExchange.Redis;
 
 namespace Basket.Tests.Fixture;
 
-public class BasketApiFixture : IAsyncLifetime, IDisposable
+public sealed class BasketApiFixture : IAsyncLifetime, IDisposable
 {
     private readonly TestcontainerDatabaseConfiguration _configuration = new RedisTestcontainerConfiguration("redis:6-alpine");
 
+    private readonly TestcontainerMessageBrokerConfiguration _rabbitmqConfiguration =
+        new RabbitMqTestcontainerConfiguration() { Username = "guest", Password = "guest", };
+    
     public BasketApiFixture()
     {
         Redis = new TestcontainersBuilder<RedisTestcontainer>()
             .WithDatabase(this._configuration)
             .Build();
+        RabbitMq = new TestcontainersBuilder<RabbitMqTestcontainer>()
+            .WithMessageBroker(_rabbitmqConfiguration)
+            .Build();
     }
     
     public TestcontainerDatabase Redis { get; private set; }
-    public IConnectionMultiplexer RedisConnection { get; private set; }
+    public TestcontainerMessageBroker RabbitMq { get; private set; }
+    public IConnectionMultiplexer RedisConnection { get; private set; } = null!;
 
 
     public async Task<IAlbaHost> GetHost(JwtSecurityStub stub)
@@ -35,6 +43,7 @@ public class BasketApiFixture : IAsyncLifetime, IDisposable
         return await AlbaHost.For<Program>(h =>
         {
             h.UseSetting("ConnectionStrings:BasketDb", Redis.ConnectionString);
+            h.UseSetting("RabbitMq:Connection", RabbitMq.ConnectionString());
             h.ConfigureAppConfiguration((_, builder) =>
             {
                 builder.SetBasePath(Directory.GetCurrentDirectory())
@@ -50,6 +59,7 @@ public class BasketApiFixture : IAsyncLifetime, IDisposable
     
     public async Task InitializeAsync()
     {
+        await RabbitMq.StartAsync();
         await Redis.StartAsync();
         RedisConnection = RedisConnectionFactory.Connect(Redis.ConnectionString);
     }
@@ -58,10 +68,12 @@ public class BasketApiFixture : IAsyncLifetime, IDisposable
     {
         await RedisConnection.DisposeAsync();
         await Redis.DisposeAsync();
+        await RabbitMq.DisposeAsync();
     }
 
     public void Dispose()
     {
         this._configuration.Dispose();
+        this._rabbitmqConfiguration.Dispose();
     } 
 }

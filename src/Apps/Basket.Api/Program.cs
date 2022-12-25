@@ -8,8 +8,8 @@ using FastEndpoints.Swagger;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddFastEndpoints();
-builder.Services.AddBasket(builder.Configuration);
-builder.Services.AddBasketInfrastructure(builder.Configuration);
+builder.AddBasket();
+builder.AddBasketInfrastructure();
 builder.Services.AddAuthenticationJWTBearer(builder.Configuration["Security:Jwt:Secret"]!);
 builder.Services.AddSwaggerDoc();
 

@@ -1,6 +1,9 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 using EasyNetQ;
+using EasyNetQ.ConnectionString;
 using EasyNetQ.DI;
 
 using Messaging.Abstraction;
@@ -27,18 +30,39 @@ public sealed class RabbitMqBuilder
     }
 }
 
+public sealed class RabbitMqConfiguration
+{
+    public IJsonTypeInfoResolver? JsonTypeInfoResolver { get; private set; }
+
+    public RabbitMqConfiguration SetJsonTypeInfoResolver(IJsonTypeInfoResolver jsonTypeInfoResolver)
+    {
+        JsonTypeInfoResolver = jsonTypeInfoResolver;
+        return this;
+    }
+}
+
 public static class RabbitMqBuilderExtensions 
 {
-    
-    public static RabbitMqBuilder AddRabbitMq(this WebApplicationBuilder builder)
+    public static RabbitMqBuilder AddRabbitMq(this WebApplicationBuilder builder, Action<RabbitMqConfiguration>? configAction = null)
     {
-        var cfg = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqConfiguration>();
+        var cfg = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqConnectionConfiguration>();
         if (cfg is null)
         {
             throw new InvalidOperationException("no rabbitmq configuration");
         }
 
-        builder.Services.RegisterEasyNetQ(cfg.Connection, register => register.EnableSystemTextJson(new JsonSerializerOptions()));
+        var config = new RabbitMqConfiguration(); 
+        configAction?.Invoke(config);
+        
+        builder.Services.RegisterEasyNetQ(resolve =>
+        {
+            var parser = new AmqpConnectionStringParser().Parse(cfg.Connection);
+            return parser;
+        }, register =>
+        {
+            register.EnableSystemTextJson(
+                                     new JsonSerializerOptions() { TypeInfoResolver = config.JsonTypeInfoResolver });
+        });
 
         return new RabbitMqBuilder() { Services = builder.Services, Configuration = builder.Configuration };
     }
