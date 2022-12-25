@@ -22,11 +22,16 @@ internal sealed class Message<T> : IMessage<T>
     public object GetBody() { return Body; }
     
 
-    public Message(T body, MessageProperties properties)
+    private Message(T body, MessageProperties properties, Type messageType)
     {
         Body = body;
         Properties = properties;
-        MessageType = CachedType;
+        MessageType = messageType;
+    }
+
+    public static Message<T> Create(T body, MessageProperties properties)
+    {
+        return new Message<T>(body, properties, CachedType);
     }
 }
 
@@ -61,6 +66,6 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
             activity.SetTag("messaging.message_name", MessageName);
             RabbitMqTelemetry.AddActivityToHeader(activity, messageProps);
         }
-        await _advancedBus.PublishAsync(exchange, _publisherConfig.Topic, false, new Message<T>(message, messageProps), cancellationToken);
+        await _advancedBus.PublishAsync(exchange, _publisherConfig.Topic, false, Message<T>.Create(message, messageProps), cancellationToken);
     }
 }
