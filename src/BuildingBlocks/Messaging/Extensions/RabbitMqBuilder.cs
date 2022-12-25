@@ -54,7 +54,7 @@ public static class RabbitMqBuilderExtensions
         var config = new RabbitMqConfiguration(); 
         configAction?.Invoke(config);
         
-        builder.Services.RegisterEasyNetQ(resolve =>
+        builder.Services.RegisterEasyNetQ(_ =>
         {
             var parser = new AmqpConnectionStringParser().Parse(cfg.Connection);
             return parser;
