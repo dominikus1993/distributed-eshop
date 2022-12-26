@@ -22,7 +22,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddTransient<ICustomerBasketReader, RedisCustomerBasketRepository>();
         builder.Services.AddTransient<ICustomerBasketWriter, RedisCustomerBasketRepository>();
 
-        builder.AddRabbitMq(configuration =>
+        builder.Services.AddRabbitMq(builder.Configuration, configuration =>
             {
                 configuration.SetJsonTypeInfoResolver(RabbitMqEventsJsonSerializerContext.Default);
             })

@@ -43,9 +43,9 @@ public sealed class RabbitMqConfiguration
 
 public static class RabbitMqBuilderExtensions 
 {
-    public static RabbitMqBuilder AddRabbitMq(this WebApplicationBuilder builder, Action<RabbitMqConfiguration>? configAction = null)
+    public static RabbitMqBuilder AddRabbitMq(this IServiceCollection services, IConfiguration configuration, Action<RabbitMqConfiguration>? configAction = null)
     {
-        var cfg = builder.Configuration.GetSection("RabbitMq").Get<RabbitMqConnectionConfiguration>();
+        var cfg = configuration.GetSection("RabbitMq").Get<RabbitMqConnectionConfiguration>();
         if (cfg is null)
         {
             throw new InvalidOperationException("no rabbitmq configuration");
@@ -54,7 +54,7 @@ public static class RabbitMqBuilderExtensions
         var config = new RabbitMqConfiguration(); 
         configAction?.Invoke(config);
         
-        builder.Services.RegisterEasyNetQ(_ =>
+        services.RegisterEasyNetQ(_ =>
         {
             var parser = new AmqpConnectionStringParser().Parse(cfg.Connection);
             return parser;
@@ -64,13 +64,13 @@ public static class RabbitMqBuilderExtensions
                                      new JsonSerializerOptions() { TypeInfoResolver = config.JsonTypeInfoResolver });
         });
 
-        return new RabbitMqBuilder() { Services = builder.Services, Configuration = builder.Configuration };
+        return new RabbitMqBuilder() { Services = services, Configuration = configuration };
     }
 
     private static RabbitMqBuilder AddPublisher<T>(this RabbitMqBuilder builder, Action<RabbitMqPublisherConfig<T>> action) where T : IMessage
     {
         var cfg = new RabbitMqPublisherConfig<T>();
-        action?.Invoke(cfg);
+        action.Invoke(cfg);
         builder.Services.AddSingleton(cfg);
         builder.Services.AddTransient<IMessagePublisher<T>, RabbitMqMessagePublisher<T>>();
         return builder;
