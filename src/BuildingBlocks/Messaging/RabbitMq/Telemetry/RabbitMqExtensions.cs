@@ -15,8 +15,13 @@ public static class RabbitMqTelemetry
 
     internal static readonly ActivitySource RabbitMqActivitySource = new(RabbitMqActivitySourceName, "v1.0.0");
 
-    public static Activity? Start(this ActivitySource source, string name = "rabbitmq.publish", ActivityKind kind = ActivityKind.Producer)
+    public static Activity? Start(this ActivitySource source, string name = "rabbitmq.publish",
+        ActivityKind kind = ActivityKind.Producer, ActivityContext? activityContext = null)
     {
+        if (activityContext.HasValue)
+        {
+            return source.StartActivity(name, kind, parentContext: activityContext.Value);
+        }
         return source.StartActivity(name, kind);
     }
     
