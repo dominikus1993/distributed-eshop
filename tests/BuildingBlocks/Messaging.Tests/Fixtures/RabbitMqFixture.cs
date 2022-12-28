@@ -10,17 +10,15 @@ namespace Messaging.Tests.Fixtures;
 
 public sealed class RabbitMqFixture : IAsyncLifetime, IDisposable
 {
-
     private readonly TestcontainerMessageBrokerConfiguration _rabbitmqConfiguration =
-        new RabbitMqTestcontainerConfiguration() { Username = "guest", Password = "guest", };
+        new RabbitMqTestcontainerConfiguration() { Username = "guest", Password = "guest",  };
     
     public RabbitMqFixture()
     {
         RabbitMq = new TestcontainersBuilder<RabbitMqTestcontainer>()
             .WithMessageBroker(_rabbitmqConfiguration)
             .Build();
-
-        Bus = RabbitHutch.CreateBus(RabbitMq.ConnectionString());
+        
     }
     
     public TestcontainerMessageBroker RabbitMq { get; private set; }
@@ -29,6 +27,7 @@ public sealed class RabbitMqFixture : IAsyncLifetime, IDisposable
     public async Task InitializeAsync()
     {
         await RabbitMq.StartAsync();
+        Bus = RabbitHutch.CreateBus(RabbitMq.ConnectionString());
     }
 
     public async Task DisposeAsync()
@@ -39,5 +38,6 @@ public sealed class RabbitMqFixture : IAsyncLifetime, IDisposable
     public void Dispose()
     {
         this._rabbitmqConfiguration.Dispose();
+        Bus.Dispose();
     } 
 }
