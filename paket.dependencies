@@ -15,6 +15,7 @@ nuget StronglyTypedId prerelease
 nuget MemoryPack
 nuget OneOf
 nuget OneOf.SourceGenerator
+nuget System.Linq.Async
 nuget EasyNetQ
 nuget EasyNetQ.DI.Microsoft
 nuget EasyNetQ.Logging.Microsoft
