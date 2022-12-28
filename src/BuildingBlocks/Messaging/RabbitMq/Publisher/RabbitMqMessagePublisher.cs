@@ -37,14 +37,17 @@ internal sealed class Message<T> : IMessage<T>
 
 internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T : IMessage
 {
+    private static readonly Type CachedType = typeof(T);
     private static readonly string MessageName = typeof(T).FullName!;
     private readonly IAdvancedBus _advancedBus;
     private readonly RabbitMqPublisherConfig<T> _publisherConfig;
+    private readonly ISerializer _serializer;
 
-    public RabbitMqMessagePublisher(IAdvancedBus advancedBus, RabbitMqPublisherConfig<T> publisherConfig)
+    public RabbitMqMessagePublisher(IAdvancedBus advancedBus, RabbitMqPublisherConfig<T> publisherConfig, ISerializer serializer)
     {
         _advancedBus = advancedBus;
         _publisherConfig = publisherConfig;
+        _serializer = serializer;
     }
 
     public async Task Publish([NotNull] T message, IMessageContext? ctx = null, CancellationToken cancellationToken = default)
@@ -66,6 +69,8 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
             activity.SetTag("messaging.message_name", MessageName);
             RabbitMqTelemetry.AddActivityToHeader(activity, messageProps);
         }
-        await _advancedBus.PublishAsync(exchange, _publisherConfig.Topic, false, Message<T>.Create(message, messageProps), cancellationToken);
+
+        var body = _serializer.MessageToBytes(CachedType, message);
+        await _advancedBus.PublishAsync(exchange, _publisherConfig.Topic, false, messageProps, body.Memory, cancellationToken);
     }
 }

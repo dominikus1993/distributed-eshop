@@ -1,4 +1,5 @@
 using EasyNetQ;
+using EasyNetQ.Serialization.SystemTextJson;
 using EasyNetQ.Topology;
 
 using Messaging.Extensions;
@@ -38,7 +39,7 @@ public class RabbitMqMessageConsumerTests : IClassFixture<RabbitMqFixture>
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         var config = new RabbitMqPublisherConfig<Msg>() { Exchange = "xDD", Topic = "test" };
         var msg = new Msg() { Message = "Elo" };
-        var publisher = new RabbitMqMessagePublisher<Msg>(_rabbitMqFixture.Bus.Advanced, config);
+        var publisher = new RabbitMqMessagePublisher<Msg>(_rabbitMqFixture.Bus.Advanced, config, new SystemTextJsonSerializer());
         var exchange = await _rabbitMqFixture.Bus.Advanced.DeclareExchangeAsync(config, cancellationToken: cts.Token);
         var queue = await _rabbitMqFixture.Bus.Advanced.QueueDeclareAsync($"test-{Guid.NewGuid()}", cancellationToken: cts.Token);
 

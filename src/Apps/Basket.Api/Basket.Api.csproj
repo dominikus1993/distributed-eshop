@@ -9,5 +9,10 @@
     <ProjectReference Include="..\..\BuildingBlocks\Hosting\Hosting.csproj" />
     <ProjectReference Include="..\..\Modules\Basket\Basket.csproj" />
   </ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Basket.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
