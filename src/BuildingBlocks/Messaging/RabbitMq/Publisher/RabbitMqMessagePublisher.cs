@@ -21,7 +21,6 @@ internal sealed class Message<T> : IMessage<T>
 
     public object GetBody() { return Body; }
     
-
     private Message(T body, MessageProperties properties, Type messageType)
     {
         Body = body;
@@ -31,23 +30,22 @@ internal sealed class Message<T> : IMessage<T>
 
     public static Message<T> Create(T body, MessageProperties properties)
     {
+        ArgumentNullException.ThrowIfNull(properties);
+        ArgumentNullException.ThrowIfNull(body);
         return new Message<T>(body, properties, CachedType);
     }
 }
 
 internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T : IMessage
 {
-    private static readonly Type CachedType = typeof(T);
     private static readonly string MessageName = typeof(T).FullName!;
     private readonly IAdvancedBus _advancedBus;
     private readonly RabbitMqPublisherConfig<T> _publisherConfig;
-    private readonly ISerializer _serializer;
 
-    public RabbitMqMessagePublisher(IAdvancedBus advancedBus, RabbitMqPublisherConfig<T> publisherConfig, ISerializer serializer)
+    public RabbitMqMessagePublisher(IAdvancedBus advancedBus, RabbitMqPublisherConfig<T> publisherConfig)
     {
         _advancedBus = advancedBus;
         _publisherConfig = publisherConfig;
-        _serializer = serializer;
     }
 
     public async Task Publish([NotNull] T message, IMessageContext? ctx = null, CancellationToken cancellationToken = default)
@@ -69,8 +67,6 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
             activity.SetTag("messaging.message_name", MessageName);
             RabbitMqTelemetry.AddActivityToHeader(activity, messageProps);
         }
-
-        var body = _serializer.MessageToBytes(CachedType, message);
-        await _advancedBus.PublishAsync(exchange, _publisherConfig.Topic, false, messageProps, body.Memory, cancellationToken);
+        await _advancedBus.PublishAsync(exchange, _publisherConfig.Topic, false, Message<T>.Create(message, messageProps), cancellationToken);
     }
 }

@@ -27,7 +27,10 @@ public sealed class RabbitMqFixture : IAsyncLifetime, IDisposable
     public async Task InitializeAsync()
     {
         await RabbitMq.StartAsync();
-        Bus = RabbitHutch.CreateBus(RabbitMq.ConnectionString());
+        Bus = RabbitHutch.CreateBus(RabbitMq.ConnectionString(), register =>
+        {
+            register.EnableSystemTextJson();
+        });
     }
 
     public async Task DisposeAsync()
