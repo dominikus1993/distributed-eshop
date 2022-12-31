@@ -27,7 +27,7 @@ public sealed class RabbitMqSubscriptionConfiguration<T> where T : IMessage
 public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMessage
 {
     private readonly IAdvancedBus _advancedBus;
-    private IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
     private readonly RabbitMqSubscriptionConfiguration<T> _subscriptionConfiguration;
     private IDisposable? _disposable;
 
