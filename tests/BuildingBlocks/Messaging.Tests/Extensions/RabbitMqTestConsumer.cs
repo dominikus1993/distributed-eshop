@@ -19,7 +19,7 @@ file sealed class TestSubscriber<T> : IMessageSubscriber<T> where T : IMessage
     private readonly int _take;
     private int _elements = 0;
 
-    public TestSubscriber(ChannelWriter<T> writer, int take)
+    public TestSubscriber(ChannelWriter<T> writer, in int take)
     {
         _writer = writer;
         _take = take;

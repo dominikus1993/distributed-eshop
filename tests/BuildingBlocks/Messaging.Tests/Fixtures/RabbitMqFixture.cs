@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
@@ -22,8 +24,9 @@ public sealed class RabbitMqFixture : IAsyncLifetime, IDisposable
     }
     
     public TestcontainerMessageBroker RabbitMq { get; private set; }
-    public IBus Bus { get; private set; }
-    
+    public IBus Bus { get; private set; } = null!;
+
+    [MemberNotNull(nameof(Bus))]
     public async Task InitializeAsync()
     {
         await RabbitMq.StartAsync();
