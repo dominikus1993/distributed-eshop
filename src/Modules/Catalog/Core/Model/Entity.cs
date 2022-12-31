@@ -6,4 +6,6 @@ public readonly record struct Price(decimal Value);
 
 public sealed record ProductPrice(Price CurrentPrice, Price? PromotionalPrice);
 
-public sealed record Product(ProductId Id, ProductDescription Description, ProductPrice Price);
+public readonly record struct AvailableQuantity(int Value);
+
+public sealed record Product(ProductId Id, ProductDescription Description, ProductPrice Price, AvailableQuantity AvailableQuantity);
