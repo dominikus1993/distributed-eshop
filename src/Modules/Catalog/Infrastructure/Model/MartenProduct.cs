@@ -2,7 +2,7 @@ using Catalog.Core.Model;
 
 namespace Catalog.Infrastructure.Model;
 
-public class MartenProduct
+public sealed class MartenProduct
 {
 
     public int ProductId { get; set; }

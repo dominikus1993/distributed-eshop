@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 using Catalog.Core.Model;
 
 namespace Catalog.Core.Dto;
@@ -9,7 +7,6 @@ public sealed class ProductDto
     public int ProductId { get; init; }
     public string Description { get; init; }
     
-    [SetsRequiredMembers]
     private ProductDto(int productId, string description)
     {
         ProductId = productId;

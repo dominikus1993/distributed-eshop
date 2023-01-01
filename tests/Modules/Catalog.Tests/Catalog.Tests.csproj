@@ -3,5 +3,11 @@
     <PropertyGroup>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\Modules\Catalog\Catalog.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Infrastructure\Repsitories" />
+    </ItemGroup>
     <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
