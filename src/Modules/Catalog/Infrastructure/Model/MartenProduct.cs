@@ -1,13 +1,17 @@
 using Catalog.Core.Model;
 
+using Marten.Schema;
+
 namespace Catalog.Infrastructure.Model;
 
 public sealed class MartenProduct
 {
 
     public int ProductId { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
+    [FullTextIndex]
+    public string? Name { get; set; }
+    [FullTextIndex]
+    public string? Description { get; set; }
     
     public MartenProduct()
     {

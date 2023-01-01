@@ -5,7 +5,7 @@ using Marten;
 
 namespace Catalog.Infrastructure.Repositories;
 
-internal sealed class MartenProductsWriter : IProductsWriter
+public sealed class MartenProductsWriter : IProductsWriter
 {
     private readonly IDocumentStore _store;
 

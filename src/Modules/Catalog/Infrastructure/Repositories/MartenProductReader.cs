@@ -5,7 +5,7 @@ using Marten;
 
 namespace Catalog.Infrastructure.Repositories;
 
-internal sealed class MartenProductReader : IProductReader
+public sealed class MartenProductReader : IProductReader
 {
     private readonly IDocumentStore _store;
 
