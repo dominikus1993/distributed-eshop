@@ -1,16 +1,14 @@
 using Catalog.Core.Model;
 
-using Marten.Schema;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Catalog.Infrastructure.Model;
 
 public sealed class MartenProduct
 {
-
+    [BsonId]
     public int ProductId { get; set; }
-    [FullTextIndex]
     public string? Name { get; set; }
-    [FullTextIndex]
     public string? Description { get; set; }
     
     public MartenProduct()

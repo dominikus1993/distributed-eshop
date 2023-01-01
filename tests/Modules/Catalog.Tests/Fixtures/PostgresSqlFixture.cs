@@ -13,7 +13,6 @@ public sealed class PostgresSqlFixture
     private readonly TestcontainerDatabaseConfiguration configuration = new PostgreSqlTestcontainerConfiguration("postgres:14-alpine") { Database = "posts", Username = "postgres", Password = "postgres" };
 
     public PostgreSqlTestcontainer PostgreSql { get; }
-    internal DocumentStore Store { get; private set; } = null!;
 
     public PostgresSqlFixture()
     {
@@ -26,7 +25,6 @@ public sealed class PostgresSqlFixture
     {
         await this.PostgreSql.StartAsync()
             .ConfigureAwait(false);
-        Store = DocumentStore.For(MartenDocumentStoreConfig.Configure(PostgreSql.ConnectionString, true));
     }
 
     public async Task DisposeAsync()
@@ -37,7 +35,6 @@ public sealed class PostgresSqlFixture
 
     public void Dispose()
     {
-        Store.Dispose();
         this.configuration.Dispose();
     }
 }

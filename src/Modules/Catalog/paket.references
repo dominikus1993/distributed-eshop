@@ -4,4 +4,4 @@ StronglyTypedId
 Mediator.Abstractions
 Mediator.SourceGenerator
 Microsoft.Extensions.Hosting
-Marten.AspNetCore
+MongoDB.Driver

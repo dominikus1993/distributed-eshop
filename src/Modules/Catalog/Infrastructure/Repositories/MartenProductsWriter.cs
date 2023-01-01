@@ -1,16 +1,15 @@
 using Catalog.Core.Model;
 using Catalog.Core.Repository;
-
-using Marten;
+using MongoDB.Driver;
 
 namespace Catalog.Infrastructure.Repositories;
 
 public sealed class MartenProductsWriter : IProductsWriter
 {
-    private readonly IDocumentStore _store;
+    private readonly IMongoDatabase _store;
 
 
-    public MartenProductsWriter(IDocumentStore store)
+    public MartenProductsWriter(IMongoDatabase store)
     {
         _store = store;
     }

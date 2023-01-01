@@ -20,7 +20,7 @@ nuget EasyNetQ
 nuget EasyNetQ.DI.Microsoft
 nuget EasyNetQ.Logging.Microsoft
 nuget EasyNetQ.Serialization.SystemTextJson
-nuget Marten.AspNetCore
+nuget MongoDB.Driver
 nuget Microsoft.Extensions.Hosting
 nuget Microsoft.Extensions.Configuration
 nuget Microsoft.Extensions.Logging
