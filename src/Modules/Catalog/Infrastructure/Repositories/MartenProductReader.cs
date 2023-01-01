@@ -20,7 +20,7 @@ internal sealed class MartenProductReader : IProductReader
         throw new NotImplementedException();
     }
 
-    public Task<Product?> GetByIds(IEnumerable<ProductId> id, CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> id, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

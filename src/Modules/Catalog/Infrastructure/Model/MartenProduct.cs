@@ -6,6 +6,9 @@ public sealed class MartenProduct
 {
 
     public int ProductId { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    
     public MartenProduct()
     {
         
@@ -13,7 +16,9 @@ public sealed class MartenProduct
 
     public MartenProduct(Product product)
     {
-        
+        ProductId = product.Id.Value;
+        Description = product.Description.Description;
+        Name = product.ProductName.Name;
     }
 
     public Product ToProduct()

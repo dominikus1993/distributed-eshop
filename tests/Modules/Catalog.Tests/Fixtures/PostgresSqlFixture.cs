@@ -8,14 +8,14 @@ using Marten;
 
 namespace Catalog.Tests.Fixtures;
 
-public class PostgresSqlSqlFixture
+public sealed class PostgresSqlFixture
 {
     private readonly TestcontainerDatabaseConfiguration configuration = new PostgreSqlTestcontainerConfiguration("postgres:14-alpine") { Database = "posts", Username = "postgres", Password = "postgres" };
 
     public PostgreSqlTestcontainer PostgreSql { get; }
     internal DocumentStore Store { get; private set; } = null!;
 
-    public PostgresSqlSqlFixture()
+    public PostgresSqlFixture()
     {
         this.PostgreSql = new TestcontainersBuilder<PostgreSqlTestcontainer>()
             .WithDatabase(this.configuration)
