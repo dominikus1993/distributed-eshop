@@ -1,16 +1,14 @@
 using Catalog.Core.Model;
 using Catalog.Core.Repository;
-
-using MongoDB.Driver;
-
+using Catalog.Infrastructure.DbContexts;
 namespace Catalog.Infrastructure.Repositories;
 
 public sealed class MartenProductReader : IProductReader
 {
-    private readonly IMongoDatabase _store;
+    private readonly ProductsDbContext _store;
 
 
-    public MartenProductReader(IMongoDatabase store)
+    public MartenProductReader(ProductsDbContext store)
     {
         _store = store;
     }

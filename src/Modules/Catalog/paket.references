@@ -4,4 +4,4 @@ StronglyTypedId
 Mediator.Abstractions
 Mediator.SourceGenerator
 Microsoft.Extensions.Hosting
-MongoDB.Driver
+Npgsql.EntityFrameworkCore.PostgreSQL
