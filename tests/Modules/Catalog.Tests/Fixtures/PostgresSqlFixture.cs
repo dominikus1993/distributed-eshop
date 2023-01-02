@@ -1,10 +1,10 @@
-using Catalog.Infrastructure.Configuration;
+using Catalog.Infrastructure.DbContexts;
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 
-using Marten;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Tests.Fixtures;
 
@@ -13,7 +13,7 @@ public sealed class PostgresSqlFixture
     private readonly TestcontainerDatabaseConfiguration configuration = new PostgreSqlTestcontainerConfiguration("postgres:14-alpine") { Database = "posts", Username = "postgres", Password = "postgres" };
 
     public PostgreSqlTestcontainer PostgreSql { get; }
-
+    public ProductsDbContext DbContext { get; private set; }
     public PostgresSqlFixture()
     {
         this.PostgreSql = new TestcontainersBuilder<PostgreSqlTestcontainer>()
@@ -25,12 +25,17 @@ public sealed class PostgresSqlFixture
     {
         await this.PostgreSql.StartAsync()
             .ConfigureAwait(false);
+        var builder = new DbContextOptionsBuilder<ProductsDbContext>();
+        builder.UseNpgsql();
+        DbContext = new ProductsDbContext(builder.Options);
+
     }
 
     public async Task DisposeAsync()
     {
         await this.PostgreSql.DisposeAsync()
             .ConfigureAwait(false);
+        await DbContext.DisposeAsync();
     }
 
     public void Dispose()

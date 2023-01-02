@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
 builder.AddBasket();
 builder.AddBasketInfrastructure();
-builder.Services.AddAuthenticationJWTBearer(builder.Configuration["Security:Jwt:Secret"]!);
+builder.Services.AddJWTBearerAuth(builder.Configuration["Security:Jwt:Secret"]!);
 builder.Services.AddSwaggerDoc();
 
 var app = builder.Build();
