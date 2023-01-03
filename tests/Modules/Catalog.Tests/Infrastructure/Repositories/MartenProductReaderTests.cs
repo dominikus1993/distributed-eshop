@@ -23,7 +23,7 @@ public class MartenProductReaderTests : IClassFixture<PostgresSqlFixture>
     public async Task ReadProductByIdWhenNoExistsShouldReturnNull()
     {
         // Arrange 
-        var repo = new MartenProductReader(_postgresSqlFixture.Store);
+        var repo = new MartenProductReader(_postgresSqlFixture.DbContext);
         
         // Act
 
@@ -42,8 +42,8 @@ public class MartenProductReaderTests : IClassFixture<PostgresSqlFixture>
         var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         
-        var repo = new MartenProductReader(_postgresSqlFixture.Store);
-        var writer = new MartenProductsWriter(_postgresSqlFixture.Store);
+        var repo = new MartenProductReader(_postgresSqlFixture.DbContext);
+        var writer = new MartenProductsWriter(_postgresSqlFixture.DbContext);
         // Act
 
         await writer.AddProduct(product, cts.Token);
