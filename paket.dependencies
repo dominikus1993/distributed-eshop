@@ -13,6 +13,8 @@ nuget FastEndpoints.Security
 nuget FluentValidation
 nuget StronglyTypedId prerelease
 nuget MemoryPack
+nuget Microsoft.EntityFrameworkCore.Design
+nuget EFCore.NamingConventions
 nuget OneOf
 nuget OneOf.SourceGenerator
 nuget System.Linq.Async
@@ -30,6 +32,8 @@ nuget OpenTelemetry.Extensions.Hosting
 nuget OpenTelemetry.Instrumentation.AspNetCore
 nuget OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs
 nuget OpenTelemetry.Exporter.OpenTelemetryProtocol
+nuget OpenTelemetry prerelease
+nuget OpenTelemetry.Api prerelease
 
 nuget AutoFixture
 nuget Shouldly

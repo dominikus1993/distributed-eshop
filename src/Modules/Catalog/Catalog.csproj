@@ -7,7 +7,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Core\RequestHandlers" />
-      <Folder Include="Infrastructure\Extensions" />
     </ItemGroup>
     <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

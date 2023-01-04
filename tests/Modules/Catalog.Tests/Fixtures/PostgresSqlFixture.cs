@@ -27,12 +27,12 @@ public sealed class PostgresSqlFixture
             .ConfigureAwait(false);
         var builder = new DbContextOptionsBuilder<ProductsDbContext>()
             .UseNpgsql(this.PostgreSql.ConnectionString,
-            optionsBuilder =>
-            {
-                optionsBuilder.EnableRetryOnFailure(5);
-                optionsBuilder.CommandTimeout(500);
-                optionsBuilder.MigrationsAssembly("Catalog");
-            });
+                optionsBuilder =>
+                {
+                    optionsBuilder.EnableRetryOnFailure(5);
+                    optionsBuilder.CommandTimeout(500);
+                    optionsBuilder.MigrationsAssembly("Catalog");
+                }).UseSnakeCaseNamingConvention();
         this.DbContext = new ProductsDbContext(builder.Options);
         await this.DbContext.Database.MigrateAsync();
 

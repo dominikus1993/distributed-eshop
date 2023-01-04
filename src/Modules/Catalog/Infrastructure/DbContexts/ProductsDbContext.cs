@@ -1,3 +1,4 @@
+using Catalog.Infrastructure.DbContexts.Configuration;
 using Catalog.Infrastructure.Model;
 
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,10 @@ public sealed class ProductsDbContext : DbContext
     public ProductsDbContext(DbContextOptions options) : base(options)
     {
     }
-    
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductsDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
 }
