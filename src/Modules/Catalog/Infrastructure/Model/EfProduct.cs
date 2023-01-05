@@ -7,6 +7,12 @@ public sealed class EfProduct
     public ProductId ProductId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
+
+    public decimal? PromotionalPrice { get; set; }
+
+    public decimal Price { get; set; }
+    
+    public int AvailableQuantity { get; set; }
     
     public EfProduct()
     {
