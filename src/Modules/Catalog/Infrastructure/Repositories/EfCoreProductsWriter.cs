@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using Catalog.Core.Model;
 using Catalog.Core.Repository;
 using Catalog.Infrastructure.DbContexts;
@@ -25,16 +27,16 @@ public sealed class UnableToWriteRecordException : Exception
         return $"{base.ToString()}, {nameof(ProductId)}: {ProductId}";
     }
 } 
-public sealed class MartenProductsWriter : IProductsWriter
+public sealed class EfCoreProductsWriter : IProductsWriter
 {
     private readonly ProductsDbContext _store;
 
 
-    public MartenProductsWriter(ProductsDbContext store)
+    public EfCoreProductsWriter(ProductsDbContext store)
     {
         _store = store;
     }
-
+    
     public async Task<AddProductResult> AddProduct(Product product, CancellationToken cancellationToken = default)
     {
         _store.Products.Add(new EfProduct(product));

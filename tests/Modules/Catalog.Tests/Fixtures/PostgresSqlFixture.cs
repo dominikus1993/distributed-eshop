@@ -6,9 +6,11 @@ using DotNet.Testcontainers.Containers;
 
 using Microsoft.EntityFrameworkCore;
 
+using Xunit;
+
 namespace Catalog.Tests.Fixtures;
 
-public sealed class PostgresSqlFixture
+public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
 {
     private readonly TestcontainerDatabaseConfiguration configuration = new PostgreSqlTestcontainerConfiguration("postgres:14-alpine") { Database = "posts", Username = "postgres", Password = "postgres" };
 
