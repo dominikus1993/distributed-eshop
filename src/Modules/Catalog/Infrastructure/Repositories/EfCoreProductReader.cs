@@ -18,12 +18,13 @@ public sealed class EfCoreProductReader : IProductReader
     
     public async Task<Product?> GetById(ProductId id, CancellationToken cancellationToken = default)
     {
+        EqualityComparer<ProductId>.Default;
         var result = await _store.Products.AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == id.Value, cancellationToken: cancellationToken);
         return result?.ToProduct();
     }
 
     public IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var result = await _store.Products.AsNoTracking().Where(product => id.Contains(product.ProductId));
     }
 }

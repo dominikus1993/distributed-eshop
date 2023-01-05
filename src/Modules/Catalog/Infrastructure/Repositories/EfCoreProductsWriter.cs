@@ -10,7 +10,6 @@ using Mediator;
 
 namespace Catalog.Infrastructure.Repositories;
 
-[Serializable]
 public sealed class UnableToWriteRecordException : Exception
 {
     public ProductId ProductId { get; }
@@ -31,7 +30,6 @@ public sealed class UnableToWriteRecordException : Exception
     }
 } 
 
-[Serializable]
 public sealed class UnableToWriteRecordsException : Exception
 {
     public IEnumerable<ProductId> ProductIds { get; }

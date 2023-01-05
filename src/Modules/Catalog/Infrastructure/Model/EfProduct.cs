@@ -4,7 +4,7 @@ namespace Catalog.Infrastructure.Model;
 
 public sealed class EfProduct
 {
-    public int ProductId { get; set; }
+    public ProductId ProductId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
     
@@ -15,7 +15,7 @@ public sealed class EfProduct
 
     public EfProduct(Product product)
     {
-        ProductId = product.Id.Value;
+        ProductId = product.Id;
         Description = product.Description.Description;
         Name = product.ProductName.Name;
     }
