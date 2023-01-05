@@ -16,8 +16,8 @@ namespace Catalog.Migrations
                 columns: table => new
                 {
                     productid = table.Column<Guid>(name: "product_id", type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
                     promotionalprice = table.Column<decimal>(name: "promotional_price", type: "numeric", nullable: true),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     availablequantity = table.Column<int>(name: "available_quantity", type: "integer", nullable: false)

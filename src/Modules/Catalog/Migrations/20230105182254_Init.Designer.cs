@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Catalog.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
-    [Migration("20230105181847_Init")]
+    [Migration("20230105182254_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -36,10 +36,12 @@ namespace Catalog.Migrations
                         .HasColumnName("available_quantity");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("description");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 

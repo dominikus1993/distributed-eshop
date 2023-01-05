@@ -5,8 +5,8 @@ namespace Catalog.Infrastructure.Model;
 public sealed class EfProduct
 {
     public ProductId ProductId { get; set; }
-    public string? Name { get; set; }
-    public string? Description { get; set; }
+    public string Name { get; set; } = null!;
+    public string Description { get; set; } = null!;
 
     public decimal? PromotionalPrice { get; set; }
 
@@ -28,6 +28,7 @@ public sealed class EfProduct
 
     public Product ToProduct()
     {
-        throw new NotImplementedException();
+        return new Product(ProductId, new ProductName(Name), new ProductDescription(Description),
+            new ProductPrice(Price, PromotionalPrice), new AvailableQuantity(AvailableQuantity));
     }
 }

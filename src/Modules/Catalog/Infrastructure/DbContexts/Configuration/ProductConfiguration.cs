@@ -25,5 +25,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
     {
         builder.HasKey(product => product.ProductId);
         builder.Property(product => product.ProductId).HasConversion<ProductIdConverter>();
+        builder.Property(product => product.Name).IsRequired();
+        builder.Property(product => product.Description).IsRequired();
     }
 }
