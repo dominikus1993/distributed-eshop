@@ -7,3 +7,4 @@ Microsoft.Extensions.Hosting
 Npgsql.EntityFrameworkCore.PostgreSQL
 Microsoft.EntityFrameworkCore.Design
 EFCore.NamingConventions
+System.Linq.Async
