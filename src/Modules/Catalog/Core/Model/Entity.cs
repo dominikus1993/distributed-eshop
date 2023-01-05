@@ -31,7 +31,7 @@ public sealed record ProductPrice(Price CurrentPrice, Price? PromotionalPrice = 
 
 public readonly record struct AvailableQuantity(int Value);
 
-public sealed record Product(ProductId Id, ProductName ProductName, ProductDescription Description, ProductPrice Price,
+public sealed record Product(ProductId Id, ProductName ProductName, ProductDescription ProductDescription, ProductPrice Price,
     AvailableQuantity AvailableQuantity)
 {
 }

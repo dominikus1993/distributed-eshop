@@ -22,8 +22,11 @@ public sealed class EfProduct
     public EfProduct(Product product)
     {
         ProductId = product.Id;
-        Description = product.Description.Description;
+        Description = product.ProductDescription.Description;
         Name = product.ProductName.Name;
+        AvailableQuantity = product.AvailableQuantity.Value;
+        Price = product.Price.CurrentPrice;
+        PromotionalPrice = product.Price.PromotionalPrice;
     }
 
     public Product ToProduct()

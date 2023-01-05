@@ -54,6 +54,6 @@ public class MartenProductReaderTests : IClassFixture<PostgresSqlFixture>
         subject.ProductName.ShouldBe(product.ProductName);
         subject.Price.ShouldBe(product.Price);
         subject.AvailableQuantity.ShouldBe(product.AvailableQuantity);
-        subject.Description.ShouldBe(product.Description);
+        subject.ProductDescription.ShouldBe(product.ProductDescription);
     }
 }

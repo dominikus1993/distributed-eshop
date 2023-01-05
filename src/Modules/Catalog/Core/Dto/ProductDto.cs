@@ -15,6 +15,6 @@ public sealed class ProductDto
 
     public static ProductDto Create(Product product)
     {
-        return new ProductDto(product.Id.Value, product.Description.Description);
+        return new ProductDto(product.Id.Value, product.ProductDescription.Description);
     }
 }
