@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 using Catalog.Core.Model;
 using Catalog.Core.Repository;
 using Catalog.Infrastructure.DbContexts;
@@ -18,13 +20,16 @@ public sealed class EfCoreProductReader : IProductReader
     
     public async Task<Product?> GetById(ProductId id, CancellationToken cancellationToken = default)
     {
-        EqualityComparer<ProductId>.Default;
-        var result = await _store.Products.AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == id.Value, cancellationToken: cancellationToken);
+        var result = await _store.Products.AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == id, cancellationToken: cancellationToken);
         return result?.ToProduct();
     }
 
-    public IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> id, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> id, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var result = await _store.Products.AsNoTracking().Where(product => id.Contains(product.ProductId));
+        var result = _store.Products.AsNoTracking().Where(product => id.Contains(product.ProductId)).AsAsyncEnumerable();
+        await foreach (var product in result.WithCancellation(cancellationToken))
+        {
+            yield return product.ToProduct();
+        }
     }
 }

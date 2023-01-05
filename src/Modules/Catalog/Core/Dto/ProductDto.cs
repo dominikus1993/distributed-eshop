@@ -4,10 +4,10 @@ namespace Catalog.Core.Dto;
 
 public sealed class ProductDto
 {
-    public int ProductId { get; init; }
+    public Guid ProductId { get; init; }
     public string Description { get; init; }
     
-    private ProductDto(int productId, string description)
+    private ProductDto(Guid productId, string description)
     {
         ProductId = productId;
         Description = description;

@@ -2,6 +2,7 @@
 using Alba.Security;
 
 using Basket.Api.Endpoints;
+using Basket.Core.Model;
 using Basket.Tests.Fixture;
 
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -32,10 +33,10 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
             .WithName("janpawlacz2");
 
         await using var host = await _basketApiFixture.GetHost(securityStub);
-
+        var itemid = Guid.NewGuid();
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = 1 }).ToUrl("/api/Basket/items");
+            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
@@ -52,7 +53,7 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
         response.CustomerId.ShouldBe(customerId);
         response.Items.ShouldNotBeEmpty();
         response.Items.Count.ShouldBe(1);
-        response.Items.ShouldContain(x => x.ItemId == 1 && x.Quantity == 1);
+        response.Items.ShouldContain(x => x.ItemId == itemid && x.Quantity == 1);
     }   
     
     [Fact]
@@ -69,15 +70,16 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
 
         await using var host = await _basketApiFixture.GetHost(securityStub);
 
+        var itemid = Guid.NewGuid();
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = 1 }).ToUrl("/api/Basket/items");
+            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = 1 }).ToUrl("/api/Basket/items");
+            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
 
@@ -95,7 +97,7 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
         response.CustomerId.ShouldBe(customerId);
         response.Items.ShouldNotBeEmpty();
         response.Items.Count.ShouldBe(1);
-        response.Items.ShouldContain(x => x.ItemId == 1 && x.Quantity == 2);
+        response.Items.ShouldContain(x => x.ItemId == itemid && x.Quantity == 2);
     }  
     
     [Fact]
@@ -112,15 +114,17 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
 
         await using var host = await _basketApiFixture.GetHost(securityStub);
 
+        var itemid = Guid.NewGuid();
+        var itemid2 = Guid.NewGuid();
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = 1 }).ToUrl("/api/Basket/items");
+            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 2, Id = 2 }).ToUrl("/api/Basket/items");
+            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 2, Id = itemid2 }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
 
@@ -138,7 +142,7 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
         response.CustomerId.ShouldBe(customerId);
         response.Items.ShouldNotBeEmpty();
         response.Items.Count.ShouldBe(2);
-        response.Items.ShouldContain(x => x.ItemId == 1 && x.Quantity == 1);
-        response.Items.ShouldContain(x => x.ItemId == 2 && x.Quantity == 2);
+        response.Items.ShouldContain(x => x.ItemId == itemid && x.Quantity == 1);
+        response.Items.ShouldContain(x => x.ItemId == itemid2 && x.Quantity == 2);
     }  
 }

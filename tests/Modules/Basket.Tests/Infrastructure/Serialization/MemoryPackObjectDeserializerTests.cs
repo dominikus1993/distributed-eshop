@@ -1,3 +1,4 @@
+using Basket.Core.Model;
 using Basket.Infrastructure.Model;
 using Basket.Infrastructure.Serialization;
 
@@ -10,10 +11,11 @@ public class MemoryPackObjectDeserializerTests
     [Fact]
     public void TestSerializationAndDeserialization_ShouldSerializeObjectAndDeserializeToTheSameObject()
     {
+        var itemId = ItemId.New();
         var basket = new RedisCustomerBasket()
         {
             CustomerId = Guid.NewGuid(),
-            Items = new List<RedisBasketItem>() { new RedisBasketItem() { ItemId = 1, Quantity = 1 } }
+            Items = new List<RedisBasketItem>() { new RedisBasketItem() { ItemId = itemId.Value, Quantity = 1 } }
         };
         var serializer = new MemoryPackObjectDeserializer();
 
@@ -28,6 +30,6 @@ public class MemoryPackObjectDeserializerTests
         result.Items.ShouldNotBeNull();
         result.Items.ShouldNotBeEmpty();
         result.Items.Count.ShouldBe(basket.Items.Count);
-        result.Items.ShouldContain(x => x.ItemId == 1 && x.Quantity == 1);
+        result.Items.ShouldContain(x => x.ItemId == itemId.Value && x.Quantity == 1);
     }
 }

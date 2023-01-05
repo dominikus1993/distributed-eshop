@@ -9,7 +9,7 @@ namespace Basket.Infrastructure.Model;
 [MemoryPackable]
 internal sealed partial class RedisBasketItem
 {
-    public int ItemId { get; set; }
+    public Guid ItemId { get; set; }
     public uint Quantity { get; set; }
 
     [MemoryPackConstructor]

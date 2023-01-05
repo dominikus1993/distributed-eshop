@@ -14,7 +14,7 @@ namespace Basket.Api.Endpoints;
 
 public sealed class BasketItemResponseDto
 {
-    public int ItemId { get; set; }
+    public Guid ItemId { get; set; }
     public uint Quantity { get; set; }
 
     public BasketItemResponseDto()

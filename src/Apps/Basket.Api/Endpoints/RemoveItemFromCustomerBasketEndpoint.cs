@@ -15,7 +15,7 @@ namespace Basket.Api.Endpoints;
 
 public sealed class RemoveItemFromCustomerBasketRequest
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public int Quantity { get; set; }
 }
 
@@ -30,7 +30,7 @@ public sealed class RemoveItemFromCustomerBasketRequestValidator : Validator<Rem
 {
     public RemoveItemFromCustomerBasketRequestValidator()
     {
-        RuleFor(x => x.Id).GreaterThan(0).WithMessage("Invalid product id");
+        RuleFor(x => x.Id).NotEmpty().NotNull().WithMessage("Invalid product id");
         RuleFor(x => x.Quantity).GreaterThan(0).WithMessage("invalid quantity, should be grater than 0");
     }
 }

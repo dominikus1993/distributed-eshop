@@ -19,7 +19,7 @@ public readonly record struct EmptyBasket(CustomerId CustomerId)
 }
 
 
-[StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, converters: StronglyTypedIdConverter.SystemTextJson)]
+[StronglyTypedId(backingType: StronglyTypedIdBackingType.Guid, converters: StronglyTypedIdConverter.SystemTextJson)]
 public readonly partial struct ItemId
 {
     

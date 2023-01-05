@@ -6,7 +6,7 @@ namespace Basket.Core.Dtos;
 
 public sealed class BasketItemDto
 {
-    public required int ItemId { get; init; }
+    public required Guid ItemId { get; init; }
     public required uint Quantity { get; init; }
 
     public BasketItemDto()

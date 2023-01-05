@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Catalog.Infrastructure.DbContexts.Configuration;
 
-internal sealed class ProductIdConverter : ValueConverter<ProductId, int>
+internal sealed class ProductIdConverter : ValueConverter<ProductId, Guid>
 {
     public ProductIdConverter()
         : base(

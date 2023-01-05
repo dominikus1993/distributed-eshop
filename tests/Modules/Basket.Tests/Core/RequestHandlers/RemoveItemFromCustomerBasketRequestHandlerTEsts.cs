@@ -36,7 +36,7 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests: IClassFixture<Redi
             x.Publish(It.IsAny<BasketItemWasRemoved>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
         
         var customerId = CustomerId.New();
-        var basketItem = new BasketItem(new ItemId(1), new ItemQuantity(1));
+        var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
         var deserializer = new SystemTextRedisObjectDeserializer();
         var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
         var getCustomerBasket = new GetCustomerBasketHandler(repo);
@@ -66,7 +66,7 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests: IClassFixture<Redi
             x.Publish(It.IsAny<BasketItemWasRemoved>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
         
         var customerId = CustomerId.New();
-        var basketItem = new BasketItem(new ItemId(1), new ItemQuantity(1));
+        var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
         var deserializer = new SystemTextRedisObjectDeserializer();
         var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
         var getCustomerBasket = new GetCustomerBasketHandler(repo);

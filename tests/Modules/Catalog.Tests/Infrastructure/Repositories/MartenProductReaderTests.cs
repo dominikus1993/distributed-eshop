@@ -27,7 +27,7 @@ public class MartenProductReaderTests : IClassFixture<PostgresSqlFixture>
         
         // Act
 
-        var subject = await repo.GetById(new ProductId(RandomNumberGenerator.GetInt32(int.MaxValue)));
+        var subject = await repo.GetById(ProductId.New());
         
         subject.ShouldBeNull();
     }
@@ -38,7 +38,7 @@ public class MartenProductReaderTests : IClassFixture<PostgresSqlFixture>
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var productId = new ProductId(RandomNumberGenerator.GetInt32(int.MaxValue));
+        var productId = ProductId.New();
         var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         

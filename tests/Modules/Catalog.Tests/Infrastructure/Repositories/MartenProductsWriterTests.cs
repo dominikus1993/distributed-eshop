@@ -26,7 +26,7 @@ public class MartenProductsWriterTests: IClassFixture<PostgresSqlFixture>
         var repo = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
         
         // Act
-        var productId = new ProductId(RandomNumberGenerator.GetInt32(int.MaxValue));
+        var productId =  ProductId.New();
         var product = new Product(productId, new ProductName("xD"), new ProductDescription("xDD"), new ProductPrice(21.37m, 21.36m), new AvailableQuantity(1));
         var subject = await repo.AddProduct(product);
                     

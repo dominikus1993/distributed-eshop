@@ -31,7 +31,7 @@ public class CustomerBasketTests
     {
         // Arrange 
 
-        var item = new BasketItem(new ItemId(1), new ItemQuantity(2));
+        var item = new BasketItem(ItemId.New(), new ItemQuantity(2));
         var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item);
         
         // Act
@@ -49,7 +49,8 @@ public class CustomerBasketTests
     {
         // Arrange 
 
-        var item = new BasketItem(new ItemId(1), new ItemQuantity(2));
+        var itemId = ItemId.New();
+        var item = new BasketItem(itemId, new ItemQuantity(2));
         var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
         
         // Act
@@ -59,7 +60,7 @@ public class CustomerBasketTests
         // Assert
         subject.IsEmpty.ShouldBeFalse();
         subject.Items.ShouldNotBeEmpty();
-        subject.Items.ShouldContain(new BasketItem(new ItemId(1), new ItemQuantity(4)));
+        subject.Items.ShouldContain(new BasketItem(itemId, new ItemQuantity(4)));
     }
     
     
@@ -68,7 +69,7 @@ public class CustomerBasketTests
     {
         // Arrange 
 
-        var itemId = new ItemId(1);
+        var itemId = ItemId.New();
         var item = new BasketItem(itemId, new ItemQuantity(2));
         var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
         
@@ -87,7 +88,7 @@ public class CustomerBasketTests
     {
         // Arrange 
 
-        var itemId = new ItemId(1);
+        var itemId = ItemId.New();
         var item = new BasketItem(itemId, new ItemQuantity(2));
         var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
         
