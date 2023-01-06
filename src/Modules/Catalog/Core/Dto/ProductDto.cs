@@ -5,16 +5,23 @@ namespace Catalog.Core.Dto;
 public sealed class ProductDto
 {
     public Guid ProductId { get; init; }
-    public string Description { get; init; }
     
-    private ProductDto(Guid productId, string description)
-    {
-        ProductId = productId;
-        Description = description;
-    }
+    public string Name { get; init; } = null!;
+    public string Description { get; init; } = null!;
 
-    public static ProductDto Create(Product product)
+    public decimal? PromotionalPrice { get; init; }
+
+    public decimal Price { get; init; }
+    
+    public int AvailableQuantity { get; init; }
+    
+    public ProductDto(Product product)
     {
-        return new ProductDto(product.Id.Value, product.ProductDescription.Description);
+        ProductId = product.Id.Value;
+        Description = product.ProductDescription.Description;
+        Name = product.ProductName.Name;
+        Price = product.Price.CurrentPrice;
+        PromotionalPrice = product.Price.PromotionalPrice;
+        AvailableQuantity = product.AvailableQuantity.Value;
     }
 }

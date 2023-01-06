@@ -5,8 +5,5 @@
             <_Parameter1>Catalog.Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Core\RequestHandlers" />
-    </ItemGroup>
     <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
