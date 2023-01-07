@@ -1,5 +1,7 @@
 using Catalog.Core.Model;
 
+using NpgsqlTypes;
+
 namespace Catalog.Infrastructure.Model;
 
 public sealed class EfProduct
@@ -13,6 +15,8 @@ public sealed class EfProduct
     public decimal Price { get; set; }
     
     public int AvailableQuantity { get; set; }
+    
+    public NpgsqlTsVector SearchVector { get; set; }
     
     public EfProduct()
     {

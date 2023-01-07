@@ -27,5 +27,12 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
         builder.Property(product => product.ProductId).HasConversion<ProductIdConverter>();
         builder.Property(product => product.Name).IsRequired();
         builder.Property(product => product.Description).IsRequired();
+        builder
+            .HasGeneratedTsVectorColumn(
+                p => p.SearchVector,
+                "english",  
+                p => new { p.Name, p.Description })  
+            .HasIndex(p => p.SearchVector)
+            .HasMethod("GIN");
     }
 }
