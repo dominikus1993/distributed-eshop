@@ -10,10 +10,10 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace Catalog.Migrations
+namespace Catalog.Infrastructure.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
-    [Migration("20230107144457_Init")]
+    [Migration("20230107145802_Init")]
     partial class Init
     {
         /// <inheritdoc />

@@ -9,7 +9,7 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace Catalog.Migrations
+namespace Catalog.Infrastructure.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
     partial class ProductsDbContextModelSnapshot : ModelSnapshot

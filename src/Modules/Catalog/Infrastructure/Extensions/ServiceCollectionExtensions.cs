@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContextPool<ProductsDbContext>(builder =>
         {
+            builder.UseModel(ProductsDbContextModel.Instance);
             builder.UseNpgsql(configuration.GetConnectionString("CatalogDb"), optionsBuilder =>
             {
                 optionsBuilder.EnableRetryOnFailure(5);

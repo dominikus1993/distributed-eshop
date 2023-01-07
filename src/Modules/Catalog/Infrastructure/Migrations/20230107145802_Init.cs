@@ -4,7 +4,7 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace Catalog.Migrations
+namespace Catalog.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration

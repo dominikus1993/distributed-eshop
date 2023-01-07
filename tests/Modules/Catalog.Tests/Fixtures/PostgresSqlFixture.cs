@@ -28,6 +28,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
         await this.PostgreSql.StartAsync()
             .ConfigureAwait(false);
         var builder = new DbContextOptionsBuilder<ProductsDbContext>()
+            .UseModel(ProductsDbContextModel.Instance)
             .UseNpgsql(this.PostgreSql.ConnectionString,
                 optionsBuilder =>
                 {

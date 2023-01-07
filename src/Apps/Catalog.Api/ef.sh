@@ -1,0 +1,2 @@
+dotnet ef migrations add Init --project ../../Modules/Catalog -o Infrastructure/Migrations 
+dotnet ef dbcontext optimize -o Infrastructure/CompiledModels --context ProductsDbContext --namespace Catalog.Infrastructure.DbContexts -p ../../Modules/Catalog
