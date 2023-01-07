@@ -2,7 +2,16 @@ using Catalog.Core.Model;
 
 namespace Catalog.Core.Repository;
 
-public readonly record struct Filter(int Page = 1, int PageSize = 12);
+public sealed class Filter
+{
+    public int Page { get; init; } = 1;
+    public int PageSize { get; init; } = 12;
+    public string? Query { get; init; }
+    public decimal? PriceFrom { get; init; }
+    public decimal? PriceTo { get; init; }
+
+    internal int Skip => (Page - 1) * PageSize;
+}
 
 public interface IProductFilter
 {

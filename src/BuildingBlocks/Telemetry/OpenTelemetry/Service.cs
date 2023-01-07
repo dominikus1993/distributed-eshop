@@ -45,9 +45,9 @@ public sealed class OpenTelemetryConfiguration
 
 public sealed class Service
 {
-    public IReadOnlyCollection<Tag>? Tags { get; init; }
-    public required string Name { get; init; }
-    public required string Version { get; init; }
+    public IReadOnlyCollection<Tag>? Tags { get; init; } = null!;
+    public required string Name { get; init; } = null!;
+    public required string Version { get; init; } = null!;
     
-    public OpenTelemetryConfiguration OpenTelemetryConfiguration { get; set; } = new();
+    public OpenTelemetryConfiguration OpenTelemetryConfiguration { get; init; } = new();
 }

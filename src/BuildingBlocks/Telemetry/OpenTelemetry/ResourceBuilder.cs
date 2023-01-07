@@ -1,8 +1,10 @@
+using Hosting.OpenTelemetry;
+
 using OpenTelemetry.Resources;
 
-namespace Hosting.OpenTelemetry;
+namespace Telemetry.OpenTelemetry;
 
-public class ResourceBuilderExtensions
+public static class ResourceBuilderExtensions
 {
     private static IEnumerable<KeyValuePair<string, object>> GetAttributes(Service service, string envName)
     {

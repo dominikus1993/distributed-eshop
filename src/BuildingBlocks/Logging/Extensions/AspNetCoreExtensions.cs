@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 
 using OpenTelemetry.Logs;
 
+using Telemetry.OpenTelemetry;
+
 namespace Logging.Extensions;
 
 public static class AspNetCoreExtensions
