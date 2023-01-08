@@ -2,3 +2,4 @@ FastEndpoints
 FastEndpoints.Swagger
 FastEndpoints.Security
 FluentValidation
+OpenTelemetry.Instrumentation.StackExchangeRedis 

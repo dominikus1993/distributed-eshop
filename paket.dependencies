@@ -34,7 +34,8 @@ nuget OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs
 nuget OpenTelemetry.Exporter.OpenTelemetryProtocol
 nuget OpenTelemetry prerelease
 nuget OpenTelemetry.Api prerelease
-
+nuget Npgsql.OpenTelemetry
+nuget OpenTelemetry.Instrumentation.StackExchangeRedis prerelease
 nuget AutoFixture
 nuget Shouldly
 nuget xunit

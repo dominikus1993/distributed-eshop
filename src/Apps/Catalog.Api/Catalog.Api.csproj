@@ -17,6 +17,7 @@
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Hosting\Hosting.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\..\Modules\Catalog\Catalog.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

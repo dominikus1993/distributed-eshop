@@ -5,7 +5,20 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 
+using Hosting.OpenTelemetry;
+
+using OpenTelemetry.Trace;
+
+using Telemetry.OpenTelemetry;
+
+var service = new Service() { Name = "Basket.Api", Version = "1.0.0" };
 var builder = WebApplication.CreateBuilder(args);
+builder.AddOpenTelemetry(service)
+    .AddOpenTelemetryTracing(b =>
+    {
+        b.AddRedisInstrumentation();
+    })
+    .AddOpenTelemetryMetrics();
 
 builder.Services.AddFastEndpoints();
 builder.AddBasket();

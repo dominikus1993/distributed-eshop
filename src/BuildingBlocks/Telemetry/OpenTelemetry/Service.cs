@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Hosting.OpenTelemetry;
 
 public readonly record struct Tag(string Name, string Value);
@@ -46,8 +48,8 @@ public sealed class OpenTelemetryConfiguration
 public sealed class Service
 {
     public IReadOnlyCollection<Tag>? Tags { get; init; } = null!;
-    public required string Name { get; init; } = null!;
-    public required string Version { get; init; } = null!;
+    public string Name { get; init; } = Assembly.GetExecutingAssembly().FullName!;
+    public string Version { get; init; } = "Unspecified";
     
     public OpenTelemetryConfiguration OpenTelemetryConfiguration { get; init; } = new();
 }

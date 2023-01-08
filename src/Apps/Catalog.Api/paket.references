@@ -2,3 +2,4 @@ FastEndpoints
 FastEndpoints.Swagger
 FastEndpoints.Security
 FluentValidation
+Npgsql.OpenTelemetry

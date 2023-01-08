@@ -6,7 +6,7 @@ namespace Telemetry.OpenTelemetry;
 
 public static class ResourceBuilderExtensions
 {
-    private static IEnumerable<KeyValuePair<string, object>> GetAttributes(Service service, string envName)
+    private static IEnumerable<KeyValuePair<string, object>> GetAttributes(this Service service, string envName)
     {
         yield return new KeyValuePair<string, object>("env", envName);
         if (service.Tags is { Count: > 0})
@@ -18,7 +18,7 @@ public static class ResourceBuilderExtensions
         }
     }
     
-    public static ResourceBuilder GetResourceBuilder(Service service, string envName)
+    public static ResourceBuilder GetResourceBuilder(this Service service, string envName)
     {
         return ResourceBuilder.CreateDefault()
             .AddTelemetrySdk()
