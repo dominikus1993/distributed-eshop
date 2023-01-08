@@ -16,7 +16,7 @@ public static class EndpointExtensions
                 UIResponseWriter.WriteHealthCheckUIResponse(context, report)
             });
         app.MapHealthChecks("/ping",
-            new HealthCheckOptions() { Predicate = r => r.Name.Contains("self"), ResponseWriter =
+            new HealthCheckOptions() { Predicate = r => r.Name.Contains("self", StringComparison.InvariantCultureIgnoreCase), ResponseWriter =
                 (context, report) => PongWriteResponse(context, report), });
 
         return app;

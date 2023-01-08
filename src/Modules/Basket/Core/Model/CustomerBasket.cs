@@ -44,6 +44,16 @@ public readonly record struct ItemQuantity(uint Value) : IAdditionOperators<Item
 
         return new (left.Value - right.Value);
     }
+
+    public static ItemQuantity Add(ItemQuantity left, ItemQuantity right)
+    {
+        return left + right;
+    }
+
+    public static ItemQuantity Subtract(ItemQuantity left, ItemQuantity right)
+    {
+        return left - right;
+    }
 }
 
 public sealed record BasketItem(ItemId ItemId, ItemQuantity Quantity)

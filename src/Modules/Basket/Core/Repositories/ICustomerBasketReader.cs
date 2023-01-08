@@ -61,12 +61,52 @@ public sealed class RemoveBasketException : Exception
 
 public readonly struct UpdateBasketSuccess
 {
-    public static UpdateBasketSuccess Instance = new();
+    public static readonly UpdateBasketSuccess Instance;
+
+    public override bool Equals(object? obj)
+    {
+        return obj is UpdateBasketSuccess;
+    }
+
+    public override int GetHashCode()
+    {
+        return 0;
+    }
+
+    public static bool operator ==(UpdateBasketSuccess left, UpdateBasketSuccess right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(UpdateBasketSuccess left, UpdateBasketSuccess right)
+    {
+        return !(left == right);
+    }
 }
 
 public readonly struct RemoveBasketSuccess
 {
-    public static RemoveBasketSuccess Instance = new();
+    public static readonly RemoveBasketSuccess Instance = default;
+    
+    public override bool Equals(object? obj)
+    {
+        return obj is UpdateBasketSuccess;
+    }
+
+    public override int GetHashCode()
+    {
+        return 0;
+    }
+
+    public static bool operator ==(RemoveBasketSuccess left, RemoveBasketSuccess right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(RemoveBasketSuccess left, RemoveBasketSuccess right)
+    {
+        return !(left == right);
+    }
 }
 
 [GenerateOneOf]

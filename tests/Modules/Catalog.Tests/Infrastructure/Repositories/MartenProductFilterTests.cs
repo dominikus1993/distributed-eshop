@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Catalog.Tests.Infrastructure.Repositories;
 
-public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>, IDisposable
+public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>, IDisposable
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
 
