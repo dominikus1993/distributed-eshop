@@ -59,7 +59,7 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
     {
         var exchange = await _advancedBus.ExchangeDeclareAsync(_publisherConfig.Exchange, ExchangeType.Topic, true, false,
             cancellationToken);
-        using var activity = RabbitMqTelemetry.RabbitMqActivitySource.Start();
+        using var activity = RabbitMqTelemetry.RabbitMqActivitySource.Start(activityContext: ctx?.Context);
         MessageProperties messageProps = new();
         if (activity is not null)
         {
