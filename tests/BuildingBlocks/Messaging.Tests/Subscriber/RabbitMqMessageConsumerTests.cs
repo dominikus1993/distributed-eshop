@@ -20,7 +20,7 @@ namespace Messaging.Tests.Subscriber;
 public class Msg : IMessage
 {
     public string? Message { get; init; }
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
 }
 
 public class RabbitMqConsumerTests : IClassFixture<RabbitMqFixture>
