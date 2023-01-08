@@ -19,7 +19,7 @@ namespace Messaging.Tests.Subscriber;
 
 public class Msg : IMessage
 {
-    public string Message { get; init; }
+    public string? Message { get; init; }
     public Guid Id { get; init; } = Guid.NewGuid();
 }
 

@@ -30,7 +30,7 @@ internal sealed partial class RedisBasketItem
 internal sealed partial class RedisCustomerBasket
 {
     public Guid CustomerId { get; set; }
-    public IReadOnlyCollection<RedisBasketItem> Items { get; set; }
+    public IReadOnlyCollection<RedisBasketItem> Items { get; set; } = null!;
     
     [MemoryPackConstructor]
     public RedisCustomerBasket()
