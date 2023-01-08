@@ -11,10 +11,10 @@ namespace Basket.Core.Events;
 public sealed class BasketItemWasAdded : INotification, IMessage
 
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
-    public required Guid CustomerId { get; init; }
-    public required Guid ItemId { get; init; }
-    public required uint Quantity { get; init; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public required Guid CustomerId { get; set; }
+    public required Guid ItemId { get; set; }
+    public required uint Quantity { get; set; }
 
     [SetsRequiredMembers]
     public BasketItemWasAdded(CustomerId customerId, BasketItem item)
