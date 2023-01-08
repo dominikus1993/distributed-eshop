@@ -10,7 +10,8 @@ using Xunit;
 
 namespace Catalog.Tests.Infrastructure.Repositories;
 
-public class MartenProductsWriterTests: IClassFixture<PostgresSqlFixture>
+[Collection(nameof(ProductContextContextCollection))]
+public class MartenProductsWriterTests
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
 
