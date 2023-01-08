@@ -6,7 +6,6 @@ using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 
 using Hosting.HealthChecks;
-using Hosting.OpenTelemetry;
 
 using Npgsql;
 

@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-using Hosting.OpenTelemetry;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 

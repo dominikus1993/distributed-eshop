@@ -1,16 +1,16 @@
 using System.Reflection;
 
-namespace Hosting.OpenTelemetry;
+namespace Telemetry.OpenTelemetry;
 
 public readonly record struct Tag(string Name, string Value);
 
 public sealed class OpenTelemetryConfiguration
 {
-    private bool _openTelemetryEnabled = false;
-    private bool _openTelemetryLoggingEnabled = false;
-    private bool _openTelemetryMetricsEnabled = false;
-    private bool _oltpExporterEnabled = false;
-    private bool _consoleExporterEnabled = false;
+    private bool _openTelemetryEnabled;
+    private bool _openTelemetryLoggingEnabled;
+    private bool _openTelemetryMetricsEnabled;
+    private bool _oltpExporterEnabled;
+    private bool _consoleExporterEnabled;
 
     public bool OpenTelemetryEnabled
     {

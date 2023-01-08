@@ -1,5 +1,3 @@
-using Hosting.OpenTelemetry;
-
 using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;

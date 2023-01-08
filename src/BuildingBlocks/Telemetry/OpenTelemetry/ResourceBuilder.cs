@@ -1,5 +1,3 @@
-using Hosting.OpenTelemetry;
-
 using OpenTelemetry.Resources;
 
 namespace Telemetry.OpenTelemetry;
