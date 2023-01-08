@@ -30,6 +30,7 @@ public sealed class UnableToWriteRecordException : Exception
     }
 } 
 
+[Serializable]
 public sealed class UnableToWriteRecordsException : Exception
 {
     public IEnumerable<ProductId> ProductIds { get; }
@@ -41,6 +42,11 @@ public sealed class UnableToWriteRecordsException : Exception
     public UnableToWriteRecordsException(IEnumerable<ProductId> productIds, Exception innerException) : base("can't write product to database", innerException)
     {
         ProductIds = productIds;
+    }
+    
+    private UnableToWriteRecordsException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+    {
+        
     }
 
     public override string ToString()

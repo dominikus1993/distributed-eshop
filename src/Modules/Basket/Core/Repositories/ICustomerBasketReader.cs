@@ -9,6 +9,7 @@ public interface ICustomerBasketReader
     Task<CustomerBasket?> Find(CustomerId customerId, CancellationToken cancellationToken = default);
 }
 
+[Serializable]
 public sealed class UpdateBasketException : Exception 
 {
     public CustomerId CustomerId { get; }
@@ -32,8 +33,14 @@ public sealed class UpdateBasketException : Exception
     {
         return $"{base.ToString()}, {nameof(CustomerId)}: {CustomerId}";
     }
+
+    private UpdateBasketException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+    {
+        
+    }
 }
 
+[Serializable]
 public sealed class RemoveBasketException : Exception 
 {
     public CustomerId CustomerId { get; }
@@ -51,6 +58,11 @@ public sealed class RemoveBasketException : Exception
     public RemoveBasketException(CustomerId customerId, string? message, Exception? innerException) : base(message, innerException)
     {
         CustomerId = customerId;
+    }
+    
+    private RemoveBasketException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+    {
+        
     }
 
     public override string ToString()

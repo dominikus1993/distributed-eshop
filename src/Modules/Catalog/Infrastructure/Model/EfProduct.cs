@@ -15,8 +15,8 @@ public sealed class EfProduct
     public decimal Price { get; set; }
     
     public int AvailableQuantity { get; set; }
-    
-    public NpgsqlTsVector SearchVector { get; set; }
+
+    public NpgsqlTsVector SearchVector { get; set; } = null!;
     
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     
