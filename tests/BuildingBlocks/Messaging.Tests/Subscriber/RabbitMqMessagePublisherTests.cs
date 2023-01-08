@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Messaging.Tests.Subscriber;
 
-[Collection(nameof(RabbitMqFixtureCollection))]
+[Collection(nameof(RabbitMqFixtureCollectionTest))]
 public class RabbitMqMessagePublisherTests 
 {
     private readonly RabbitMqFixture _rabbitMqFixture;

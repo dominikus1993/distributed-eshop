@@ -7,7 +7,7 @@ using Shouldly;
 
 namespace Basket.Tests.Infrastructure.Repositories;
 
-[Collection(nameof(RedisFixtureCollection))]
+[Collection(nameof(RedisFixtureCollectionTest))]
 public class RedisCustomerBasketRepositoryTests
 {
     

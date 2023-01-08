@@ -48,8 +48,8 @@ public sealed class RabbitMqFixture : IAsyncLifetime, IDisposable
     } 
 }
 
-[CollectionDefinition(nameof(RabbitMqFixtureCollection))]
-public class RabbitMqFixtureCollection : ICollectionFixture<RabbitMqFixture>
+[CollectionDefinition(nameof(RabbitMqFixtureCollectionTest))]
+public class RabbitMqFixtureCollectionTest : ICollectionFixture<RabbitMqFixture>
 {
     // This class has no code, and is never created. Its purpose is simply
     // to be the place to apply [CollectionDefinition] and all the

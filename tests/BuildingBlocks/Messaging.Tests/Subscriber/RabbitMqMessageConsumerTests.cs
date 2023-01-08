@@ -23,7 +23,7 @@ public class Msg : IMessage
     public Guid Id { get; set; } = Guid.NewGuid();
 }
 
-[Collection(nameof(RabbitMqFixtureCollection))]
+[Collection(nameof(RabbitMqFixtureCollectionTest))]
 public class RabbitMqConsumerTests
 {
     private readonly RabbitMqFixture _rabbitMqFixture;
