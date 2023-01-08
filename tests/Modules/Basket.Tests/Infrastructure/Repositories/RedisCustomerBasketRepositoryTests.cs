@@ -7,8 +7,10 @@ using Shouldly;
 
 namespace Basket.Tests.Infrastructure.Repositories;
 
-public class RedisCustomerBasketRepositoryTests : IClassFixture<RedisFixture>
+[Collection(nameof(RedisFixtureCollection))]
+public class RedisCustomerBasketRepositoryTests
 {
+    
     private readonly RedisFixture _redisFixture;
 
     public RedisCustomerBasketRepositoryTests(RedisFixture redisFixture)

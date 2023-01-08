@@ -14,7 +14,8 @@ using Shouldly;
 
 namespace Basket.Tests.Core.RequestHandlers;
 
-public class AddItemToCustomerBasketHandlerTests: IClassFixture<RedisFixture>
+[Collection(nameof(RedisFixtureCollection))]
+public class AddItemToCustomerBasketHandlerTests
 {
     private readonly RedisFixture _redisFixture;
 

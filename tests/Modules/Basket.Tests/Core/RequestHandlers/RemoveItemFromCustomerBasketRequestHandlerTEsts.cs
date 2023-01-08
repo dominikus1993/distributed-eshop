@@ -14,7 +14,8 @@ using Shouldly;
 
 namespace Basket.Tests.Core.RequestHandlers;
 
-public class RemoveItemFromCustomerBasketRequestHandlerTests: IClassFixture<RedisFixture>
+[Collection(nameof(RedisFixtureCollection))]
+public class RemoveItemFromCustomerBasketRequestHandlerTests
 {
     private readonly RedisFixture _redisFixture;
 

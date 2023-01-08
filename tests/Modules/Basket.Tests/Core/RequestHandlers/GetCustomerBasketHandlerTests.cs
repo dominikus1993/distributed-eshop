@@ -9,7 +9,8 @@ using Shouldly;
 
 namespace Basket.Tests.Core.RequestHandlers;
 
-public class GetCustomerBasketHandlerTests: IClassFixture<RedisFixture>
+[Collection(nameof(RedisFixtureCollection))]
+public class GetCustomerBasketHandlerTests
 {
     private readonly RedisFixture _redisFixture;
 
