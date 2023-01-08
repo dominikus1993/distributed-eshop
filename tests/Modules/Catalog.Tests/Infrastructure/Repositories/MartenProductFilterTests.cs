@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Catalog.Tests.Infrastructure.Repositories;
 
-public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
+public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>, IDisposable
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
 
@@ -153,5 +153,11 @@ public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         subject.ShouldNotContain(product1);
         subject.ShouldContain(product2);
         subject.ShouldNotContain(product3);
+    }
+
+    public void Dispose()
+    {
+        _postgresSqlFixture.DbContext.Products.RemoveRange(_postgresSqlFixture.DbContext.Products);
+        _postgresSqlFixture.DbContext.SaveChanges();
     }
 }
