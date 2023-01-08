@@ -61,19 +61,19 @@ public sealed class AddItemToCustomerBasketEndpoint : Endpoint<AddItemToCustomer
         DontThrowIfValidationFails();
     }
     
-    public override async Task HandleAsync(AddItemToCustomerBasketRequest r, CancellationToken c)
+    public override async Task HandleAsync(AddItemToCustomerBasketRequest req, CancellationToken ct)
     {
         var userId = User.UserId();
         if (ValidationFailed)
         {
             base.Logger.LogWarning("Invalid request");
-            await SendErrorsAsync(cancellation: c);
+            await SendErrorsAsync(cancellation: ct);
             return;
         }
         
-        await _sender.Send(new AddItemToCustomerBasket(new CustomerId(userId), new BasketItem(new ItemId(r.Id), new ItemQuantity((uint)r.Quantity))), c);
+        await _sender.Send(new AddItemToCustomerBasket(new CustomerId(userId), new BasketItem(new ItemId(req.Id), new ItemQuantity((uint)req.Quantity))), ct);
         
-        await SendOkAsync(cancellation: c);
+        await SendOkAsync(cancellation: ct);
     }
     
 }

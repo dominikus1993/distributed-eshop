@@ -67,17 +67,17 @@ public sealed class GetCustomerBasketEndpoint : EndpointWithoutRequest<GetCustom
         SerializerContext(GetCustomerBasketEndpointCtx.Default);
     }
 
-    public override async Task HandleAsync(CancellationToken c)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         var userId = User.UserId();
-        var result = await _sender.Send(new GetCustomerBasket(new CustomerId(userId)), c);
+        var result = await _sender.Send(new GetCustomerBasket(new CustomerId(userId)), ct);
 
         if (result is null)
         {
-            await SendNotFoundAsync(c);
+            await SendNotFoundAsync(ct);
             return;
         }
         
-        await SendAsync(new GetCustomerBasketResponse(result), cancellation: c);
+        await SendAsync(new GetCustomerBasketResponse(result), cancellation: ct);
     }
 }
