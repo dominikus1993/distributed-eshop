@@ -11,13 +11,9 @@ public static class EndpointExtensions
 {
     public static WebApplication MapHealthCheckEndpoints(this WebApplication app)
     {
-        app.MapHealthChecks("/healthz",
-            new HealthCheckOptions() { Predicate = _ => true, ResponseWriter = (context, report) =>
-                UIResponseWriter.WriteHealthCheckUIResponse(context, report)
-            });
+        app.MapHealthChecks("/healthz", new HealthCheckOptions() { Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
         app.MapHealthChecks("/ping",
-            new HealthCheckOptions() { Predicate = r => r.Name.Contains("self", StringComparison.InvariantCultureIgnoreCase), ResponseWriter =
-                (context, _) => PongWriteResponse(context), });
+            new HealthCheckOptions() { Predicate = r => r.Name.Contains("self", StringComparison.InvariantCultureIgnoreCase), ResponseWriter = (context, _) => PongWriteResponse(context), });
 
         return app;
     }
