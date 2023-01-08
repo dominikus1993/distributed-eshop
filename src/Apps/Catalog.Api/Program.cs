@@ -23,6 +23,7 @@ builder.Services.AddFastEndpoints();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddJWTBearerAuth(builder.Configuration["Security:Jwt:Secret"]!);
 builder.Services.AddSwaggerDoc();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
