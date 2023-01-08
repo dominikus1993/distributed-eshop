@@ -25,7 +25,7 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        var securityStub = new JwtSecurityStub()
+        await using var securityStub = new JwtSecurityStub()
             .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
             .With(JwtRegisteredClaimNames.UniqueName, "21372137")
             .With("iss", "test")
@@ -61,7 +61,7 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        var securityStub = new JwtSecurityStub()
+        await using var securityStub = new JwtSecurityStub()
             .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
             .With(JwtRegisteredClaimNames.UniqueName, "21372137")
             .With("iss", "test")
@@ -105,7 +105,7 @@ public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixtu
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        var securityStub = new JwtSecurityStub()
+        await using var securityStub = new JwtSecurityStub()
             .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
             .With(JwtRegisteredClaimNames.UniqueName, "21372137")
             .With("iss", "test")
