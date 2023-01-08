@@ -54,7 +54,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
     }
 }
 
-public class TestDbContextFactory : IDbContextFactory<ProductsDbContext>
+public sealed class TestDbContextFactory : IDbContextFactory<ProductsDbContext>
 {
     private readonly ProductsDbContext _context;
 

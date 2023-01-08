@@ -8,7 +8,7 @@ using StackExchange.Redis;
 
 namespace Basket.Tests.Fixture;
 
-public class RedisFixture : IAsyncLifetime, IDisposable
+public sealed class RedisFixture : IAsyncLifetime, IDisposable
 {
     private readonly TestcontainerDatabaseConfiguration _configuration = new RedisTestcontainerConfiguration("redis:6-alpine");
 
