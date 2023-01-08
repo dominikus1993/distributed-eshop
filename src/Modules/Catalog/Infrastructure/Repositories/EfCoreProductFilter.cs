@@ -39,7 +39,7 @@ public sealed class EfCoreProductFilter : IProductFilter
                     : product.Price <= filter.PriceTo.Value);
         }
 
-        var result = query.Skip(filter.Skip).Take(filter.PageSize);
+        var result = query.OrderBy(x => x.DateCreated).Skip(filter.Skip).Take(filter.PageSize);
 
         await foreach (var product in result.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {

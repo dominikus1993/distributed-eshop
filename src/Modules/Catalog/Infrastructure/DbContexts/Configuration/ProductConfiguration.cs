@@ -34,6 +34,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
     public void Configure(EntityTypeBuilder<EfProduct> builder)
     {
         builder.HasKey(product => product.ProductId);
+        builder.HasIndex(product => product.DateCreated);
+        builder.HasIndex(product => new { product.Price, product.PromotionalPrice });
         builder.Property(product => product.ProductId).HasConversion<ProductIdConverter>();
         builder.Property(product => product.Name).IsRequired();
         builder.Property(product => product.Description).IsRequired();

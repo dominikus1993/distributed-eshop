@@ -113,7 +113,7 @@ public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         await writer.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
-        var subject = await repo.FilterProducts(new Filter() { Query = "nivea", PageSize = 1} , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject = await repo.FilterProducts(new Filter() { Query = "nivea", PageSize = 1 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
         
         // Assert
         subject.ShouldNotBeNull();
@@ -121,6 +121,36 @@ public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         subject.Count.ShouldBe(1);
         
         subject.ShouldContain(product1);
+        subject.ShouldNotContain(product2);
+        subject.ShouldNotContain(product3);
+    }
+    
+    [Fact]
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeywordOnTheSecondPage()
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        await writer.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        
+        var subject = await repo.FilterProducts(new Filter() { Query = "nivea", PageSize = 1, Page = 2 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1);
+        
+        subject.ShouldNotContain(product1);
         subject.ShouldContain(product2);
         subject.ShouldNotContain(product3);
     }
