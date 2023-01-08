@@ -20,6 +20,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
 
     public async Task<CustomerBasket?> Find(CustomerId customerId, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var db = _connectionMultiplexer.GetDatabase();
         var result = await db.StringGetAsync(customerId.ToRedisKey());
         if (!_redisObjectDeserializer.Deserialize(result, out var model))
@@ -35,6 +36,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
 
     public async Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var redisBasket = new RedisCustomerBasket(basket);
 
         var json = _redisObjectDeserializer.Serialize(redisBasket);
@@ -47,6 +49,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
 
     public async Task<RemoveCustomerBasketResult> Remove(CustomerId customerId, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var key = customerId.ToRedisKey();
         var db = _connectionMultiplexer.GetDatabase();
         await db.KeyDeleteAsync(key);
