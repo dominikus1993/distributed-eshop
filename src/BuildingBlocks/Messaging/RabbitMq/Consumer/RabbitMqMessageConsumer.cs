@@ -5,6 +5,7 @@ using EasyNetQ.Consumer;
 using EasyNetQ.Topology;
 
 using Messaging.Abstraction;
+using Messaging.Logging;
 using Messaging.RabbitMq.Telemetry;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -77,7 +78,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                 if (serializer.BytesToMessage(typeof(T), body) is not T message)
                 {
                     var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<RabbitMqMessageConsumer<T>>>();
-                    logger.LogWarning("Can't deserialize message {Exchange} -> {RoutingKey} -> {Queue}", info.Exchange, info.RoutingKey, info.Queue);
+                    logger.LogCantDeserializeMessage(info.Exchange, info.RoutingKey, info.Queue);
                     activity?.AddEvent(new ActivityEvent("Message is null or can't be deserialized"));
                     return AckStrategies.NackWithoutRequeue;
                 }
@@ -88,7 +89,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
             catch (Exception exc)
             {
                 var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<RabbitMqMessageConsumer<T>>>();
-                logger.LogWarning(exc, "Can't process message {Exchange} -> {RoutingKey} -> {Queue}", info.Exchange, info.RoutingKey, info.Queue);
+                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue);
                 activity?.RecordException(exc);
                 return AckStrategies.NackWithRequeue;
             }

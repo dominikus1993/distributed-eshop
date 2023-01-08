@@ -19,7 +19,7 @@ internal sealed class Message<T> : IMessage<T>
     public Type MessageType { get; }
     public T Body { get; }
 
-    public object GetBody() { return Body; }
+    public object GetBody() { return Body!; }
     
     private Message(T body, MessageProperties properties, Type messageType)
     {
