@@ -17,13 +17,12 @@ public static class EndpointExtensions
             });
         app.MapHealthChecks("/ping",
             new HealthCheckOptions() { Predicate = r => r.Name.Contains("self", StringComparison.InvariantCultureIgnoreCase), ResponseWriter =
-                (context, report) => PongWriteResponse(context, report), });
+                (context, _) => PongWriteResponse(context), });
 
         return app;
     }
     
-    static Task PongWriteResponse(HttpContext httpContext,
-        HealthReport _)
+    static Task PongWriteResponse(HttpContext httpContext)
     {
         httpContext.Response.StatusCode = 200;
         httpContext.Response.ContentType = "application/json";
