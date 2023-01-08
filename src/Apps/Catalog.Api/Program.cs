@@ -5,6 +5,7 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 
+using Hosting.HealthChecks;
 using Hosting.OpenTelemetry;
 
 using Npgsql;
@@ -32,6 +33,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
 app.UseSwaggerGen();
+app.MapHealthCheckEndpoints();
 app.Run();
 
 public partial class Program {}
