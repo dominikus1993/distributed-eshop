@@ -19,6 +19,16 @@ internal sealed class ProductIdConverter : ValueConverter<ProductId, Guid>
     }
 }
 
+internal class UtcTimeConverter : ValueConverter<DateTime, DateTime>
+{
+    public UtcTimeConverter()
+        : base(
+            v => v,
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
+    {
+    }
+}
+
 public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
 {
     public void Configure(EntityTypeBuilder<EfProduct> builder)
@@ -27,6 +37,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
         builder.Property(product => product.ProductId).HasConversion<ProductIdConverter>();
         builder.Property(product => product.Name).IsRequired();
         builder.Property(product => product.Description).IsRequired();
+        builder.Property(product => product.DateCreated)
+            .HasDefaultValueSql("(now() at time zone 'utc')")
+            .HasConversion<UtcTimeConverter>();
         builder
             .HasGeneratedTsVectorColumn(
                 p => p.SearchVector,

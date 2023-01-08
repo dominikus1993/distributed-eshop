@@ -28,12 +28,15 @@ public sealed class EfCoreProductFilter : IProductFilter
 
         if (filter.PriceFrom.HasValue)
         {
-            query = query.Where(product => product.Price >= filter.PriceFrom.Value);
+            query = query.Where(product => product.PromotionalPrice.HasValue ? product.PromotionalPrice >= filter.PriceFrom.Value : product.Price >= filter.PriceFrom.Value);
         }
         
         if (filter.PriceTo.HasValue)
         {
-            query = query.Where(product => product.Price <= filter.PriceTo.Value);
+            query = query.Where(product =>
+                product.PromotionalPrice.HasValue
+                    ? product.PromotionalPrice <= filter.PriceTo.Value
+                    : product.Price <= filter.PriceTo.Value);
         }
 
         var result = query.Skip(filter.Skip).Take(filter.PageSize);

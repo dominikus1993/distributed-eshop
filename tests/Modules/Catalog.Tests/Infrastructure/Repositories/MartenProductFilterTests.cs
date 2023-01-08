@@ -21,7 +21,7 @@ public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
     }
 
     [Fact]
-    public async Task ReadProductByIdWhenNoExistsShouldReturnNull()
+    public async Task ReadFilterProductsWhenNoExistsShouldReturnNull()
     {
         // Arrange 
         var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
@@ -33,94 +33,95 @@ public class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         subject.ShouldNotBeNull();
         subject.ShouldBeEmpty();
     }
-    
+
+
     [Fact]
-    public async Task ReadProductByIdsWhenNoExistsShouldReturnEmptyEnumerable()
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnProductsWithNameOrDescriptionContainsNiveaKeyword()
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var productId = ProductId.New();
 
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
-        
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        await writer.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
-        var subject = await repo.GetByIds(new [] { productId } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject = await repo.FilterProducts(new Filter() { Query = "nivea"} , cts.Token).ToListAsync(cancellationToken: cts.Token);
         
         // Assert
         subject.ShouldNotBeNull();
-        subject.ShouldBeEmpty();
+        subject.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(2);
+        
+        subject.ShouldContain(product1);
+        subject.ShouldContain(product2);
+        subject.ShouldNotContain(product3);
     }
     
     [Fact]
-    public async Task ReadProductsByIdsWhenNoExistsShouldReturnEmptyEnumerable()
+    public async Task FilterProductWhenProductsInPriceConditionExistsShouldReturnProductsWithPriceCondition()
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
-        
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(11m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10));
+        await writer.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
-        var subject = await repo.GetByIds(new [] { ProductId.New(), ProductId.New() } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject = await repo.FilterProducts(new Filter() { PriceFrom = 2m, PriceTo = 12m } , cts.Token).ToListAsync(cancellationToken: cts.Token);
         
         // Assert
-        subject.ShouldNotBeNull();
-        subject.ShouldBeEmpty();
-    }
-    
-    [Fact]
-    public async Task ReadProductByIdWhenExistsShouldReturnProduct()
-    {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var productId = ProductId.New();
-        var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
-        
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
-        // Act
-
-        await writer.AddProduct(product, cts.Token);
-        var subject = await repo.GetById(productId, cts.Token);
-        
-        subject.ShouldNotBeNull();
-        subject.Id.ShouldBe(productId);
-        subject.ProductName.ShouldBe(product.ProductName);
-        subject.Price.ShouldBe(product.Price);
-        subject.AvailableQuantity.ShouldBe(product.AvailableQuantity);
-        subject.ProductDescription.ShouldBe(product.ProductDescription);
-    }
-    
-    [Fact]
-    public async Task ReadProductByIdsWhenExistsShouldReturnProduct()
-    {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var productId = ProductId.New();
-        var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
-        
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
-        // Act
-
-        await writer.AddProduct(product, cts.Token);
-        var subject = await repo.GetByIds(new [] { productId } , cts.Token).ToListAsync(cancellationToken: cts.Token);
-        
         subject.ShouldNotBeNull();
         subject.ShouldNotBeEmpty();
         subject.Count.ShouldBe(1);
-        var productFromDb = subject[0];
-        productFromDb.Id.ShouldBe(productId);
-        productFromDb.ProductName.ShouldBe(product.ProductName);
-        productFromDb.Price.ShouldBe(product.Price);
-        productFromDb.AvailableQuantity.ShouldBe(product.AvailableQuantity);
-        productFromDb.ProductDescription.ShouldBe(product.ProductDescription);
+        
+        subject.ShouldNotContain(product1); // Promotional Price is smaller than price from param
+        subject.ShouldContain(product2); 
+        subject.ShouldNotContain(product3);
+    }
+    
+    [Fact]
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeyword()
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        await writer.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        
+        var subject = await repo.FilterProducts(new Filter() { Query = "nivea", PageSize = 1} , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1);
+        
+        subject.ShouldContain(product1);
+        subject.ShouldContain(product2);
+        subject.ShouldNotContain(product3);
     }
 }

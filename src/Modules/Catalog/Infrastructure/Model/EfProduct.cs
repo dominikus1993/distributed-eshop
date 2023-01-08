@@ -18,6 +18,8 @@ public sealed class EfProduct
     
     public NpgsqlTsVector SearchVector { get; set; }
     
+    public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+    
     public EfProduct()
     {
         
