@@ -33,7 +33,7 @@ public sealed class UnableToWriteRecordException : Exception
 [Serializable]
 public sealed class UnableToWriteRecordsException : Exception
 {
-    public IEnumerable<ProductId> ProductIds { get; }
+    public IEnumerable<ProductId>? ProductIds { get; }
     public UnableToWriteRecordsException(IEnumerable<ProductId> productIds) : base("can't write product to database")
     {
         ProductIds = productIds;
@@ -51,7 +51,7 @@ public sealed class UnableToWriteRecordsException : Exception
 
     public override string ToString()
     {
-        return $"{base.ToString()}, {nameof(ProductId)}: {string.Join(',', ProductIds)}";
+        return $"{base.ToString()}, {nameof(ProductId)}: {string.Join(',', ProductIds ?? Enumerable.Empty<ProductId>())}";
     }
 } 
 public sealed class EfCoreProductsWriter : IProductsWriter
