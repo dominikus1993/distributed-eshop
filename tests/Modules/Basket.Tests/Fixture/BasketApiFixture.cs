@@ -79,7 +79,7 @@ public sealed class BasketApiFixture : IAsyncLifetime, IDisposable
 }
 
 [CollectionDefinition(nameof(BasketApiFixtureCollectionTest))]
-public class BasketApiFixtureCollectionTest : ICollectionFixture<RedisFixture>
+public class BasketApiFixtureCollectionTest : ICollectionFixture<BasketApiFixture>
 {
     // This class has no code, and is never created. Its purpose is simply
     // to be the place to apply [CollectionDefinition] and all the

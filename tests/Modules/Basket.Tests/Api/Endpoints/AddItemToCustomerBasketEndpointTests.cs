@@ -3,6 +3,7 @@ using Alba.Security;
 
 using Basket.Api.Endpoints;
 using Basket.Core.Model;
+using Basket.Tests.Extensions;
 using Basket.Tests.Fixture;
 
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -25,14 +26,9 @@ public class AddItemToCustomerBasketEndpointTests
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        await using var securityStub = new JwtSecurityStub()
-            .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
-            .With(JwtRegisteredClaimNames.UniqueName, "21372137")
-            .With("iss", "test")
-            .With("aud", "test")
-            .WithName("janpawlacz2");
+        await using var jwtSecurity = JwtSecurityStubCreator.Create(customerId);
 
-        await using var host = await _basketApiFixture.GetHost(securityStub);
+        await using var host = await _basketApiFixture.GetHost(jwtSecurity);
         var itemid = Guid.NewGuid();
         await host.Scenario(s =>
         {
@@ -61,7 +57,8 @@ public class AddItemToCustomerBasketEndpointTests
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        await using var securityStub = new JwtSecurityStub()
+        await using var jwtSecurity = new JwtSecurityStub();
+        await using var securityStub = jwtSecurity
             .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
             .With(JwtRegisteredClaimNames.UniqueName, "21372137")
             .With("iss", "test")
@@ -105,7 +102,8 @@ public class AddItemToCustomerBasketEndpointTests
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        await using var securityStub = new JwtSecurityStub()
+        await using var jwtSecurity = new JwtSecurityStub();
+        await using var securityStub = jwtSecurity
             .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
             .With(JwtRegisteredClaimNames.UniqueName, "21372137")
             .With("iss", "test")

@@ -4,6 +4,7 @@ using Alba.Security;
 using Basket.Core.Model;
 using Basket.Infrastructure.Repositories;
 using Basket.Infrastructure.Serialization;
+using Basket.Tests.Extensions;
 using Basket.Tests.Fixture;
 
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -27,12 +28,8 @@ public class GetCustomerBasketEndpointTests
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        await using var securityStub = new JwtSecurityStub()
-            .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
-            .With(JwtRegisteredClaimNames.UniqueName, "21372137")
-            .With("iss", "test")
-            .With("aud", "test")
-            .WithName("janpawlacz2");
+        await using var jwtSecurity = new JwtSecurityStub();
+        await using var securityStub = JwtSecurityStubCreator.Create(customerId);
 
         await using var host = await _basketApiFixture.GetHost(securityStub);
 
