@@ -11,7 +11,7 @@ using Shouldly;
 
 namespace Basket.Tests.Api.Endpoints;
 
-public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixture>
+public class AddItemToCustomerBasketEndpointTests 
 {
     private readonly BasketApiFixture _basketApiFixture;
 

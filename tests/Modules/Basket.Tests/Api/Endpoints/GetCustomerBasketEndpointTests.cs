@@ -12,7 +12,8 @@ using Shouldly;
 
 namespace Basket.Tests.Api.Endpoints;
 
-public class GetCustomerBasketEndpointTests : IClassFixture<BasketApiFixture>
+[Collection(nameof(BasketApiFixtureCollectionTest))]
+public class GetCustomerBasketEndpointTests
 {
     private BasketApiFixture _basketApiFixture;
 
