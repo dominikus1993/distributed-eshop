@@ -51,30 +51,24 @@ public sealed class RemoveItemFromCustomerBasketEndpointTests
     }   
     
     [Fact]
-    public async Task TestAddItemToEmptyCustomerBasketAndAddItAgain_ShouldReturnBasketWithOneIncreasedItem()
+    public async Task TestAddItemToEmptyCustomerBasketAndAddItAgain_ShouldReturnBasketWithOneItemWithTwoElements()
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        await using var jwtSecurity = new JwtSecurityStub();
-        await using var securityStub = jwtSecurity
-            .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
-            .With(JwtRegisteredClaimNames.UniqueName, "21372137")
-            .With("iss", "test")
-            .With("aud", "test")
-            .WithName("janpawlacz2");
+        await using var securityStub = JwtSecurityStubCreator.Create(customerId);
 
         await using var host = await _basketApiFixture.GetHost(securityStub);
 
         var itemid = Guid.NewGuid();
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
+            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 3, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
+            s.Delete.Json(new RemoveItemFromCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
 
@@ -100,13 +94,8 @@ public sealed class RemoveItemFromCustomerBasketEndpointTests
     {
         // Arrange
         var customerId = Guid.NewGuid();
-        await using var jwtSecurity = new JwtSecurityStub();
-        await using var securityStub = jwtSecurity
-            .With(JwtRegisteredClaimNames.Sub, customerId.ToString())
-            .With(JwtRegisteredClaimNames.UniqueName, "21372137")
-            .With("iss", "test")
-            .With("aud", "test")
-            .WithName("janpawlacz2");
+        
+        await using var securityStub = JwtSecurityStubCreator.Create(customerId);
 
         await using var host = await _basketApiFixture.GetHost(securityStub);
 
@@ -114,7 +103,7 @@ public sealed class RemoveItemFromCustomerBasketEndpointTests
         var itemid2 = Guid.NewGuid();
         await host.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
+            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 2, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
@@ -124,7 +113,11 @@ public sealed class RemoveItemFromCustomerBasketEndpointTests
             s.StatusCodeShouldBeOk();
         });
 
-        
+        await host.Scenario(s =>
+        {
+            s.Delete.Json(new RemoveItemFromCustomerBasketRequest() { Quantity = 2, Id = itemid }).ToUrl("/api/Basket/items");
+            s.StatusCodeShouldBeOk();
+        });
         
         // Act
         var resp = await host.Scenario(s =>
@@ -137,8 +130,7 @@ public sealed class RemoveItemFromCustomerBasketEndpointTests
         response.ShouldNotBeNull();
         response.CustomerId.ShouldBe(customerId);
         response.Items.ShouldNotBeEmpty();
-        response.Items.Count.ShouldBe(2);
-        response.Items.ShouldContain(x => x.ItemId == itemid && x.Quantity == 1);
+        response.Items.Count.ShouldBe(1);
         response.Items.ShouldContain(x => x.ItemId == itemid2 && x.Quantity == 2);
     }  
 }
