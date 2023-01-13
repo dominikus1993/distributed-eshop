@@ -2,7 +2,7 @@ using Carter;
 
 namespace Catalog.Api.Modules;
 
-public class SearchProductsModule : ICarterModule
+public sealed class SearchProductsModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
