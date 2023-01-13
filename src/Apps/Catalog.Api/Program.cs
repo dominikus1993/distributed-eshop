@@ -1,11 +1,11 @@
 
+using Carter;
+
 using Catalog.Infrastructure.Extensions;
 
-using FastEndpoints;
-using FastEndpoints.Security;
-using FastEndpoints.Swagger;
-
 using Hosting.HealthChecks;
+
+using Microsoft.OpenApi.Models;
 
 using Npgsql;
 
@@ -19,21 +19,31 @@ builder.AddOpenTelemetry(service)
         b.AddNpgsql();
     })
     .AddOpenTelemetryMetrics();
-builder.Services.AddFastEndpoints();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication();
+builder.Services.AddCarter();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddJWTBearerAuth(builder.Configuration["Security:Jwt:Secret"]!);
-builder.Services.AddSwaggerDoc();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalog.Api", Version = "v1" });
+});
+
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseFastEndpoints();
-app.UseSwaggerGen();
+app.MapCarter();
+app.MapSwagger();
 app.MapHealthCheckEndpoints();
+app.MapGet("/{msg}", (string msg) => TypedResults.Ok($"Hello {msg}"));
+
 app.Run();
 
 public partial class Program {}
