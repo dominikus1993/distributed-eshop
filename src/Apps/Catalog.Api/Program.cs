@@ -42,7 +42,6 @@ app.UseAuthorization();
 app.MapCarter();
 app.MapSwagger();
 app.MapHealthCheckEndpoints();
-app.MapGet("/{msg}", (string msg) => TypedResults.Ok($"Hello {msg}"));
 
 app.Run();
 
