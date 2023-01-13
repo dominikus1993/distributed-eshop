@@ -1,5 +1,4 @@
-FastEndpoints
-FastEndpoints.Swagger
-FastEndpoints.Security
+Carter
+Swashbuckle.AspNetCore
 FluentValidation
 Npgsql.OpenTelemetry
