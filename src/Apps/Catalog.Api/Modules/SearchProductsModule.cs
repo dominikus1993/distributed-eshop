@@ -31,8 +31,8 @@ public sealed class SearchProductsModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/products", ([AsParameters]SearchProductsRequest msg) => TypedResults.Ok($"Hello {msg}"));
-        app.MapGet("/products/{id:guid}", GetProductById);
+        app.MapGet("/api/products", ([AsParameters]SearchProductsRequest msg) => TypedResults.Ok($"Hello {msg}"));
+        app.MapGet("/api/products/{id:guid}", GetProductById);
     }
 
     

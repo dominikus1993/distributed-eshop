@@ -3,6 +3,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net7.0
 
+nuget Verify.Xunit
 nuget Carter
 nuget Swashbuckle.AspNetCore
 nuget AspNetCore.HealthChecks.UI.Client

@@ -4,7 +4,13 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
     <ItemGroup>
+      <ProjectReference Include="..\..\..\src\Apps\Catalog.Api\Catalog.Api.csproj" />
       <ProjectReference Include="..\..\..\src\Modules\Catalog\Catalog.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="Api\appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

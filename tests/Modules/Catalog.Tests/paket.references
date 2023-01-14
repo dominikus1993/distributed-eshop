@@ -1,5 +1,6 @@
 AutoFixture
 Shouldly
+Verify.Xunit
 xunit
 xunit.runner.visualstudio
 Moq
