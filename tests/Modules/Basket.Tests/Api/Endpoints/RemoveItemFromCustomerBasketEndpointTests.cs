@@ -1,11 +1,8 @@
 using Alba;
-using Alba.Security;
 
 using Basket.Api.Endpoints;
 using Basket.Tests.Extensions;
 using Basket.Tests.Fixture;
-
-using Microsoft.IdentityModel.JsonWebTokens;
 
 using Shouldly;
 
