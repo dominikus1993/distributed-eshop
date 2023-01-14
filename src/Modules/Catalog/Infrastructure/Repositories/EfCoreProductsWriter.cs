@@ -8,6 +8,8 @@ using Catalog.Infrastructure.Model;
 
 using Mediator;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Catalog.Infrastructure.Repositories;
 
 public sealed class UnableToWriteRecordException : Exception
@@ -56,34 +58,36 @@ public sealed class UnableToWriteRecordsException : Exception
 } 
 public sealed class EfCoreProductsWriter : IProductsWriter
 {
-    private readonly ProductsDbContext _store;
+    private readonly IDbContextFactory<ProductsDbContext> _storeFactory;
 
 
-    public EfCoreProductsWriter(ProductsDbContext store)
+    public EfCoreProductsWriter(IDbContextFactory<ProductsDbContext> store)
     {
-        _store = store;
+        _storeFactory = store;
     }
     
     public async Task<AddProductResult> AddProduct(Product product, CancellationToken cancellationToken = default)
     {
-        _store.Products.Add(new EfProduct(product));
-        var countOfInsertedRecords = await SaveChangesAsync(cancellationToken);
+        await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
+        context.Products.Add(new EfProduct(product));
+        var countOfInsertedRecords = await SaveChangesAsync(context, cancellationToken);
         return countOfInsertedRecords == 1 ? Unit.Value : new UnableToWriteRecordException(product.Id);
     }
 
     public async Task<AddProductResult> AddProducts(IReadOnlyCollection<Product> products, CancellationToken cancellationToken = default)
     {
+        await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
         foreach (var product in products)
         {
-            _store.Products.Add(new EfProduct(product));
+            context.Products.Add(new EfProduct(product));
         }
         
-        var countOfInsertedRecords = await SaveChangesAsync(cancellationToken);
+        var countOfInsertedRecords = await SaveChangesAsync(context, cancellationToken);
         return countOfInsertedRecords == products.Count ? Unit.Value : new UnableToWriteRecordsException(products.Select(x => x.Id).ToList()); 
     }
 
-    private Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    private static Task<int> SaveChangesAsync(ProductsDbContext context, CancellationToken cancellationToken = default)
     {
-        return _store.SaveChangesAsync(cancellationToken);
+        return context.SaveChangesAsync(cancellationToken);
     }
 }

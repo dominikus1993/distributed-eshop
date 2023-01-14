@@ -24,7 +24,7 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
     public async Task ReadFilterProductsWhenNoExistsShouldReturnNull()
     {
         // Arrange 
-        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContextFactory);
         
         // Act
 
@@ -42,8 +42,8 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContextFactory);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
@@ -72,8 +72,8 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContextFactory);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
             new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10));
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
@@ -102,8 +102,8 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContextFactory);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
@@ -132,8 +132,8 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductFilter(_postgresSqlFixture.DbContextFactory);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),

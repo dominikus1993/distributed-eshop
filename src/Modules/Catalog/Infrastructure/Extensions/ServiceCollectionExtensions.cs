@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
 
-        services.AddDbContextPool<ProductsDbContext>(builder =>
+        services.AddPooledDbContextFactory<ProductsDbContext>(builder =>
         {
             builder.UseModel(ProductsDbContextModel.Instance);
             builder.UseNpgsql(configuration.GetConnectionString("CatalogDb"), optionsBuilder =>

@@ -15,6 +15,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
     private readonly TestcontainerDatabaseConfiguration configuration = new PostgreSqlTestcontainerConfiguration("postgres:14-alpine") { Database = "posts", Username = "postgres", Password = "postgres" };
 
     public PostgreSqlTestcontainer PostgreSql { get; }
+    public TestDbContextFactory DbContextFactory { get; private set; } = null!;
     public ProductsDbContext DbContext { get; private set; } = null!;
     public PostgresSqlFixture()
     {
@@ -36,8 +37,10 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
                     optionsBuilder.CommandTimeout(500);
                     optionsBuilder.MigrationsAssembly("Catalog");
                 }).UseSnakeCaseNamingConvention();
-        this.DbContext = new ProductsDbContext(builder.Options);
-        await this.DbContext.Database.MigrateAsync();
+        var context = new ProductsDbContext(builder.Options);
+        DbContextFactory = new TestDbContextFactory(context);
+        DbContext = context;
+        await context.Database.MigrateAsync();
 
     }
 
@@ -45,7 +48,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
     {
         await this.PostgreSql.DisposeAsync()
             .ConfigureAwait(false);
-        await DbContext.DisposeAsync();
+        await DbContextFactory.DisposeAsync();
     }
 
     public void Dispose()
@@ -54,7 +57,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
     }
 }
 
-public sealed class TestDbContextFactory : IDbContextFactory<ProductsDbContext>
+public sealed class TestDbContextFactory : IDbContextFactory<ProductsDbContext>, IAsyncDisposable
 {
     private readonly ProductsDbContext _context;
 
@@ -66,6 +69,16 @@ public sealed class TestDbContextFactory : IDbContextFactory<ProductsDbContext>
     public ProductsDbContext CreateDbContext()
     {
         return _context;
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        return _context.DisposeAsync();
     }
 }
 

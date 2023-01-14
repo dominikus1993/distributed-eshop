@@ -24,7 +24,7 @@ public class MartenProductsWriterTests
     public async Task WriteProductTest()
     {
         // Arrange 
-        var repo = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         
         // Act
         var productId =  ProductId.New();

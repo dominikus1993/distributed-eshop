@@ -24,7 +24,7 @@ public class MartenProductReaderTests
     public async Task ReadProductByIdWhenNoExistsShouldReturnNull()
     {
         // Arrange 
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
         
         // Act
 
@@ -41,7 +41,7 @@ public class MartenProductReaderTests
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         var productId = ProductId.New();
 
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
         
         // Act
         
@@ -59,7 +59,7 @@ public class MartenProductReaderTests
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
         
         // Act
         
@@ -80,8 +80,8 @@ public class MartenProductReaderTests
         var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         // Act
 
         await writer.AddProduct(product, cts.Token);
@@ -105,8 +105,8 @@ public class MartenProductReaderTests
         var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContext);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContext);
+        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
+        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         // Act
 
         await writer.AddProduct(product, cts.Token);

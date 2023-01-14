@@ -1,6 +1,7 @@
 
 using Carter;
 
+using Catalog.Core.Extensions;
 using Catalog.Infrastructure.Extensions;
 
 using Hosting.HealthChecks;
@@ -19,6 +20,7 @@ builder.AddOpenTelemetry(service)
         b.AddNpgsql();
     })
     .AddOpenTelemetryMetrics();
+builder.Services.AddCatalog();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 builder.Services.AddCarter();

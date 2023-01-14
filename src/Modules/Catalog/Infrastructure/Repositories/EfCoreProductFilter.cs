@@ -10,17 +10,18 @@ namespace Catalog.Infrastructure.Repositories;
 
 public sealed class EfCoreProductFilter : IProductFilter
 {
-    private readonly ProductsDbContext _store;
+    private readonly IDbContextFactory<ProductsDbContext> _storeFactory;
 
 
-    public EfCoreProductFilter(ProductsDbContext store)
+    public EfCoreProductFilter(IDbContextFactory<ProductsDbContext> storeFactory)
     {
-        _store = store;
+        _storeFactory = storeFactory;
     }
     
     public async IAsyncEnumerable<Product> FilterProducts(Filter filter, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var query = _store.Products.AsNoTracking();
+        await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
+        var query = context.Products.AsNoTracking();
         if (!string.IsNullOrEmpty(filter.Query))
         {
             query = query.Where(x => x.SearchVector.Matches(filter.Query));
