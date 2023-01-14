@@ -38,7 +38,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
                     optionsBuilder.MigrationsAssembly("Catalog");
                 }).UseSnakeCaseNamingConvention();
         var context = new ProductsDbContext(builder.Options);
-        DbContextFactory = new TestDbContextFactory(context);
+        DbContextFactory = new TestDbContextFactory(builder);
         DbContext = context;
         await context.Database.MigrateAsync();
 
@@ -48,7 +48,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
     {
         await this.PostgreSql.DisposeAsync()
             .ConfigureAwait(false);
-        await DbContextFactory.DisposeAsync();
+        await DbContext.DisposeAsync();
     }
 
     public void Dispose()
@@ -57,28 +57,18 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
     }
 }
 
-public sealed class TestDbContextFactory : IDbContextFactory<ProductsDbContext>, IAsyncDisposable
+public sealed class TestDbContextFactory : IDbContextFactory<ProductsDbContext>
 {
-    private readonly ProductsDbContext _context;
+    private readonly  DbContextOptionsBuilder<ProductsDbContext> _builder;
 
-    public TestDbContextFactory(ProductsDbContext context)
+    public TestDbContextFactory(DbContextOptionsBuilder<ProductsDbContext> builder)
     {
-        _context = context;
+        _builder = builder;
     }
 
     public ProductsDbContext CreateDbContext()
     {
-        return _context;
-    }
-
-    public void Dispose()
-    {
-        _context.Dispose();
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return _context.DisposeAsync();
+        return new ProductsDbContext(_builder.Options);
     }
 }
 
