@@ -1,4 +1,6 @@
+using Catalog.Core.Repository;
 using Catalog.Infrastructure.DbContexts;
+using Catalog.Infrastructure.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +13,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
 
+        services.AddTransient<IProductFilter, EfCoreProductFilter>();
+        services.AddTransient<IProductReader, EfCoreProductReader>();
         services.AddPooledDbContextFactory<ProductsDbContext>(builder =>
         {
             builder.UseModel(ProductsDbContextModel.Instance);
