@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Infrastructure.Repositories;
 
+[Serializable]
 public sealed class UnableToWriteRecordException : Exception
 {
     public ProductId ProductId { get; }
@@ -24,6 +25,11 @@ public sealed class UnableToWriteRecordException : Exception
     public UnableToWriteRecordException(ProductId productId, Exception innerException) : base("can't write product to database", innerException)
     {
         ProductId = productId;
+    }
+    
+    private UnableToWriteRecordException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+    {
+        
     }
 
     public override string ToString()
