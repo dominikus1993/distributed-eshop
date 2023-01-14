@@ -80,32 +80,4 @@ public class SearchProductsModuleTests
 
         await Verify(subject);
     }
-    //
-    // [Fact]
-    // public async Task ReadProductByIdsWhenExistsShouldReturnProduct()
-    // {
-    //     // Arrange 
-    //     using var cts = new CancellationTokenSource();
-    //     cts.CancelAfter(TimeSpan.FromSeconds(30));
-    //     var productId = ProductId.New();
-    //     var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
-    //         new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
-    //     
-    //     var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
-    //     var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
-    //     // Act
-    //
-    //     await writer.AddProduct(product, cts.Token);
-    //     var subject = await repo.GetByIds(new [] { productId } , cts.Token).ToListAsync(cancellationToken: cts.Token);
-    //     
-    //     subject.ShouldNotBeNull();
-    //     subject.ShouldNotBeEmpty();
-    //     subject.Count.ShouldBe(1);
-    //     var productFromDb = subject[0];
-    //     productFromDb.Id.ShouldBe(productId);
-    //     productFromDb.ProductName.ShouldBe(product.ProductName);
-    //     productFromDb.Price.ShouldBe(product.Price);
-    //     productFromDb.AvailableQuantity.ShouldBe(product.AvailableQuantity);
-    //     productFromDb.ProductDescription.ShouldBe(product.ProductDescription);
-    // }
 }

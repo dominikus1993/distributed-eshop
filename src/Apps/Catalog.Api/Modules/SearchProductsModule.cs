@@ -18,8 +18,8 @@ public sealed class SearchProductsRequest
     public string? Query { get; init; }
     public decimal? PriceFrom { get; init; }
     public decimal? PriceTo { get; init; }
-    
-    public ISender Sender { get; init; }
+
+    public ISender Sender { get; init; } = null!;
 
     public override string ToString()
     {
