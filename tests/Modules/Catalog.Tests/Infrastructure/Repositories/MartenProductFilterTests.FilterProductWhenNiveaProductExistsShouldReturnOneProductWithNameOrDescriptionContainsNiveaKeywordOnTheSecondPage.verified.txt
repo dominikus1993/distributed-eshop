@@ -1,0 +1,24 @@
+﻿[
+  {
+    Id: {
+      Value: Guid_1
+    },
+    ProductName: {
+      Name: Nivea xDDD
+    },
+    ProductDescription: {
+      Description: xDDD
+    },
+    Price: {
+      CurrentPrice: {
+        Value: 10.0
+      },
+      PromotionalPrice: {
+        Value: 5.0
+      }
+    },
+    AvailableQuantity: {
+      Value: 10
+    }
+  }
+]

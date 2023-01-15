@@ -77,7 +77,7 @@ public class SearchProductsModuleTests
         var subject = await resp.ReadAsJsonAsync<ProductResponse>();
         
         subject.ShouldNotBeNull();
-
+        subject.ProductId.ShouldBe(productId.Value);
         await Verify(subject);
     }
 }

@@ -11,7 +11,8 @@ using Xunit;
 
 namespace Catalog.Tests.Infrastructure.Repositories;
 
-public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>, IDisposable
+[Collection(nameof(PostgresSqlFixtureCollectionTests)), UsesVerify]
+public sealed class MartenProductFilterTests : IDisposable
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
 
@@ -58,11 +59,8 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         // Assert
         subject.ShouldNotBeNull();
         subject.ShouldNotBeEmpty();
-        subject.Count.ShouldBe(2);
-        
-        subject.ShouldContain(product1);
-        subject.ShouldContain(product2);
-        subject.ShouldNotContain(product3);
+
+        await Verify(subject);
     }
     
     [Fact]
@@ -90,9 +88,7 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         subject.ShouldNotBeEmpty();
         subject.Count.ShouldBe(1);
         
-        subject.ShouldNotContain(product1); // Promotional Price is smaller than price from param
-        subject.ShouldContain(product2); 
-        subject.ShouldNotContain(product3);
+        await Verify(subject);
     }
     
     [Fact]
@@ -120,9 +116,7 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         subject.ShouldNotBeEmpty();
         subject.Count.ShouldBe(1);
         
-        subject.ShouldContain(product1);
-        subject.ShouldNotContain(product2);
-        subject.ShouldNotContain(product3);
+        await Verify(subject);
     }
     
     [Fact]
@@ -150,9 +144,7 @@ public sealed class MartenProductFilterTests : IClassFixture<PostgresSqlFixture>
         subject.ShouldNotBeEmpty();
         subject.Count.ShouldBe(1);
         
-        subject.ShouldNotContain(product1);
-        subject.ShouldContain(product2);
-        subject.ShouldNotContain(product3);
+        await Verify(subject);
     }
 
 #pragma warning disable CA1816
