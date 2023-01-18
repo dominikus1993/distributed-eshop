@@ -8,3 +8,4 @@ Npgsql.EntityFrameworkCore.PostgreSQL
 Microsoft.EntityFrameworkCore.Design
 EFCore.NamingConventions
 System.Linq.Async
+FlexLabs.EntityFrameworkCore.Upsert 

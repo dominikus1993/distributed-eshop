@@ -48,3 +48,4 @@ nuget coverlet.collector
 nuget Testcontainers
 nuget Microsoft.NET.Test.Sdk
 nuget Alba
+nuget FlexLabs.EntityFrameworkCore.Upsert 

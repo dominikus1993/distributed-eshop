@@ -75,25 +75,16 @@ public sealed class EfCoreProductsWriter : IProductsWriter
     public async Task<AddProductResult> AddProduct(Product product, CancellationToken cancellationToken = default)
     {
         await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
-        context.Products.Add(new EfProduct(product));
-        var countOfInsertedRecords = await SaveChangesAsync(context, cancellationToken);
+        var countOfInsertedRecords = await context.Products.Upsert(new EfProduct(product)).On(p => p.ProductId).RunAsync(cancellationToken);
         return countOfInsertedRecords == 1 ? Unit.Value : new UnableToWriteRecordException(product.Id);
     }
 
     public async Task<AddProductResult> AddProducts(IReadOnlyCollection<Product> products, CancellationToken cancellationToken = default)
     {
         await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
-        foreach (var product in products)
-        {
-            context.Products.Add(new EfProduct(product));
-        }
-        
-        var countOfInsertedRecords = await SaveChangesAsync(context, cancellationToken);
-        return countOfInsertedRecords == products.Count ? Unit.Value : new UnableToWriteRecordsException(products.Select(x => x.Id).ToList()); 
-    }
+        var records = products.Select(product => new EfProduct(product));
 
-    private static Task<int> SaveChangesAsync(ProductsDbContext context, CancellationToken cancellationToken = default)
-    {
-        return context.SaveChangesAsync(cancellationToken);
+        var countOfInsertedRecords = await context.Products.UpsertRange(records).On(product => product.ProductId).RunAsync(cancellationToken);
+        return countOfInsertedRecords == products.Count ? Unit.Value : new UnableToWriteRecordsException(products.Select(x => x.Id).ToList()); 
     }
 }
