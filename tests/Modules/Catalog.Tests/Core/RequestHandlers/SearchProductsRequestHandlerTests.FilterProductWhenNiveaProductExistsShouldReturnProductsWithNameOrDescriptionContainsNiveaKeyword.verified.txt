@@ -1,0 +1,18 @@
+﻿[
+  {
+    ProductId: Guid_1,
+    Name: not xDDD,
+    Description: nivea,
+    PromotionalPrice: 5.0,
+    Price: 10.0,
+    AvailableQuantity: 10
+  },
+  {
+    ProductId: Guid_2,
+    Name: Nivea xDDD,
+    Description: xDDD,
+    PromotionalPrice: 5.0,
+    Price: 10.0,
+    AvailableQuantity: 10
+  }
+]

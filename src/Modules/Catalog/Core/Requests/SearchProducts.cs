@@ -4,4 +4,11 @@ using Mediator;
 
 namespace Catalog.Core.Requests;
 
-public sealed record SearchProducts(int Page, int PageSize) : IStreamRequest<ProductDto>;
+public sealed class SearchProducts : IStreamRequest<ProductDto>
+{
+    public int Page { get; init; } = 1;
+    public int PageSize { get; init; } = 12;
+    public string? Query { get; init; }
+    public decimal? PriceFrom { get; init; }
+    public decimal? PriceTo { get; init; }
+}

@@ -10,8 +10,8 @@ using Xunit;
 
 namespace Catalog.Tests.Core.RequestHandlers;
 
+[Collection(nameof(PostgresSqlFixtureCollectionTests))]
 public class GetProductByIdRequestHandlerTests
-    : IClassFixture<PostgresSqlFixture>
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
 
