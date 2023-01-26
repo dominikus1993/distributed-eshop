@@ -36,7 +36,7 @@ public sealed class SearchProductsModule : ICarterModule
     }
 
     
-    public static async Task<Results<Ok<ProductDto>, NotFound>> GetProductById(Guid id, ISender sender, CancellationToken cancellationToken)
+    private static async Task<Results<Ok<ProductDto>, NotFound>> GetProductById(Guid id, ISender sender, CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetProductById(ProductId.From(id)), cancellationToken);
         if (result is null)
@@ -47,9 +47,24 @@ public sealed class SearchProductsModule : ICarterModule
         return TypedResults.Ok(result);
     }
     
-    public static async Task<Results<Ok<IReadOnlyCollection<ProductDto>>, NoContent>> SearchProducts([AsParameters]SearchProductsRequest request, CancellationToken cancellationToken)
+    private static async Task<Results<Ok<IReadOnlyCollection<ProductDto>>, NoContent>> SearchProducts([AsParameters]SearchProductsRequest request, CancellationToken cancellationToken)
     {
-        await Task.Yield();
-        return TypedResults.NoContent();
+        var query = new SearchProducts()
+        {
+            PriceFrom = request.PriceFrom,
+            PriceTo = request.PriceTo,
+            Query = request.Query,
+            Page = request.Page ?? 1,
+            PageSize = request.PageSize ?? 12
+        };
+
+        var result = await request.Sender.CreateStream(query, cancellationToken).ToListAsync(cancellationToken: cancellationToken);
+
+        if (result is { Count: 0 })
+        {
+            return TypedResults.NoContent();
+        }
+
+        return TypedResults.Ok<IReadOnlyCollection<ProductDto>>(result);
     }
 }
