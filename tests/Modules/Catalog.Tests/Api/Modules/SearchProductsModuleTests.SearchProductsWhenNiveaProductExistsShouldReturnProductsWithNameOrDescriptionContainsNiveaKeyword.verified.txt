@@ -14,13 +14,5 @@
     PromotionalPrice: 5.0,
     Price: 10.0,
     AvailableQuantity: 10
-  },
-  {
-    ProductId: Guid_3,
-    Name: xDDD,
-    Description: xDDD,
-    PromotionalPrice: 5.0,
-    Price: 10.0,
-    AvailableQuantity: 10
   }
 ]

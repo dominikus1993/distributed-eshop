@@ -114,7 +114,7 @@ public sealed class SearchProductsModuleTests : IDisposable
         
         var resp = await host.Scenario(s =>
         {
-            s.Get.Url($"/api/products");
+            s.Get.Url($"/api/products?query=nivea");
             s.StatusCodeShouldBeOk();
         });
         
