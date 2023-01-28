@@ -17,4 +17,6 @@ public interface IProductsWriter
     Task<AddProductResult> AddProduct(Product product, CancellationToken cancellationToken = default);
     
     Task<AddProductResult> AddProducts(IReadOnlyCollection<Product> products, CancellationToken cancellationToken = default);
+
+    Task RemoveAllProducts(CancellationToken cancellationToken = default);
 }

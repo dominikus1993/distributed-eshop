@@ -87,4 +87,11 @@ public sealed class EfCoreProductsWriter : IProductsWriter
         var countOfInsertedRecords = await context.Products.UpsertRange(records).On(product => product.ProductId).RunAsync(cancellationToken);
         return countOfInsertedRecords == products.Count ? Unit.Value : new UnableToWriteRecordsException(products.Select(x => x.Id).ToList()); 
     }
+
+    public async Task RemoveAllProducts(CancellationToken cancellationToken = default)
+    {
+        await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
+        context.Products.RemoveRange(context.Products);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

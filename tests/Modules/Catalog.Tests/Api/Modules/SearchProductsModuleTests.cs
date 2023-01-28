@@ -29,7 +29,7 @@ public sealed class ProductResponse
 
 
 [Collection(nameof(CatalogApiFixtureCollectionTest)), UsesVerify]
-public class SearchProductsModuleTests
+public sealed class SearchProductsModuleTests : IDisposable
 {
     private readonly CatalogApiFixture _apiFixture;
 
@@ -63,10 +63,9 @@ public class SearchProductsModuleTests
         var productId = ProductId.New();
         var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
-        var writer = new EfCoreProductsWriter(_apiFixture.DbContextFactory);
         // Act
     
-        await writer.AddProduct(product, cts.Token);
+        await _apiFixture.ProductsWriter.AddProduct(product, cts.Token);
         
         var resp = await host.Scenario(s =>
         {
@@ -79,5 +78,56 @@ public class SearchProductsModuleTests
         subject.ShouldNotBeNull();
         subject.ProductId.ShouldBe(productId.Value);
         await Verify(subject);
+    }
+    
+    [Fact]
+    public async Task SearchProductsWhenNoExists()
+    {
+        // Arrange 
+        await using var host = await _apiFixture.GetHost();
+        
+        // Act
+        await host.Scenario(s =>
+        {
+            s.Get.Url($"/api/products");
+            s.StatusCodeShouldBe(204);
+        }); ;
+    }
+    
+    [Fact]
+    public async Task SearchProductsWhenNiveaProductExistsShouldReturnProductsWithNameOrDescriptionContainsNiveaKeyword()
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        await using var host = await _apiFixture.GetHost();
+
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        
+        var resp = await host.Scenario(s =>
+        {
+            s.Get.Url($"/api/products");
+            s.StatusCodeShouldBeOk();
+        });
+        
+        var subject = await resp.ReadAsJsonAsync<IReadOnlyCollection<ProductResponse>>();
+        
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+        
+        await Verify(subject);
+    }
+
+    public void Dispose()
+    {
+        _apiFixture.ProductsWriter.RemoveAllProducts().Wait();
     }
 }

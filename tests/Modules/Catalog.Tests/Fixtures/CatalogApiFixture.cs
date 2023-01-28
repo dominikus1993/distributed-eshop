@@ -1,7 +1,9 @@
 using Alba;
 using Alba.Security;
 
+using Catalog.Core.Repository;
 using Catalog.Infrastructure.DbContexts;
+using Catalog.Infrastructure.Repositories;
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -22,6 +24,8 @@ public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
     public PostgreSqlTestcontainer PostgreSql { get; }
     public TestDbContextFactory DbContextFactory { get; private set; } = null!;
     public ProductsDbContext DbContext { get; private set; } = null!;
+    
+    public IProductsWriter ProductsWriter { get; private set; }
     public CatalogApiFixture()
     {
         this.PostgreSql = new TestcontainersBuilder<PostgreSqlTestcontainer>()
@@ -63,6 +67,7 @@ public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
         var context = new ProductsDbContext(builder.Options);
         DbContextFactory = new TestDbContextFactory(builder);
         DbContext = context;
+        ProductsWriter = new EfCoreProductsWriter(DbContextFactory);
         await context.Database.MigrateAsync();
 
     }
