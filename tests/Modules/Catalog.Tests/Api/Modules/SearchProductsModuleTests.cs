@@ -125,6 +125,39 @@ public sealed class SearchProductsModuleTests : IDisposable
         
         await Verify(subject);
     }
+    
+    [Fact]
+    public async Task FilterProductWhenProductsInPriceConditionExistsShouldReturnProductsWithPriceCondition()
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        await using var host = await _apiFixture.GetHost();
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(11m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10));
+        await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+      
+        var resp = await host.Scenario(s =>
+        {
+            s.Get.Url($"/api/products?priceFrom=2&priceTo=12");
+            s.StatusCodeShouldBeOk();
+        });
+
+        var subject = await resp.ReadAsJsonAsync<IReadOnlyCollection<ProductResponse>>();
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1);
+        
+        await Verify(subject);
+    }
 
     public void Dispose()
     {

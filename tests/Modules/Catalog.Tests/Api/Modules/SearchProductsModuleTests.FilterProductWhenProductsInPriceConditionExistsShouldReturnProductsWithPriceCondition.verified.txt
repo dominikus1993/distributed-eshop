@@ -1,0 +1,9 @@
+﻿[
+  {
+    ProductId: Guid_1,
+    Name: Nivea xDDD,
+    Description: xDDD,
+    Price: 11.0,
+    AvailableQuantity: 10
+  }
+]
