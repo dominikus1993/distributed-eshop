@@ -158,6 +158,96 @@ public sealed class SearchProductsModuleTests : IDisposable
         
         await Verify(subject);
     }
+    
+    [Fact]
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeyword()
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        await using var host = await _apiFixture.GetHost();
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        var resp = await host.Scenario(s =>
+        {
+            s.Get.Url($"/api/products?query=nivea&pageSize=1");
+            s.StatusCodeShouldBeOk();
+        });
+
+        var subject = await resp.ReadAsJsonAsync<IReadOnlyCollection<ProductResponse>>();
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1);
+        
+        await Verify(subject);
+    }
+    
+    [Fact]
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeywordOnTheSecondPage()
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        await using var host = await _apiFixture.GetHost();
+        
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        
+        var resp = await host.Scenario(s =>
+        {
+            s.Get.Url($"/api/products?query=nivea&pageSize=1&page=2");
+            s.StatusCodeShouldBeOk();
+        });
+
+        var subject = await resp.ReadAsJsonAsync<IReadOnlyCollection<ProductResponse>>();
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1);
+        
+        await Verify(subject);
+    }
+    
+    [Fact]
+    public async Task SearchProductInNonExistentPage()
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        await using var host = await _apiFixture.GetHost();
+        
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+        await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        
+        var resp = await host.Scenario(s =>
+        {
+            s.Get.Url($"/api/products?query=nivea&pageSize=1&page=2137");
+            s.StatusCodeShouldBe(204);
+        });
+    }
 
     public void Dispose()
     {
