@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 using Catalog.Core.Dto;
 using Catalog.Core.Repository;
 using Catalog.Core.Requests;
@@ -8,7 +6,7 @@ using Mediator;
 
 namespace Catalog.Core.RequestHandlers;
 
-public class SearchProductsRequestHandler : IStreamRequestHandler<SearchProducts, ProductDto>
+public sealed class SearchProductsRequestHandler : IStreamRequestHandler<SearchProducts, ProductDto>
 {
     private readonly IProductFilter _productFilter;
 
