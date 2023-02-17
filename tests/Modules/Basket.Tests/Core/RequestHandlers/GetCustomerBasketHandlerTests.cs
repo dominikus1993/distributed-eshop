@@ -24,9 +24,7 @@ public class GetCustomerBasketHandlerTests
     {
         // Arrange
         var customerId = CustomerId.New();
-        var deserializer = new SystemTextRedisObjectDeserializer();
-        var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
-        var handler = new GetCustomerBasketHandler(repo);
+        var handler = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         
         // Act
 

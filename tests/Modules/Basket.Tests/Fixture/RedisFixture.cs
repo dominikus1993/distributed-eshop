@@ -1,4 +1,7 @@
+using Basket.Core.Repositories;
 using Basket.Infrastructure.Redis;
+using Basket.Infrastructure.Repositories;
+using Basket.Infrastructure.Serialization;
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -21,11 +24,15 @@ public sealed class RedisFixture : IAsyncLifetime, IDisposable
     
     public TestcontainerDatabase Redis { get; private set; }
     public IConnectionMultiplexer RedisConnection { get; private set; }
+    public ICustomerBasketReader CustomerBasketReader { get; private set; }
+    public ICustomerBasketWriter CustomerBasketWriter { get; private set; }
 
     public async Task InitializeAsync()
     {
         await Redis.StartAsync();
         RedisConnection = RedisConnectionFactory.Connect(Redis.ConnectionString);
+        CustomerBasketReader = new RedisCustomerBasketRepository(RedisConnection, new SystemTextRedisObjectDeserializer());
+        CustomerBasketWriter = new RedisCustomerBasketRepository(RedisConnection, new SystemTextRedisObjectDeserializer());
     }
 
     public async Task DisposeAsync()

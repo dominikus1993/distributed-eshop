@@ -38,11 +38,9 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
         
         var customerId = CustomerId.New();
         var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
-        var deserializer = new SystemTextRedisObjectDeserializer();
-        var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
-        var getCustomerBasket = new GetCustomerBasketHandler(repo);
-        var addhandler = new AddItemToCustomerBasketHandler(repo, repo, publisherMock.Object);
-        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(repo, repo, publisherRemovedMock.Object);
+        var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
+        var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
+        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock.Object);
         // Act
         await addhandler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
         await removeHandler.Handle(new RemoveItemFromCustomerBasket(customerId, basketItem), CancellationToken.None);
@@ -68,15 +66,13 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
         
         var customerId = CustomerId.New();
         var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
-        var deserializer = new SystemTextRedisObjectDeserializer();
-        var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
-        var getCustomerBasket = new GetCustomerBasketHandler(repo);
-        var handler = new AddItemToCustomerBasketHandler(repo, repo, publisherMock.Object);
-        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(repo, repo, publisherRemovedMock.Object);
-        await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem with { Quantity = new ItemQuantity(1) }), CancellationToken.None);
+        var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
+        var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
+        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock.Object);
+        await addhandler.Handle(new AddItemToCustomerBasket(customerId, basketItem with { Quantity = new ItemQuantity(1) }), CancellationToken.None);
         
         // Act
-        await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
+        await addhandler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
         await removeHandler.Handle(new RemoveItemFromCustomerBasket(customerId, basketItem), CancellationToken.None);
         var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
         

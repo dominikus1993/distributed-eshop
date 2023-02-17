@@ -4,7 +4,6 @@ public abstract partial class CustomerBasket
 {
     public sealed class ActiveBasket : CustomerBasket
     {
-
         public ActiveBasket(CustomerId customerId, BasketItems items) : base(customerId)
         {
             BasketItems = items;
@@ -17,8 +16,6 @@ public abstract partial class CustomerBasket
 
         public override bool IsEmpty => BasketItems.IsEmpty;
 
-        public bool HasItems => !BasketItems.IsEmpty;
-    
         public override CustomerBasket AddItem(BasketItem item)
         {
             var items = BasketItems.AddItem(item);

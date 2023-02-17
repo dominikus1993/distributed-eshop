@@ -10,3 +10,5 @@ public sealed record GetCustomerBasket(CustomerId CustomerId) : IRequest<Custome
 public sealed record AddItemToCustomerBasket(CustomerId CustomerId, BasketItem Item) : IRequest;
 
 public sealed record RemoveItemFromCustomerBasket(CustomerId CustomerId, BasketItem Item) : IRequest;
+
+public sealed record CheckoutCustomerBasket(CustomerId CustomerId) : IRequest;
