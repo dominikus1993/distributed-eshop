@@ -31,7 +31,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
         var items = model.Items.Select(item => new BasketItem(new ItemId(item.ItemId), new ItemQuantity(item.Quantity)))
             .ToArray();
 
-        return CustomerBasket.Active(customerId, new BasketItems(items));
+        return CustomerBasket.Empty(customerId).AddItems(items);
     }
 
     public async Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default)

@@ -14,14 +14,14 @@ public class BasketItemsTests
         var itemId = ItemId.New();
         var q = new ItemQuantity(11);
         var itemId2 = ItemId.New();
-        var items = new BasketItems(new[] { new BasketItem(itemId, q), new BasketItem(itemId2, q) });
+        var items = BasketItems.Empty.AddItems(new[] { new BasketItem(itemId, q), new BasketItem(itemId2, q) });
 
         var subject = items.RemoveOrDecreaseItem(new BasketItem(itemId, q));
         
         subject.IsEmpty.ShouldBeFalse();
-        subject.Items.ShouldNotBeEmpty();
-        subject.Items.Count.ShouldBe(1);
-        subject.Items.ShouldContain(new BasketItem(itemId2, q));
+        subject.ShouldNotBeEmpty();
+        subject.Count().ShouldBe(1);
+        subject.ShouldContain(new BasketItem(itemId2, q));
     }
     
     [Fact]
@@ -30,14 +30,14 @@ public class BasketItemsTests
         var itemId = ItemId.New();
         var q = new ItemQuantity(11);
         var itemId2 = ItemId.New();
-        var items = new BasketItems(new[] { new BasketItem(itemId, q), new BasketItem(itemId2, q) });
+        var items = BasketItems.Empty.AddItems(new[] { new BasketItem(itemId, q), new BasketItem(itemId2, q) });
 
         var subject = items.RemoveOrDecreaseItem(new BasketItem(itemId, new ItemQuantity(5)));
         
         subject.IsEmpty.ShouldBeFalse();
-        subject.Items.ShouldNotBeEmpty();
-        subject.Items.Count.ShouldBe(2);
-        subject.Items.ShouldContain(new BasketItem(itemId, new ItemQuantity(6)));
-        subject.Items.ShouldContain(new BasketItem(itemId2, q));
+        subject.ShouldNotBeEmpty();
+        subject.Count().ShouldBe(2);
+        subject.ShouldContain(new BasketItem(itemId, new ItemQuantity(6)));
+        subject.ShouldContain(new BasketItem(itemId2, q));
     }
 }

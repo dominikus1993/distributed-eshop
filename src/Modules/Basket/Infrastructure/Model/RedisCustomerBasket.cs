@@ -41,6 +41,6 @@ internal sealed partial class RedisCustomerBasket
     public RedisCustomerBasket(CustomerBasket basket)
     {
         CustomerId = basket.CustomerId.Value;
-        Items = basket.BasketItems.Items.Select(item => new RedisBasketItem(item)).ToArray();
+        Items = basket.BasketItems.MapItems(item => new RedisBasketItem(item)).ToArray();
     }
 }

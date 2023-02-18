@@ -40,7 +40,7 @@ public sealed class GetCustomerBasketResponse
     }
     public GetCustomerBasketResponse(CustomerBasketDto basket)
     {
-        CustomerId = basket.CustomerId;
+        CustomerId = basket.CustomerId.Value;
         Items = basket.Items.Select(item => new BasketItemResponseDto(item)).ToArray();
     }
 }

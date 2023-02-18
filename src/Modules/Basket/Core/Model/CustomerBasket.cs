@@ -20,6 +20,8 @@ public abstract partial class CustomerBasket
     public static CustomerBasket Active(CustomerId id, BasketItems items) => new ActiveBasket(id, items);
 
     public abstract CustomerBasket AddItem(BasketItem item);
+    
+    public abstract CustomerBasket AddItems(IReadOnlyCollection<BasketItem> items);
 
     public abstract CustomerBasket RemoveItem(BasketItem item);
 

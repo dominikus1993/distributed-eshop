@@ -77,7 +77,7 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
         var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
         
         result.ShouldNotBeNull();
-        result.CustomerId.ShouldBe(customerId.Value);
+        result.CustomerId.ShouldBe(customerId);
         result.Items.ShouldNotBeEmpty();
         result.Items.Count.ShouldBe(1);
         result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == 1);

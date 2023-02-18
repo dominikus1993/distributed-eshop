@@ -25,7 +25,7 @@ public sealed class BasketItemDto
 
 public sealed class CustomerBasketDto
 {
-    public required Guid CustomerId { get; init; }
+    public required CustomerId CustomerId { get; init; }
     public required IReadOnlyCollection<BasketItemDto> Items { get; init; }
     
     public CustomerBasketDto()
@@ -36,7 +36,7 @@ public sealed class CustomerBasketDto
     [SetsRequiredMembers]
     public CustomerBasketDto(CustomerBasket basket)
     {
-        CustomerId = basket.CustomerId.Value;
-        Items = basket.BasketItems.Items.Select(item => new BasketItemDto(item)).ToArray();
+        CustomerId = basket.CustomerId;
+        Items = basket.BasketItems.MapItems(item => new BasketItemDto(item)).ToArray();
     }
 }

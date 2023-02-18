@@ -23,7 +23,7 @@ public class CustomerBasketTests
         
         // Assert
 
-        subject.Items.ShouldBeEmpty();
+        subject.ShouldBeEmpty();
     }
     
     [Fact]
@@ -40,8 +40,8 @@ public class CustomerBasketTests
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
-        subject.Items.ShouldNotBeEmpty();
-        subject.Items.ShouldContain(item);
+        subject.ShouldNotBeEmpty();
+        subject.ShouldContain(item);
     }
     
     [Fact]
@@ -59,8 +59,8 @@ public class CustomerBasketTests
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
-        subject.Items.ShouldNotBeEmpty();
-        subject.Items.ShouldContain(new BasketItem(itemId, new ItemQuantity(4)));
+        subject.ShouldNotBeEmpty();
+        subject.ShouldContain(new BasketItem(itemId, new ItemQuantity(4)));
     }
     
     
@@ -79,8 +79,8 @@ public class CustomerBasketTests
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
-        subject.Items.ShouldNotBeEmpty();
-        subject.Items.ShouldContain(new BasketItem(itemId, new ItemQuantity(3)));
+        subject.ShouldNotBeEmpty();
+        subject.ShouldContain(new BasketItem(itemId, new ItemQuantity(3)));
     }
     
     [Fact]
@@ -98,6 +98,6 @@ public class CustomerBasketTests
         
         // Assert
         subject.IsEmpty.ShouldBeTrue();
-        subject.Items.ShouldBeEmpty();
+        subject.ShouldBeEmpty();
     }
 }

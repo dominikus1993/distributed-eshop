@@ -2,7 +2,7 @@ namespace Basket.Core.Model;
 
 public abstract partial class CustomerBasket
 {
-    public sealed class EmptyBasket : CustomerBasket
+    private sealed class EmptyBasket : CustomerBasket
     {
         public static EmptyBasket Zero(CustomerId customerId) => new(customerId);
 
@@ -15,6 +15,11 @@ public abstract partial class CustomerBasket
         public override CustomerBasket AddItem(BasketItem item)
         {
             return ActiveBasket.Zero(CustomerId).AddItem(item);
+        }
+
+        public override CustomerBasket AddItems(IReadOnlyCollection<BasketItem> items)
+        {
+            return ActiveBasket.Zero(CustomerId).AddItems(items);
         }
 
         public override CustomerBasket RemoveItem(BasketItem item)
