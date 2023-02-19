@@ -32,11 +32,24 @@ public sealed class RabbitMqBuilder
 
 public sealed class RabbitMqConfiguration
 {
-    public IJsonTypeInfoResolver? JsonTypeInfoResolver { get; private set; }
+    private IJsonTypeInfoResolver? JsonTypeInfoResolver { get; set; }
+    internal JsonSerializerOptions JsonSerializerOptions { get; private set; } = new(JsonSerializerDefaults.General);
 
     public RabbitMqConfiguration SetJsonTypeInfoResolver(IJsonTypeInfoResolver jsonTypeInfoResolver)
     {
-        JsonTypeInfoResolver = jsonTypeInfoResolver;
+        ArgumentNullException.ThrowIfNull(jsonTypeInfoResolver);
+        JsonSerializerOptions.TypeInfoResolver = jsonTypeInfoResolver;
+        return this;
+    }
+    
+    public RabbitMqConfiguration SetJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions)
+    {
+        ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
+        JsonSerializerOptions = jsonSerializerOptions;
+        if (JsonTypeInfoResolver is not null)
+        {
+            JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver;
+        }
         return this;
     }
 }
@@ -45,7 +58,7 @@ public static class RabbitMqBuilderExtensions
 {
     public static RabbitMqBuilder AddRabbitMq(this IServiceCollection services, IConfiguration configuration, Action<RabbitMqConfiguration>? configAction = null)
     {
-        var cfg = configuration.GetSection("RabbitMq").Get<RabbitMqConnectionConfiguration>();
+        var cfg = configuration.GetRequiredSection("RabbitMq").Get<RabbitMqConnectionConfiguration>();
         if (cfg is null)
         {
             throw new InvalidOperationException("no rabbitmq configuration");
@@ -60,8 +73,7 @@ public static class RabbitMqBuilderExtensions
             return parser;
         }, register =>
         {
-            register.EnableSystemTextJson(
-                                     new JsonSerializerOptions() { TypeInfoResolver = config.JsonTypeInfoResolver });
+            register.EnableSystemTextJson(config.JsonSerializerOptions);
         });
 
         return new RabbitMqBuilder() { Services = services, Configuration = configuration };
