@@ -8,3 +8,4 @@ Testcontainers
 Microsoft.NET.Test.Sdk
 Alba
 AutoFixture.AutoMoq
+FluentAssertions

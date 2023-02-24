@@ -1,6 +1,10 @@
+using AutoFixture.Xunit2;
+
 using Basket.Core.Model;
 using Basket.Infrastructure.Model;
 using Basket.Infrastructure.Serialization;
+
+using FluentAssertions;
 
 using Shouldly;
 
@@ -8,28 +12,24 @@ namespace Basket.Tests.Infrastructure.Serialization;
 
 public class SystemTextRedisObjectDeserializerTests
 {
-    [Fact]
-    public void TestSerializationAndDeserialization_ShouldSerializeObjectAndDeserializeToTheSameObject()
+    [Theory]
+    [InlineAutoData]
+    internal void TestSerializationAndDeserialization_ShouldSerializeObjectAndDeserializeToTheSameObject(RedisCustomerBasket basket, SystemTextRedisObjectDeserializer serializer)
     {
-        var itemId = ItemId.New();
-        var basket = new RedisCustomerBasket()
-        {
-            CustomerId = Guid.NewGuid(),
-            Items = new List<RedisBasketItem>() { new RedisBasketItem() { ItemId = itemId.Value, Quantity = 1 } }
-        };
-        var serializer = new SystemTextRedisObjectDeserializer();
-
         var serialized = serializer.Serialize(basket);
 
         var subject = serializer.Deserialize(serialized, out var result);
         
-        subject.ShouldBeTrue();
-        result.ShouldNotBeNull();
+        subject.Should().BeTrue();
+        result.Should().NotBeNull();
         
-        result.CustomerId.ShouldBe(basket.CustomerId);
-        result.Items.ShouldNotBeNull();
-        result.Items.ShouldNotBeEmpty();
-        result.Items.Count.ShouldBe(basket.Items.Count);
-        result.Items.ShouldContain(x => x.ItemId == itemId.Value && x.Quantity == 1);
+        result.CustomerId.Should().Be(basket.CustomerId);
+        result.Items.Should().NotBeNull();
+        result.Items.Should().NotBeEmpty();
+        result.Items.Should().HaveCount(basket.Items.Count);
+        foreach (var item in basket.Items)
+        {
+            result.Items.Should().ContainEquivalentOf(item);
+        }
     }
 }
