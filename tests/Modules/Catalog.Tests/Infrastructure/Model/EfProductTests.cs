@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using Catalog.Core.Model;
 using Catalog.Infrastructure.Model;
 
@@ -9,18 +11,10 @@ namespace Catalog.Tests.Infrastructure.Model;
 
 public class EfProductTests
 {
-    [Fact]
-    public void TestToProduct()
+    [Theory]
+    [InlineAutoData()]
+    public void TestToProduct(EfProduct efproduct)
     {
-        var efproduct = new EfProduct()
-        {
-            ProductId = ProductId.New(),
-            AvailableQuantity = 1,
-            Price = 10m,
-            PromotionalPrice = 5m,
-            Description = "SomeDesc",
-            Name = "MyProduct"
-        };
         var subject = efproduct.ToProduct();
 
         subject.ShouldNotBeNull();
@@ -31,12 +25,10 @@ public class EfProductTests
         subject.Price.ShouldBe(new ProductPrice(efproduct.Price, efproduct.PromotionalPrice));
     }
     
-    [Fact]
-    public void TestFromProduct()
+    [Theory]
+    [InlineAutoData()]
+    public void TestFromProduct(Product product)
     {
-        var productId = ProductId.New();
-        var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         var subject = new EfProduct(product);
 
         subject.ShouldNotBeNull();

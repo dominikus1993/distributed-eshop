@@ -1,4 +1,7 @@
+using AutoFixture.Xunit2;
+
 using Catalog.Core.Model;
+using Catalog.Core.Repository;
 using Catalog.Core.RequestHandlers;
 using Catalog.Core.Requests;
 using Catalog.Infrastructure.Repositories;
@@ -14,21 +17,22 @@ namespace Catalog.Tests.Core.RequestHandlers;
 public class GetProductByIdRequestHandlerTests
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
+    private readonly IProductReader _productReader;
+    private readonly GetProductByIdRequestHandler _getProductByIdRequestHandler;
 
     public GetProductByIdRequestHandlerTests(PostgresSqlFixture postgresSqlFixture)
     {
         _postgresSqlFixture = postgresSqlFixture;
+        _productReader = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
+        _getProductByIdRequestHandler = new GetProductByIdRequestHandler(_productReader);
     }
 
-    [Fact]
-    public async Task ReadProductByIdWhenNoExistsShouldReturnNull()
+    [Theory]
+    [InlineAutoData]
+    public async Task ReadProductByIdWhenNoExistsShouldReturnNull(GetProductById query)
     {
-        // Arrange 
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
-        var handller = new GetProductByIdRequestHandler(repo);
         // Act
-
-        var subject = await handller.Handle(new GetProductById(ProductId.New()), default);
+        var subject = await _getProductByIdRequestHandler.Handle(query, default);
         
         subject.ShouldBeNull();
     }
@@ -41,12 +45,9 @@ public class GetProductByIdRequestHandlerTests
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         var productId = ProductId.New();
-
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
-        
         // Act
         
-        var subject = await repo.GetByIds(new [] { productId } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject = await _productReader.GetByIds(new [] { productId } , cts.Token).ToListAsync(cancellationToken: cts.Token);
         
         // Assert
         subject.ShouldNotBeNull();

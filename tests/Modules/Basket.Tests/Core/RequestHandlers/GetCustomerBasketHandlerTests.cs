@@ -25,11 +25,10 @@ public class GetCustomerBasketHandlerTests
 
     [Theory]
     [InlineAutoData]
-    public async Task TestWhenCustomerBasketNotExists_ShouldReturnNull(CustomerId customerId)
+    public async Task TestWhenCustomerBasketNotExists_ShouldReturnNull(GetCustomerBasket request)
     {
         // Act
-
-        var result = await _getCustomerBasketHandler.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
+        var result = await _getCustomerBasketHandler.Handle(request, CancellationToken.None);
 
         result.ShouldBeNull();
     }

@@ -8,3 +8,5 @@ coverlet.collector
 Testcontainers
 Microsoft.NET.Test.Sdk
 Alba
+AutoFixture.Xunit2
+AutoFixture.AutoMoq

@@ -25,10 +25,10 @@ public sealed class EfCoreProductReader : IProductReader
         return result?.ToProduct();
     }
 
-    public async IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> id, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> ids, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
-        var result = context.Products.AsNoTracking().Where(product => id.Contains(product.ProductId)).AsAsyncEnumerable();
+        var result = context.Products.AsNoTracking().Where(product => ids.Contains(product.ProductId)).AsAsyncEnumerable();
         await foreach (var product in result.WithCancellation(cancellationToken))
         {
             yield return product.ToProduct();

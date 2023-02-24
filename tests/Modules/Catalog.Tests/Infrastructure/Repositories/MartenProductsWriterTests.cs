@@ -1,6 +1,9 @@
 using System.Security.Cryptography;
 
+using AutoFixture.Xunit2;
+
 using Catalog.Core.Model;
+using Catalog.Core.Repository;
 using Catalog.Infrastructure.Repositories;
 using Catalog.Tests.Fixtures;
 
@@ -14,22 +17,19 @@ namespace Catalog.Tests.Infrastructure.Repositories;
 public class MartenProductsWriterTests
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
-
+    private readonly IProductsWriter _productsWriter;
     public MartenProductsWriterTests(PostgresSqlFixture postgresSqlFixture)
     {
         _postgresSqlFixture = postgresSqlFixture;
+        _productsWriter = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
     }
 
-    [Fact]
-    public async Task WriteProductTest()
+    [Theory]
+    [InlineAutoData]
+    public async Task WriteProductTest(Product product)
     {
-        // Arrange 
-        var repo = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
-        
         // Act
-        var productId =  ProductId.New();
-        var product = new Product(productId, new ProductName("xD"), new ProductDescription("xDD"), new ProductPrice(21.37m, 21.36m), new AvailableQuantity(1));
-        var subject = await repo.AddProduct(product);
+        var subject = await _productsWriter.AddProduct(product);
                     
         subject.ShouldNotBeNull();
         subject.IsT0.ShouldBeTrue();
