@@ -41,6 +41,7 @@ nuget Npgsql.OpenTelemetry
 nuget OpenTelemetry.Instrumentation.StackExchangeRedis prerelease
 nuget AutoFixture
 nuget AutoFixture.Xunit2
+nuget AutoFixture.AutoMoq
 nuget Shouldly
 nuget xunit
 nuget xunit.runner.visualstudio

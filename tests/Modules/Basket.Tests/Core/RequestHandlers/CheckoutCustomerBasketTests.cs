@@ -1,3 +1,7 @@
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Xunit2;
+
 using Basket.Core.Events;
 using Basket.Core.Exceptions;
 using Basket.Core.Model;
@@ -16,48 +20,44 @@ namespace Basket.Tests.Core.RequestHandlers;
 public class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
 {
     private readonly RedisFixture _redisFixture;
-
+    private readonly AutoFixture.Fixture _autoFixture = new();
+    private readonly GetCustomerBasketHandler _getCustomerBasketHandler;
+    private readonly AddItemToCustomerBasketHandler _addItemToCustomerBasketHandler;
+    private readonly CheckoutCustomerBasketHandler _checkoutCustomerBasketHandler;
+    
     public CheckoutCustomerBasketTests(RedisFixture redisFixture)
     {
         _redisFixture = redisFixture;
+        _autoFixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+        _getCustomerBasketHandler = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
+        _addItemToCustomerBasketHandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader,
+            _redisFixture.CustomerBasketWriter, _autoFixture.Create<IMessagePublisher<BasketItemWasAdded>>());
+        _checkoutCustomerBasketHandler = new CheckoutCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter);
     }
 
-    [Fact]
-    public async Task TestCheckoutWhenCustomerBasketIsActiveShouldNotExistsAfterCheckout()
+    [Theory]
+    [InlineAutoData]
+    public async Task TestCheckoutWhenCustomerBasketIsActiveShouldNotExistsAfterCheckout(CustomerId customerId, BasketItem basketItem)
     {
-        var publisherMock = new Mock<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Setup(x =>
-            x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
+       
+        // Arrange 
         
-        var customerId = CustomerId.New();
-        var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
-        var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        var addItemToCustomerBasketHandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
-        var checkoutHandler =
-            new CheckoutCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter);
+        await _addItemToCustomerBasketHandler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
+        
         // Act
-        await addItemToCustomerBasketHandler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
 
-        await checkoutHandler.Handle(new CheckoutCustomerBasket(customerId), CancellationToken.None);
+        await _checkoutCustomerBasketHandler.Handle(new CheckoutCustomerBasket(customerId), CancellationToken.None);
         
-        var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
+        var result = await _getCustomerBasketHandler.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
         
         result.ShouldBeNull();
     }
     
-    [Fact]
-    public async Task TestCheckoutWhenCustomerBasketIsEmptyShouldThrowCustomerBasketNotExistsException()
+    [Theory]
+    [InlineAutoData]
+    public async Task TestCheckoutWhenCustomerBasketIsEmptyShouldThrowCustomerBasketNotExistsException(CustomerId customerId)
     {
-        var publisherMock = new Mock<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Setup(x =>
-            x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
-        
-        var customerId = CustomerId.New();
-        var checkoutHandler =
-            new CheckoutCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter);
         // Act
-        
-        await Assert.ThrowsAsync<CustomerBasketNotExists>(async () => await checkoutHandler.Handle(new CheckoutCustomerBasket(customerId), CancellationToken.None));
-        
+        await Assert.ThrowsAsync<CustomerBasketNotExists>(async () => await _checkoutCustomerBasketHandler.Handle(new CheckoutCustomerBasket(customerId), CancellationToken.None));
     }
 }

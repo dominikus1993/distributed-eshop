@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using Basket.Core.Model;
 using Basket.Core.RequestHandlers;
 using Basket.Core.Requests;
@@ -13,22 +15,21 @@ namespace Basket.Tests.Core.RequestHandlers;
 public class GetCustomerBasketHandlerTests
 {
     private readonly RedisFixture _redisFixture;
+    private readonly GetCustomerBasketHandler _getCustomerBasketHandler;
 
     public GetCustomerBasketHandlerTests(RedisFixture redisFixture)
     {
         _redisFixture = redisFixture;
+        _getCustomerBasketHandler = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
     }
 
-    [Fact]
-    public async Task TestWhenCustomerBasketNotExists_ShouldReturnNull()
+    [Theory]
+    [InlineAutoData]
+    public async Task TestWhenCustomerBasketNotExists_ShouldReturnNull(CustomerId customerId)
     {
-        // Arrange
-        var customerId = CustomerId.New();
-        var handler = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        
         // Act
 
-        var result = await handler.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
+        var result = await _getCustomerBasketHandler.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
 
         result.ShouldBeNull();
     }
