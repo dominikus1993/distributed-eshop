@@ -1,4 +1,7 @@
 using Alba;
+using Alba.Security;
+
+using AutoFixture.Xunit2;
 
 using Basket.Api.Endpoints;
 using Basket.Tests.Extensions;
@@ -9,70 +12,76 @@ using Shouldly;
 namespace Basket.Tests.Api.Endpoints;
 
 [Collection(nameof(BasketApiFixtureCollectionTest))]
-public sealed class RemoveItemFromCustomerBasketEndpointTests
+public sealed class RemoveItemFromCustomerBasketEndpointTests : IAsyncLifetime
 {
-        private readonly BasketApiFixture _basketApiFixture;
-
+    private readonly BasketApiFixture _basketApiFixture;
+    private JwtSecurityStub _jwtSecurityStub;
+    private IAlbaHost _albaHost;
+    private readonly Guid _customerId;
+    
     public RemoveItemFromCustomerBasketEndpointTests(BasketApiFixture basketApiFixture)
     {
         _basketApiFixture = basketApiFixture;
+        _customerId = Guid.NewGuid();
     }
     
-    [Fact]
-    public async Task TestAddItemToEmptyCustomerBasketAndRemoveIT_StatusReturnEmptyBasket()
+    public async Task InitializeAsync()
+    {
+        _jwtSecurityStub = JwtSecurityStubCreator.Create(_customerId);
+        _albaHost = await _basketApiFixture.GetHost(_jwtSecurityStub);
+    }
+
+    public async Task DisposeAsync()
+    {
+        await ((IAsyncDisposable)_jwtSecurityStub).DisposeAsync();
+        await _albaHost.DisposeAsync();
+    }
+    
+    [Theory]
+    [InlineAutoData]
+    public async Task TestAddItemToEmptyCustomerBasketAndRemoveIT_StatusReturnEmptyBasket(AddItemToCustomerBasketRequest request)
     {
         // Arrange
-        var customerId = Guid.NewGuid();
-        await using var securityStub = JwtSecurityStubCreator.Create(customerId);
-
-        await using var host = await _basketApiFixture.GetHost(securityStub);
-        var itemid = Guid.NewGuid();
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
-            s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
+            s.Post.Json(request).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
-            s.Delete.Json(new RemoveItemFromCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
+            s.Delete.Json(request).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
         // Act
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
             s.Get.Url("/api/Basket");
             s.StatusCodeShouldBeNotFound();
         });
     }   
     
-    [Fact]
-    public async Task TestAddItemToEmptyCustomerBasketAndAddItAgain_ShouldReturnBasketWithOneItemWithTwoElements()
+    
+    [Theory]
+    [InlineAutoData]
+    public async Task TestAddItemToEmptyCustomerBasketAndAddItAgain_ShouldReturnBasketWithOneItemWithTwoElements(Guid itemid)
     {
         // Arrange
-        var customerId = Guid.NewGuid();
-        await using var securityStub = JwtSecurityStubCreator.Create(customerId);
-
-        await using var host = await _basketApiFixture.GetHost(securityStub);
-
-        var itemid = Guid.NewGuid();
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
             s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 3, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
             s.Delete.Json(new RemoveItemFromCustomerBasketRequest() { Quantity = 1, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
-
-        
         
         // Act
-        var resp = await host.Scenario(s =>
+        var resp = await _albaHost.Scenario(s =>
         {
             s.Get.Url("/api/Basket");
             s.StatusCodeShouldBeOk();
@@ -80,44 +89,37 @@ public sealed class RemoveItemFromCustomerBasketEndpointTests
 
         var response = await resp.ReadAsJsonAsync<GetCustomerBasketResponse>();
         response.ShouldNotBeNull();
-        response.CustomerId.ShouldBe(customerId);
+        response.CustomerId.ShouldBe(_customerId);
         response.Items.ShouldNotBeEmpty();
         response.Items.Count.ShouldBe(1);
         response.Items.ShouldContain(x => x.ItemId == itemid && x.Quantity == 2);
     }  
     
-    [Fact]
-    public async Task TestAddItemToEmptyCustomerBasketAndAddNewAgain_ShouldReturnBasketWithTwoItems()
+    [Theory]
+    [InlineAutoData]
+    public async Task TestAddItemToEmptyCustomerBasketAndAddNewAgain_ShouldReturnBasketWithTwoItems(Guid itemid, Guid itemid2)
     {
         // Arrange
-        var customerId = Guid.NewGuid();
-        
-        await using var securityStub = JwtSecurityStubCreator.Create(customerId);
-
-        await using var host = await _basketApiFixture.GetHost(securityStub);
-
-        var itemid = Guid.NewGuid();
-        var itemid2 = Guid.NewGuid();
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
             s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 2, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
             s.Post.Json(new AddItemToCustomerBasketRequest() { Quantity = 2, Id = itemid2 }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
 
-        await host.Scenario(s =>
+        await _albaHost.Scenario(s =>
         {
             s.Delete.Json(new RemoveItemFromCustomerBasketRequest() { Quantity = 2, Id = itemid }).ToUrl("/api/Basket/items");
             s.StatusCodeShouldBeOk();
         });
         
         // Act
-        var resp = await host.Scenario(s =>
+        var resp = await _albaHost.Scenario(s =>
         {
             s.Get.Url("/api/Basket");
             s.StatusCodeShouldBeOk();
@@ -125,7 +127,7 @@ public sealed class RemoveItemFromCustomerBasketEndpointTests
 
         var response = await resp.ReadAsJsonAsync<GetCustomerBasketResponse>();
         response.ShouldNotBeNull();
-        response.CustomerId.ShouldBe(customerId);
+        response.CustomerId.ShouldBe(_customerId);
         response.Items.ShouldNotBeEmpty();
         response.Items.Count.ShouldBe(1);
         response.Items.ShouldContain(x => x.ItemId == itemid2 && x.Quantity == 2);

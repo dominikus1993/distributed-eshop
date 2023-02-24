@@ -1,6 +1,8 @@
 using Alba;
 using Alba.Security;
 
+using AutoFixture.Xunit2;
+
 using Basket.Core.Model;
 using Basket.Infrastructure.Repositories;
 using Basket.Infrastructure.Serialization;
@@ -14,27 +16,37 @@ using Shouldly;
 namespace Basket.Tests.Api.Endpoints;
 
 [Collection(nameof(BasketApiFixtureCollectionTest))]
-public class GetCustomerBasketEndpointTests
+public class GetCustomerBasketEndpointTests: IAsyncLifetime
 {
-    private BasketApiFixture _basketApiFixture;
-
+    private readonly BasketApiFixture _basketApiFixture;
+    private JwtSecurityStub _jwtSecurityStub;
+    private IAlbaHost _albaHost;
+    private Guid _customerId;
+    
     public GetCustomerBasketEndpointTests(BasketApiFixture basketApiFixture)
     {
         _basketApiFixture = basketApiFixture;
+        _customerId = Guid.NewGuid();
     }
     
-    [Fact]
+    public async Task InitializeAsync()
+    {
+        _jwtSecurityStub = JwtSecurityStubCreator.Create(_customerId);
+        _albaHost = await _basketApiFixture.GetHost(_jwtSecurityStub);
+    }
+
+    public async Task DisposeAsync()
+    {
+        await ((IAsyncDisposable)_jwtSecurityStub).DisposeAsync();
+        await _albaHost.DisposeAsync();
+    }
+    
+    [Theory]
+    [InlineAutoData]
     public async Task TestWhenCustomerBasketNotExists_StatusCodeShouldBeNotFound()
     {
-        // Arrange
-        var customerId = Guid.NewGuid();
-        await using var jwtSecurity = new JwtSecurityStub();
-        await using var securityStub = JwtSecurityStubCreator.Create(customerId);
-
-        await using var host = await _basketApiFixture.GetHost(securityStub);
-
         // Act
-        var resp = await host.Scenario(s =>
+        var resp = await _albaHost.Scenario(s =>
         {
             s.Get.Url("/api/Basket");
             s.StatusCodeShouldBe(404);
