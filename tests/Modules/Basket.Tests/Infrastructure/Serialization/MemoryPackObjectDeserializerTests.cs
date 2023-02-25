@@ -13,7 +13,7 @@ namespace Basket.Tests.Infrastructure.Serialization;
 public class MemoryPackObjectDeserializerTests
 {
     [Theory]
-    [InlineAutoData]
+    [AutoData]
     internal void TestSerializationAndDeserialization_ShouldSerializeObjectAndDeserializeToTheSameObject(RedisCustomerBasket basket, MemoryPackObjectDeserializer serializer)
     {
         var serialized = serializer.Serialize(basket);
@@ -23,7 +23,7 @@ public class MemoryPackObjectDeserializerTests
         subject.Should().BeTrue();
         result.Should().NotBeNull();
         
-        result.CustomerId.Should().Be(basket.CustomerId);
+        result!.CustomerId.Should().Be(basket.CustomerId);
         result.Items.Should().NotBeNull();
         result.Items.Should().NotBeEmpty();
         result.Items.Should().HaveCount(basket.Items.Count);

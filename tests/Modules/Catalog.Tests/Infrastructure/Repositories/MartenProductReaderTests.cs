@@ -92,8 +92,8 @@ public class MartenProductReaderTests
     }
     
     [Theory]
-    [InlineAutoData]
-    public async Task ReadProductByIdsWhenExistsShouldReturnProduct(Product product)
+    [AutoData]
+    public async Task ReadProductsByIdsWhenExistsShouldReturnProducts(Product[] products)
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
@@ -101,17 +101,12 @@ public class MartenProductReaderTests
 
         // Act
 
-        await _productsWriter.AddProduct(product, cts.Token);
-        var subject = await _productReader.GetByIds(new [] { product.Id } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        await _productsWriter.AddProducts(products, cts.Token);
+        var subject = await _productReader.GetByIds(products.Select(x => x.Id), cts.Token).ToArrayAsync(cancellationToken: cts.Token);
         
         subject.ShouldNotBeNull();
         subject.ShouldNotBeEmpty();
-        subject.Count.ShouldBe(1);
-        var productFromDb = subject[0];
-        productFromDb.Id.ShouldBe(product.Id);
-        productFromDb.ProductName.ShouldBe(product.ProductName);
-        productFromDb.Price.ShouldBe(product.Price);
-        productFromDb.AvailableQuantity.ShouldBe(product.AvailableQuantity);
-        productFromDb.ProductDescription.ShouldBe(product.ProductDescription);
+        subject.Length.ShouldBe(products.Length);
+        subject.ShouldBeEquivalentTo(products);
     }
 }

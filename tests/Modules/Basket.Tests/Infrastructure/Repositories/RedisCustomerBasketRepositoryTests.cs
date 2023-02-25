@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using Basket.Core.Model;
 using Basket.Infrastructure.Repositories;
 using Basket.Infrastructure.Serialization;
@@ -18,12 +20,11 @@ public class RedisCustomerBasketRepositoryTests
         _redisFixture = redisFixture;
     }
 
-    [Fact]
-    public async Task TestWhenCustomerBasketNotExists_ShouldReturnNull()
+    [Theory]
+    [AutoData]
+    internal async Task TestWhenCustomerBasketNotExists_ShouldReturnNull(CustomerId customerId, SystemTextRedisObjectDeserializer deserializer)
     {
         // Arrange
-        var customerId = CustomerId.New();
-        var deserializer = new SystemTextRedisObjectDeserializer();
         var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
         
         // Act
