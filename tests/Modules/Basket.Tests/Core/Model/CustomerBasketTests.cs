@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using Basket.Core.Model;
 
 using Shouldly;
@@ -26,13 +28,13 @@ public class CustomerBasketTests
         subject.ShouldBeEmpty();
     }
     
-    [Fact]
-    public void TestAddItemWhenCustomerBasketIsEmpty()
+    [Theory]
+    [InlineAutoData]
+    public void TestAddItemWhenCustomerBasketIsEmpty(CustomerId customerId, BasketItem item)
     {
         // Arrange 
-
-        var item = new BasketItem(ItemId.New(), new ItemQuantity(2));
-        var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item);
+        
+        var basket = CustomerBasket.Empty(customerId).AddItem(item);
         
         // Act
 
@@ -40,18 +42,18 @@ public class CustomerBasketTests
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
+        basket.CustomerId.ShouldBe(customerId);
         subject.ShouldNotBeEmpty();
         subject.ShouldContain(item);
     }
     
-    [Fact]
-    public void TestAddItemWhenCustomerBasketIsNotEmptyAndItemExists()
+    [Theory]
+    [InlineAutoData]
+    public void TestAddItemWhenCustomerBasketIsNotEmptyAndItemExists(CustomerId customerId, BasketItem item)
     {
         // Arrange 
-
-        var itemId = ItemId.New();
-        var item = new BasketItem(itemId, new ItemQuantity(2));
-        var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
+        
+        var basket = CustomerBasket.Empty(customerId).AddItem(item).AddItem(item);
         
         // Act
 
@@ -60,35 +62,33 @@ public class CustomerBasketTests
         // Assert
         subject.IsEmpty.ShouldBeFalse();
         subject.ShouldNotBeEmpty();
-        subject.ShouldContain(new BasketItem(itemId, new ItemQuantity(4)));
+        subject.ShouldContain(item with { Quantity = new ItemQuantity(item.Quantity.Value * 2) });
     }
     
     
-    [Fact]
-    public void TestRemoveItemWhenCustomerBasketIsNotEmptyAndItemExists__ShouldReturnNotEmptyBasket()
+    [Theory]
+    [InlineAutoData]
+    public void TestRemoveItemWhenCustomerBasketIsNotEmptyAndItemExists__ShouldReturnNotEmptyBasket(ItemId itemId)
     {
         // Arrange 
-
-        var itemId = ItemId.New();
         var item = new BasketItem(itemId, new ItemQuantity(2));
         var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
         
         // Act
 
-        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(1))).BasketItems;
+        var subject = basket.RemoveItem(new BasketItem(itemId, new ItemQuantity(1)));
         
         // Assert
         subject.IsEmpty.ShouldBeFalse();
-        subject.ShouldNotBeEmpty();
-        subject.ShouldContain(new BasketItem(itemId, new ItemQuantity(3)));
+        subject.BasketItems.ShouldNotBeEmpty();
+        subject.BasketItems.ShouldContain(new BasketItem(itemId, new ItemQuantity(3)));
     }
     
-    [Fact]
-    public void TestRemoveItemWhenCustomerBasketIsNotEmptyAndItemExists__ShouldReturnEmptyBasket()
+    [Theory]
+    [InlineAutoData]
+    public void TestRemoveItemWhenCustomerBasketIsNotEmptyAndItemExists__ShouldReturnEmptyBasket(ItemId itemId)
     {
         // Arrange 
-
-        var itemId = ItemId.New();
         var item = new BasketItem(itemId, new ItemQuantity(2));
         var basket = CustomerBasket.Empty(CustomerId.New()).AddItem(item).AddItem(item);
         
