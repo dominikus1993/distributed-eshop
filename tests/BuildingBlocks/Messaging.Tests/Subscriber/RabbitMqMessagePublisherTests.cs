@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using EasyNetQ;
 
 using Messaging.Extensions;
@@ -22,17 +24,16 @@ public class RabbitMqMessagePublisherTests
         _rabbitMqFixture = rabbitMqFixture;
     }
 
-    [Fact]
-    public async Task TestPublishingMessage()
+    [Theory]
+    [InlineAutoData()]
+    public async Task TestMessageSubscription(RabbitMqPublisherConfig<Msg> config, Msg msg, string queueName)
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var config = new RabbitMqPublisherConfig<Msg>() { Exchange = "xDD", Topic = "test" };
-        var msg = new Msg() { Message = "Elo" };
         var publisher = new RabbitMqMessagePublisher<Msg>(_rabbitMqFixture.Bus.Advanced, config);
         var exchange = await _rabbitMqFixture.Bus.Advanced.DeclareExchangeAsync(config, cancellationToken: cts.Token);
-        var queue = await _rabbitMqFixture.Bus.Advanced.QueueDeclareAsync($"test-{Guid.NewGuid()}", cancellationToken: cts.Token);
+        var queue = await _rabbitMqFixture.Bus.Advanced.QueueDeclareAsync(queueName, cancellationToken: cts.Token);
 
         await _rabbitMqFixture.Bus.Advanced.BindAsync(exchange, queue, config.Topic, cancellationToken: cts.Token);
         
@@ -50,16 +51,16 @@ public class RabbitMqMessagePublisherTests
         subject.Message.Body.Message.ShouldBe(msg.Message);
     }
     
-    [Fact]
-    public async Task TestPublishingNullMessage()
+    [Theory]
+    [InlineAutoData()]
+    public async Task TestPublishingNullMessage(RabbitMqPublisherConfig<Msg> config, string queueName)
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var config = new RabbitMqPublisherConfig<Msg>() { Exchange = Guid.NewGuid().ToString(), Topic = "test" };
         var publisher = new RabbitMqMessagePublisher<Msg>(_rabbitMqFixture.Bus.Advanced, config);
         var exchange = await _rabbitMqFixture.Bus.Advanced.DeclareExchangeAsync(config, cancellationToken: cts.Token);
-        var queue = await _rabbitMqFixture.Bus.Advanced.QueueDeclareAsync($"test-{Guid.NewGuid()}", cancellationToken: cts.Token);
+        var queue = await _rabbitMqFixture.Bus.Advanced.QueueDeclareAsync(queueName, cancellationToken: cts.Token);
 
         await _rabbitMqFixture.Bus.Advanced.BindAsync(exchange, queue, config.Topic, cancellationToken: cts.Token);
         

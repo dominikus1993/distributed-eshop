@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using EasyNetQ;
 using EasyNetQ.Serialization.SystemTextJson;
 using EasyNetQ.Topology;
@@ -33,20 +35,19 @@ public class RabbitMqConsumerTests
         _rabbitMqFixture = rabbitMqFixture;
     }
 
-    [Fact]
-    public async Task TestMessageSubscription()
+    [Theory]
+    [InlineAutoData()]
+    public async Task TestMessageSubscription(RabbitMqPublisherConfig<Msg> config, Msg msg, string queueName)
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var config = new RabbitMqPublisherConfig<Msg>() { Exchange = "xDD", Topic = "test" };
-        var msg = new Msg() { Message = "Elo" };
         var publisher = new RabbitMqMessagePublisher<Msg>(_rabbitMqFixture.Bus.Advanced, config);
         var exchange = await _rabbitMqFixture.Bus.Advanced.DeclareExchangeAsync(config, cancellationToken: cts.Token);
         await using var consumer = await RabbitMqTestConsumer.CreateAsync(_rabbitMqFixture.Bus.Advanced,
             new RabbitMqSubscriptionConfiguration<Msg>()
             {
-                Exchange = exchange.Name, Topic = config.Topic, Queue = $"test-{Guid.NewGuid()}"
+                Exchange = exchange.Name, Topic = config.Topic, Queue = queueName
             }, 1, cts.Token);
         // Act
 

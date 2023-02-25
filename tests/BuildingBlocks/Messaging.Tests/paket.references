@@ -1,4 +1,5 @@
 AutoFixture
+AutoFixture.Xunit2
 Shouldly
 xunit
 xunit.runner.visualstudio
