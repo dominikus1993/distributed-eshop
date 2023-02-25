@@ -39,29 +39,32 @@ public class SearchProductsRequestHandlerTests : IClassFixture<PostgresSqlFixtur
     }
 
 
-    [Fact]
-    public async Task FilterProductWhenNiveaProductExistsShouldReturnProductsWithNameOrDescriptionContainsNiveaKeyword()
+    [Theory]
+    [AutoData]
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnProductsWithNameOrDescriptionContainsNiveaKeyword(string keyword)
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription($"some {keyword}"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
-        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+        var product2 = new Product(ProductId.New(), new ProductName($"{keyword.ToUpperInvariant()} xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
-        var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = "nivea"} , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = keyword} , cts.Token).ToListAsync(cancellationToken: cts.Token);
         
         // Assert
         subject.ShouldNotBeNull();
         subject.ShouldNotBeEmpty();
-
-        await Verify(subject);
+        
+        subject.ShouldContain(dto => dto.ProductId == product1.Id.Value);
+        subject.ShouldContain(dto => dto.ProductId == product2.Id.Value);
+        subject.ShouldNotContain(dto => dto.ProductId == product3.Id.Value);
     }
     
     [Fact]
