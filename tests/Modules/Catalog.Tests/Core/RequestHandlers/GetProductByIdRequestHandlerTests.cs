@@ -39,65 +39,24 @@ public class GetProductByIdRequestHandlerTests
         subject.ShouldBeNull();
     }
     
-    [Fact]
-    // TODO Use other request handler
-    public async Task ReadProductByIdsWhenNoExistsShouldReturnEmptyEnumerable()
-    {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var productId = ProductId.New();
-        // Act
-        
-        var subject = await _productReader.GetByIds(new [] { productId } , cts.Token).ToListAsync(cancellationToken: cts.Token);
-        
-        // Assert
-        subject.ShouldNotBeNull();
-        subject.ShouldBeEmpty();
-    }
-    
-    [Fact]
-    // TODO Use other request handler
-    public async Task ReadProductsByIdsWhenNoExistsShouldReturnEmptyEnumerable()
+    [Theory]
+    [InlineAutoData]
+    public async Task ReadProductByIdWhenExistsShouldReturnProduct(Product product)
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
-        
         // Act
-        
-        var subject = await repo.GetByIds(new [] { ProductId.New(), ProductId.New() } , cts.Token).ToListAsync(cancellationToken: cts.Token);
-        
-        // Assert
-        subject.ShouldNotBeNull();
-        subject.ShouldBeEmpty();
-    }
-    
-    [Fact]
-    public async Task ReadProductByIdWhenExistsShouldReturnProduct()
-    {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var productId = ProductId.New();
-        var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
-        
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
-        // Act
-
-        await writer.AddProduct(product, cts.Token);
-        var subject = await repo.GetById(productId, cts.Token);
+        await _productsWriter.AddProduct(product, cts.Token);
+        var subject = await _getProductByIdRequestHandler.Handle(new GetProductById(product.Id), default);
         
         subject.ShouldNotBeNull();
-        subject.Id.ShouldBe(productId);
-        subject.ProductName.ShouldBe(product.ProductName);
-        subject.Price.ShouldBe(product.Price);
-        subject.AvailableQuantity.ShouldBe(product.AvailableQuantity);
-        subject.ProductDescription.ShouldBe(product.ProductDescription);
+        subject.ProductId.ShouldBe(product.Id.Value);
+        subject.Name.ShouldBe(product.ProductName.Name);
+        subject.Price.ShouldBe(product.Price.CurrentPrice.Value);
+        subject.AvailableQuantity.ShouldBe(product.AvailableQuantity.Value);
+        subject.Description.ShouldBe(product.ProductDescription.Description);
     }
     
     [Theory]
