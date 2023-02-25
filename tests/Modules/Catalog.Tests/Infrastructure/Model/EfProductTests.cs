@@ -12,7 +12,7 @@ namespace Catalog.Tests.Infrastructure.Model;
 public class EfProductTests
 {
     [Theory]
-    [InlineAutoData()]
+    [AutoData]
     public void TestToProduct(EfProduct efproduct)
     {
         var subject = efproduct.ToProduct();
@@ -26,7 +26,7 @@ public class EfProductTests
     }
     
     [Theory]
-    [InlineAutoData()]
+    [AutoData]
     public void TestFromProduct(Product product)
     {
         var subject = new EfProduct(product);
