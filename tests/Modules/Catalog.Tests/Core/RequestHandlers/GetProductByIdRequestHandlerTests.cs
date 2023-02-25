@@ -18,12 +18,14 @@ public class GetProductByIdRequestHandlerTests
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
     private readonly IProductReader _productReader;
+    private readonly IProductsWriter _productsWriter;
     private readonly GetProductByIdRequestHandler _getProductByIdRequestHandler;
 
     public GetProductByIdRequestHandlerTests(PostgresSqlFixture postgresSqlFixture)
     {
         _postgresSqlFixture = postgresSqlFixture;
         _productReader = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
+        _productsWriter = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         _getProductByIdRequestHandler = new GetProductByIdRequestHandler(_productReader);
     }
 
@@ -98,31 +100,25 @@ public class GetProductByIdRequestHandlerTests
         subject.ProductDescription.ShouldBe(product.ProductDescription);
     }
     
-    [Fact]
-    public async Task ReadProductByIdsWhenExistsShouldReturnProduct()
+    [Theory]
+    [InlineAutoData]
+    public async Task ReadProductByIdsWhenExistsShouldReturnProduct(Product[] products)
     {
         // Arrange 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(30));
-        var productId = ProductId.New();
-        var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
         
-        var repo = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
-        var writer = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
         // Act
-
-        await writer.AddProduct(product, cts.Token);
-        var subject = await repo.GetByIds(new [] { productId } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        await _productsWriter.AddProducts(products, cts.Token);
+        var subject = await _productReader.GetByIds(products.Select(x => x.Id) , cts.Token).ToListAsync(cancellationToken: cts.Token);
         
         subject.ShouldNotBeNull();
         subject.ShouldNotBeEmpty();
-        subject.Count.ShouldBe(1);
-        var productFromDb = subject[0];
-        productFromDb.Id.ShouldBe(productId);
-        productFromDb.ProductName.ShouldBe(product.ProductName);
-        productFromDb.Price.ShouldBe(product.Price);
-        productFromDb.AvailableQuantity.ShouldBe(product.AvailableQuantity);
-        productFromDb.ProductDescription.ShouldBe(product.ProductDescription);
+        subject.Count.ShouldBe(products.Length);
+
+        foreach (Product product in products)
+        {
+            subject.ShouldContain(product);
+        }
     }
 }

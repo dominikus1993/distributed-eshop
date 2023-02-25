@@ -79,13 +79,13 @@ public sealed class EfCoreProductsWriter : IProductsWriter
         return countOfInsertedRecords == 1 ? Unit.Value : new UnableToWriteRecordException(product.Id);
     }
 
-    public async Task<AddProductResult> AddProducts(IReadOnlyCollection<Product> products, CancellationToken cancellationToken = default)
+    public async Task<AddProductResult> AddProducts(IEnumerable<Product> products, CancellationToken cancellationToken = default)
     {
         await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
-        var records = products.Select(product => new EfProduct(product));
+        var records = products.Select(product => new EfProduct(product)).ToArray();
 
         var countOfInsertedRecords = await context.Products.UpsertRange(records).On(product => product.ProductId).RunAsync(cancellationToken);
-        return countOfInsertedRecords == products.Count ? Unit.Value : new UnableToWriteRecordsException(products.Select(x => x.Id).ToList()); 
+        return countOfInsertedRecords == records.Length ? Unit.Value : new UnableToWriteRecordsException(records.Select(x => x.ProductId).ToList()); 
     }
 
     public async Task RemoveAllProducts(CancellationToken cancellationToken = default)
