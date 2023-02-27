@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using Catalog.Core.Model;
 
 using NpgsqlTypes;
@@ -20,6 +22,10 @@ public sealed class EfProduct
     
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     
+    [Timestamp]
+    public byte[] Version { get; set; }
+    
+
     public EfProduct()
     {
         

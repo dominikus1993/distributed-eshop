@@ -43,6 +43,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
             .HasDefaultValueSql("(now() at time zone 'utc')")
             .HasConversion<UtcTimeConverter>();
         builder
+            .Property(p => p.Version)
+            .IsRowVersion();
+        builder
             .HasGeneratedTsVectorColumn(
                 p => p.SearchVector,
                 "english",  
