@@ -1,11 +1,13 @@
 using DotNet.Testcontainers.Containers;
 
+using Testcontainers.RabbitMq;
+
 namespace Basket.Tests.Infrastructure.Extensions;
 
 public static class RabbitMqContainerExtensions
 {
-    public static string ConnectionString(this TestcontainerMessageBroker broker)
+    public static string ConnectionString(this RabbitMqContainer broker)
     {
-        return $"amqp://{broker.Username}:{broker.Password}@{broker.Hostname}:{broker.Port}";
+        return broker.GetConnectionString();
     }
 }

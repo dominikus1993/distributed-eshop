@@ -6,22 +6,20 @@ using DotNet.Testcontainers.Containers;
 
 using Microsoft.EntityFrameworkCore;
 
+using Testcontainers.PostgreSql;
+
 using Xunit;
 
 namespace Catalog.Tests.Fixtures;
 
 public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
 {
-    private readonly TestcontainerDatabaseConfiguration configuration = new PostgreSqlTestcontainerConfiguration("postgres:14-alpine") { Database = "posts", Username = "postgres", Password = "postgres" };
-
-    public PostgreSqlTestcontainer PostgreSql { get; }
+    public PostgreSqlContainer PostgreSql { get; }
     public TestDbContextFactory DbContextFactory { get; private set; } = null!;
     public ProductsDbContext DbContext { get; private set; } = null!;
     public PostgresSqlFixture()
     {
-        this.PostgreSql = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-            .WithDatabase(this.configuration)
-            .Build();
+        this.PostgreSql = new PostgreSqlBuilder().Build();
     }
 
     public async Task InitializeAsync()
@@ -30,7 +28,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
             .ConfigureAwait(false);
         var builder = new DbContextOptionsBuilder<ProductsDbContext>()
             .UseModel(ProductsDbContextModel.Instance)
-            .UseNpgsql(this.PostgreSql.ConnectionString,
+            .UseNpgsql(this.PostgreSql.GetConnectionString(),
                 optionsBuilder =>
                 {
                     optionsBuilder.EnableRetryOnFailure(5);
@@ -53,7 +51,6 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
 
     public void Dispose()
     {
-        this.configuration.Dispose();
     }
 }
 

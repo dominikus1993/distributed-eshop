@@ -28,7 +28,6 @@ public class RedisCustomerBasketRepositoryTests
         var repo = new RedisCustomerBasketRepository(_redisFixture.RedisConnection, deserializer);
         
         // Act
-
         var result = await repo.Find(customerId);
 
         result.ShouldBeNull();

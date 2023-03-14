@@ -13,38 +13,35 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 
+using Testcontainers.PostgreSql;
+
 using Xunit;
 
 namespace Catalog.Tests.Fixtures;
 
 public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
 {
-    private readonly TestcontainerDatabaseConfiguration configuration = new PostgreSqlTestcontainerConfiguration("postgres:14-alpine") { Database = "posts", Username = "postgres", Password = "postgres" };
-
-    public PostgreSqlTestcontainer PostgreSql { get; }
+    public PostgreSqlContainer PostgreSql { get; }=  new PostgreSqlBuilder().Build();
     public TestDbContextFactory DbContextFactory { get; private set; } = null!;
     public ProductsDbContext DbContext { get; private set; } = null!;
     
     public IProductsWriter ProductsWriter { get; private set; }
     public CatalogApiFixture()
     {
-        this.PostgreSql = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-            .WithDatabase(this.configuration)
-            .Build();
     }
     
     public async Task<IAlbaHost> GetHost()
     {
         return await AlbaHost.For<Program>(h =>
         {
-            h.UseSetting("ConnectionStrings:CatalogDb", PostgreSql.ConnectionString);
+            h.UseSetting("ConnectionStrings:CatalogDb", PostgreSql.GetConnectionString());
             h.ConfigureAppConfiguration((_, builder) =>
             {
                 builder.SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("./Api/appsettings.json", optional: false, reloadOnChange: true);
                 var dict = new Dictionary<string, string>
                 {
-                    { "ConnectionStrings:BasketDb", PostgreSql.ConnectionString! },
+                    { "ConnectionStrings:BasketDb", PostgreSql.GetConnectionString()! },
                 };
                 builder.AddInMemoryCollection(dict!);
             });
@@ -57,7 +54,7 @@ public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
             .ConfigureAwait(false);
         var builder = new DbContextOptionsBuilder<ProductsDbContext>()
             .UseModel(ProductsDbContextModel.Instance)
-            .UseNpgsql(this.PostgreSql.ConnectionString,
+            .UseNpgsql(this.PostgreSql.GetConnectionString(),
                 optionsBuilder =>
                 {
                     optionsBuilder.EnableRetryOnFailure(5);
@@ -81,7 +78,6 @@ public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
 
     public void Dispose()
     {
-        this.configuration.Dispose();
     }
 }
 

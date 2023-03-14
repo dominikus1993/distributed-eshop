@@ -5,7 +5,7 @@ xunit
 xunit.runner.visualstudio
 Moq
 coverlet.collector
-Testcontainers
+Testcontainers.PostgreSql
 Microsoft.NET.Test.Sdk
 Alba
 AutoFixture.Xunit2

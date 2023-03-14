@@ -9,20 +9,18 @@ using DotNet.Testcontainers.Containers;
 
 using StackExchange.Redis;
 
+using Testcontainers.Redis;
+
 namespace Basket.Tests.Fixture;
 
 public sealed class RedisFixture : IAsyncLifetime, IDisposable
 {
-    private readonly TestcontainerDatabaseConfiguration _configuration = new RedisTestcontainerConfiguration("redis:6-alpine");
-
     public RedisFixture()
     {
-        Redis = new TestcontainersBuilder<RedisTestcontainer>()
-            .WithDatabase(this._configuration)
-            .Build();
+        Redis = new RedisBuilder().Build();
     }
     
-    public TestcontainerDatabase Redis { get; private set; }
+    public RedisContainer Redis { get; private set; }
     public IConnectionMultiplexer RedisConnection { get; private set; }
     public ICustomerBasketReader CustomerBasketReader { get; private set; }
     public ICustomerBasketWriter CustomerBasketWriter { get; private set; }
@@ -30,7 +28,7 @@ public sealed class RedisFixture : IAsyncLifetime, IDisposable
     public async Task InitializeAsync()
     {
         await Redis.StartAsync();
-        RedisConnection = RedisConnectionFactory.Connect(Redis.ConnectionString);
+        RedisConnection = RedisConnectionFactory.Connect(Redis.GetConnectionString());
         CustomerBasketReader = new RedisCustomerBasketRepository(RedisConnection, new SystemTextRedisObjectDeserializer());
         CustomerBasketWriter = new RedisCustomerBasketRepository(RedisConnection, new SystemTextRedisObjectDeserializer());
     }
@@ -43,7 +41,6 @@ public sealed class RedisFixture : IAsyncLifetime, IDisposable
 
     public void Dispose()
     {
-        this._configuration.Dispose();
     }
 }
 

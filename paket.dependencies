@@ -48,6 +48,9 @@ nuget xunit.runner.visualstudio
 nuget Moq
 nuget coverlet.collector
 nuget Testcontainers
+nuget Testcontainers.PostgreSql
+nuget Testcontainers.Redis
+nuget Testcontainers.RabbitMq
 nuget Microsoft.NET.Test.Sdk
 nuget Alba
 nuget FlexLabs.EntityFrameworkCore.Upsert 

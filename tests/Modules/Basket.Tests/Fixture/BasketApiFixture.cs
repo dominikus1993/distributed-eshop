@@ -14,27 +14,22 @@ using Microsoft.Extensions.Configuration;
 
 using StackExchange.Redis;
 
+using Testcontainers.RabbitMq;
+using Testcontainers.Redis;
+
 namespace Basket.Tests.Fixture;
 
 public sealed class BasketApiFixture : IAsyncLifetime, IDisposable
 {
-    private readonly TestcontainerDatabaseConfiguration _configuration = new RedisTestcontainerConfiguration("redis:6-alpine");
-
-    private readonly TestcontainerMessageBrokerConfiguration _rabbitmqConfiguration =
-        new RabbitMqTestcontainerConfiguration() { Username = "guest", Password = "guest", };
     
     public BasketApiFixture()
     {
-        Redis = new TestcontainersBuilder<RedisTestcontainer>()
-            .WithDatabase(this._configuration)
-            .Build();
-        RabbitMq = new TestcontainersBuilder<RabbitMqTestcontainer>()
-            .WithMessageBroker(_rabbitmqConfiguration)
-            .Build();
+        Redis = new RedisBuilder().Build();
+        RabbitMq = new RabbitMqBuilder().Build();
     }
     
-    public TestcontainerDatabase Redis { get; private set; }
-    public TestcontainerMessageBroker RabbitMq { get; private set; }
+    public RedisContainer Redis { get; private set; }
+    public RabbitMqContainer RabbitMq { get; private set; }
     public IConnectionMultiplexer RedisConnection { get; private set; } = null!;
 
 
@@ -42,7 +37,7 @@ public sealed class BasketApiFixture : IAsyncLifetime, IDisposable
     {
         return await AlbaHost.For<Program>(h =>
         {
-            h.UseSetting("ConnectionStrings:BasketDb", Redis.ConnectionString);
+            h.UseSetting("ConnectionStrings:BasketDb", Redis.GetConnectionString());
             h.UseSetting("RabbitMq:Connection", RabbitMq.ConnectionString());
             h.ConfigureAppConfiguration((_, builder) =>
             {
@@ -50,7 +45,7 @@ public sealed class BasketApiFixture : IAsyncLifetime, IDisposable
                     .AddJsonFile("./Api/appsettings.json", optional: false, reloadOnChange: true);
                 var dict = new Dictionary<string, string>
                 {
-                    { "ConnectionStrings:BasketDb", Redis.ConnectionString! },
+                    { "ConnectionStrings:BasketDb", Redis.GetConnectionString()! },
                 };
                 builder.AddInMemoryCollection(dict!);
             });
@@ -61,7 +56,7 @@ public sealed class BasketApiFixture : IAsyncLifetime, IDisposable
     {
         await RabbitMq.StartAsync();
         await Redis.StartAsync();
-        RedisConnection = RedisConnectionFactory.Connect(Redis.ConnectionString);
+        RedisConnection = RedisConnectionFactory.Connect(Redis.GetConnectionString());
     }
 
     public async Task DisposeAsync()
@@ -73,8 +68,6 @@ public sealed class BasketApiFixture : IAsyncLifetime, IDisposable
 
     public void Dispose()
     {
-        this._configuration.Dispose();
-        this._rabbitmqConfiguration.Dispose();
     } 
 }
 

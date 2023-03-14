@@ -4,8 +4,9 @@ xunit
 xunit.runner.visualstudio
 Moq
 coverlet.collector
-Testcontainers
+Testcontainers.Redis
 Microsoft.NET.Test.Sdk
 Alba
 AutoFixture.AutoMoq
 FluentAssertions
+Testcontainers.RabbitMq
