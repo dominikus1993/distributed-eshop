@@ -4,10 +4,10 @@ namespace Basket.Core.Model;
 
 public sealed class Products : IEnumerable<Product>
 {
-    private readonly IReadOnlyCollection<Product> _items;
+    private readonly IReadOnlyList<Product> _items;
     public bool IsEmpty => _items.Count == 0;
 
-    private Products(IReadOnlyCollection<Product> items)
+    private Products(IReadOnlyList<Product> items)
     {
         _items = items;
     }
@@ -40,13 +40,17 @@ public sealed class Products : IEnumerable<Product>
     {
         if (_items is {Count: 0})
         {
-            yield break;
+            return Enumerable.Empty<T>();
         }
 
-        foreach (Product basketItem in _items)
+        var array = new T[_items.Count];
+
+        for (int i = 0; i < _items.Count; i++)
         {
-            yield return map(basketItem);
+            array[i] = map(_items[i]);
         }
+
+        return array;
     }
     
     public Products RemoveOrDecreaseItem(Product item)

@@ -30,7 +30,7 @@ internal sealed partial class RedisBasketItem
 internal sealed partial class RedisCustomerBasket
 {
     public Guid CustomerId { get; set; }
-    public IReadOnlyCollection<RedisBasketItem> Items { get; set; } = null!;
+    public IEnumerable<RedisBasketItem> Items { get; set; } = null!;
     
     [MemoryPackConstructor]
     public RedisCustomerBasket()
@@ -41,6 +41,6 @@ internal sealed partial class RedisCustomerBasket
     public RedisCustomerBasket(CustomerBasket basket)
     {
         CustomerId = basket.CustomerId.Value;
-        Items = basket.Products.MapItems(item => new RedisBasketItem(item)).ToArray();
+        Items = basket.Products.MapItems(item => new RedisBasketItem(item));
     }
 }
