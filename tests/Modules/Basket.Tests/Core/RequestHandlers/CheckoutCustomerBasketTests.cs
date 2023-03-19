@@ -37,12 +37,12 @@ public class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
 
     [Theory]
     [InlineAutoData]
-    public async Task TestCheckoutWhenCustomerBasketIsActiveShouldNotExistsAfterCheckout(CustomerId customerId, BasketItem basketItem)
+    public async Task TestCheckoutWhenCustomerBasketIsActiveShouldNotExistsAfterCheckout(CustomerId customerId, Product product)
     {
        
         // Arrange 
         
-        await _addItemToCustomerBasketHandler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
+        await _addItemToCustomerBasketHandler.Handle(new AddItemToCustomerBasket(customerId, product), CancellationToken.None);
         
         // Act
 

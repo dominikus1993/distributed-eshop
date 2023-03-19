@@ -17,7 +17,7 @@ public sealed class BasketItemWasRemoved: INotification, IMessage
     public required uint Quantity { get; set; }
 
     [SetsRequiredMembers]
-    public BasketItemWasRemoved(CustomerId customerId, BasketItem item)
+    public BasketItemWasRemoved(CustomerId customerId, Product item)
     {
         ItemId = item.ItemId.Value;
         CustomerId = customerId.Value;

@@ -72,7 +72,7 @@ public sealed class AddItemToCustomerBasketEndpoint : Endpoint<AddItemToCustomer
             return;
         }
         
-        await _sender.Send(new AddItemToCustomerBasket(new CustomerId(userId), new BasketItem(new ItemId(req.Id), new ItemQuantity((uint)req.Quantity))), ct);
+        await _sender.Send(new AddItemToCustomerBasket(new CustomerId(userId), new Product(new ItemId(req.Id), new ItemQuantity((uint)req.Quantity))), ct);
         
         await SendOkAsync(cancellation: ct);
     }

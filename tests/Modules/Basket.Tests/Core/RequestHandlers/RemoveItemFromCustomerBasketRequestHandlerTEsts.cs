@@ -37,7 +37,7 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
             x.Publish(It.IsAny<BasketItemWasRemoved>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
         
         var customerId = CustomerId.New();
-        var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
+        var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
         var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock.Object);
@@ -65,7 +65,7 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
             x.Publish(It.IsAny<BasketItemWasRemoved>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
         
         var customerId = CustomerId.New();
-        var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
+        var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
         var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock.Object);

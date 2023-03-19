@@ -2,20 +2,20 @@ using System.Collections;
 
 namespace Basket.Core.Model;
 
-public sealed class BasketItems : IEnumerable<BasketItem>
+public sealed class Products : IEnumerable<Product>
 {
-    private readonly IReadOnlyCollection<BasketItem> _items;
+    private readonly IReadOnlyCollection<Product> _items;
     public bool IsEmpty => _items.Count == 0;
 
-    private BasketItems(IReadOnlyCollection<BasketItem> items)
+    private Products(IReadOnlyCollection<Product> items)
     {
         _items = items;
     }
     
-    public static BasketItems Empty => new(Array.Empty<BasketItem>());
-    public BasketItems AddItem(BasketItem item)
+    public static Products Empty => new(Array.Empty<Product>());
+    public Products AddItem(Product item)
     {
-        var items = new List<BasketItem>(_items);
+        var items = new List<Product>(_items);
         var index = items.IndexOf(item);
         if (index == -1)
         {
@@ -28,30 +28,30 @@ public sealed class BasketItems : IEnumerable<BasketItem>
             items[index] = newItem;   
         }
 
-        return new BasketItems(items);
+        return new Products(items);
     }
     
-    public BasketItems AddItems(IEnumerable<BasketItem> items)
+    public Products AddItems(IEnumerable<Product> items)
     {
         return items.Aggregate(this, (basketItems, item) => basketItems.AddItem(item));
     }
 
-    public IEnumerable<T> MapItems<T>(Func<BasketItem, T> map)
+    public IEnumerable<T> MapItems<T>(Func<Product, T> map)
     {
         if (_items is {Count: 0})
         {
             yield break;
         }
 
-        foreach (BasketItem basketItem in _items)
+        foreach (Product basketItem in _items)
         {
             yield return map(basketItem);
         }
     }
     
-    public BasketItems RemoveOrDecreaseItem(BasketItem item)
+    public Products RemoveOrDecreaseItem(Product item)
     {
-        var items = new List<BasketItem>(_items);
+        var items = new List<Product>(_items);
         var index = items.IndexOf(item);
         if (index == -1)
         {
@@ -69,10 +69,10 @@ public sealed class BasketItems : IEnumerable<BasketItem>
             items.RemoveAt(index);
         }
 
-        return new BasketItems(items);
+        return new Products(items);
     }
 
-    public IEnumerator<BasketItem> GetEnumerator()
+    public IEnumerator<Product> GetEnumerator()
     {
         return _items.GetEnumerator();
     }

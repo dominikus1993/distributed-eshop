@@ -4,38 +4,38 @@ public abstract partial class CustomerBasket
 {
     private sealed class ActiveBasket : CustomerBasket
     {
-        public ActiveBasket(CustomerId customerId, BasketItems items) : base(customerId)
+        public ActiveBasket(CustomerId customerId, Products items) : base(customerId)
         {
-            BasketItems = items;
+            Products = items;
         }
 
         public static ActiveBasket Zero(CustomerId customerId)
         {
-            return new ActiveBasket(customerId, BasketItems.Empty);
+            return new ActiveBasket(customerId, Products.Empty);
         }
 
-        public override bool IsEmpty => BasketItems.IsEmpty;
+        public override bool IsEmpty => Products.IsEmpty;
 
-        public override CustomerBasket AddItem(BasketItem item)
+        public override CustomerBasket AddItem(Product item)
         {
-            var items = BasketItems.AddItem(item);
+            var items = Products.AddItem(item);
             return new ActiveBasket(CustomerId, items);
         }
 
-        public override CustomerBasket AddItems(IReadOnlyCollection<BasketItem> items)
+        public override CustomerBasket AddItems(IReadOnlyCollection<Product> items)
         {
-            if (items is { Count: 0} && BasketItems.IsEmpty)
+            if (items is { Count: 0} && Products.IsEmpty)
             {
                 return new EmptyBasket(CustomerId);
             }
             
-            var basketItems = BasketItems.AddItems(items);
+            var basketItems = Products.AddItems(items);
             return new ActiveBasket(CustomerId, basketItems);
         }
 
-        public override CustomerBasket RemoveItem(BasketItem item)
+        public override CustomerBasket RemoveItem(Product item)
         {
-            var items = BasketItems.RemoveOrDecreaseItem(item);
+            var items = Products.RemoveOrDecreaseItem(item);
             if (items.IsEmpty)
             {
                 return new EmptyBasket(CustomerId);
@@ -44,12 +44,12 @@ public abstract partial class CustomerBasket
             return new ActiveBasket(CustomerId, items);
         }
 
-        public override BasketItems BasketItems { get; }
+        public override Products Products { get; }
 
-        public void Deconstruct(out CustomerId CustomerId, out BasketItems Items)
+        public void Deconstruct(out CustomerId CustomerId, out Products Items)
         {
             CustomerId = this.CustomerId;
-            Items = this.BasketItems;
+            Items = this.Products;
         }
     }   
 }

@@ -33,7 +33,7 @@ public class AddItemToCustomerBasketHandlerTests
             x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
         
         var customerId = CustomerId.New();
-        var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
+        var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
         // Act
@@ -58,10 +58,10 @@ public class AddItemToCustomerBasketHandlerTests
             x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
         
         var customerId = CustomerId.New();
-        var basketItem = new BasketItem(ItemId.New(), new ItemQuantity(1));
+        var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
-        await handler.Handle(new AddItemToCustomerBasket(customerId, new BasketItem(ItemId.New(), new ItemQuantity(2))), CancellationToken.None);
+        await handler.Handle(new AddItemToCustomerBasket(customerId, new Product(ItemId.New(), new ItemQuantity(2))), CancellationToken.None);
         
         // Act
         await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);

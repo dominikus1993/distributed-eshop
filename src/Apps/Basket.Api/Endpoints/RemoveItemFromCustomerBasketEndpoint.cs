@@ -70,7 +70,7 @@ public sealed class RemoveItemFromCustomerBasketEndpoint : Endpoint<RemoveItemFr
             return;
         }
         
-        await _sender.Send(new RemoveItemFromCustomerBasket(new CustomerId(userId), new BasketItem(new ItemId(req.Id), new ItemQuantity((uint)req.Quantity))), ct);
+        await _sender.Send(new RemoveItemFromCustomerBasket(new CustomerId(userId), new Product(new ItemId(req.Id), new ItemQuantity((uint)req.Quantity))), ct);
         
         await SendOkAsync(cancellation: ct);
     }

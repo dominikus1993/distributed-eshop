@@ -17,13 +17,13 @@ public abstract partial class CustomerBasket
     
     public static CustomerBasket Empty(CustomerId id) => EmptyBasket.Zero(id);
 
-    public static CustomerBasket Active(CustomerId id, BasketItems items) => new ActiveBasket(id, items);
+    public static CustomerBasket Active(CustomerId id, Products items) => new ActiveBasket(id, items);
 
-    public abstract CustomerBasket AddItem(BasketItem item);
+    public abstract CustomerBasket AddItem(Product item);
     
-    public abstract CustomerBasket AddItems(IReadOnlyCollection<BasketItem> items);
+    public abstract CustomerBasket AddItems(IReadOnlyCollection<Product> items);
 
-    public abstract CustomerBasket RemoveItem(BasketItem item);
+    public abstract CustomerBasket RemoveItem(Product item);
 
-    public abstract BasketItems BasketItems { get; }
+    public abstract Products Products { get; }
 }

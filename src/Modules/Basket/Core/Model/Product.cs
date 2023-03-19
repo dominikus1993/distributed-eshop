@@ -1,8 +1,8 @@
 namespace Basket.Core.Model;
 
-public sealed record BasketItem(ItemId ItemId, ItemQuantity Quantity)
+public sealed record Product(ItemId ItemId, ItemQuantity Quantity)
 {
-    public bool Equals(BasketItem? other)
+    public bool Equals(Product? other)
     {
         if (other is null)
         {
@@ -19,12 +19,12 @@ public sealed record BasketItem(ItemId ItemId, ItemQuantity Quantity)
         return ItemId.GetHashCode();
     }
 
-    public BasketItem IncreaseQuantity(ItemQuantity quantity)
+    public Product IncreaseQuantity(ItemQuantity quantity)
     {
         return this with { Quantity = this.Quantity + quantity };
     }
 
-    public BasketItem DecreaseQuantity(ItemQuantity itemQuantity)
+    public Product DecreaseQuantity(ItemQuantity itemQuantity)
     {
         return this with { Quantity = this.Quantity - itemQuantity };
     }

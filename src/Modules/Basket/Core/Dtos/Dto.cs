@@ -15,7 +15,7 @@ public sealed class BasketItemDto
     }
     
     [SetsRequiredMembers]
-    public BasketItemDto(BasketItem item)
+    public BasketItemDto(Product item)
     {
         ItemId = item.ItemId.Value;
         Quantity = item.Quantity.Value;
@@ -37,6 +37,6 @@ public sealed class CustomerBasketDto
     public CustomerBasketDto(CustomerBasket basket)
     {
         CustomerId = basket.CustomerId;
-        Items = basket.BasketItems.MapItems(item => new BasketItemDto(item)).ToArray();
+        Items = basket.Products.MapItems(item => new BasketItemDto(item)).ToArray();
     }
 }

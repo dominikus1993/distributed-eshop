@@ -12,21 +12,21 @@ public abstract partial class CustomerBasket
 
         public override bool IsEmpty => true;
 
-        public override CustomerBasket AddItem(BasketItem item)
+        public override CustomerBasket AddItem(Product item)
         {
             return ActiveBasket.Zero(CustomerId).AddItem(item);
         }
 
-        public override CustomerBasket AddItems(IReadOnlyCollection<BasketItem> items)
+        public override CustomerBasket AddItems(IReadOnlyCollection<Product> items)
         {
             return ActiveBasket.Zero(CustomerId).AddItems(items);
         }
 
-        public override CustomerBasket RemoveItem(BasketItem item)
+        public override CustomerBasket RemoveItem(Product item)
         {
             return this;
         }
 
-        public override BasketItems BasketItems { get; } = BasketItems.Empty;
+        public override Products Products { get; } = Products.Empty;
     }
 }
