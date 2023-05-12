@@ -81,7 +81,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                     var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<RabbitMqMessageConsumer<T>>>();
                     logger.LogCantDeserializeMessage(info.Exchange, info.RoutingKey, info.Queue);
                     activity?.AddEvent(new ActivityEvent("Message is null or can't be deserialized"));
-                    return AckStrategies.NackWithoutRequeue;
+                    return AckStrategies.NackWithRequeue;
                 }
                 var subscriber = serviceScope.ServiceProvider.GetRequiredService<IMessageSubscriber<T>>();
                 await subscriber.Handle(message, ct);
