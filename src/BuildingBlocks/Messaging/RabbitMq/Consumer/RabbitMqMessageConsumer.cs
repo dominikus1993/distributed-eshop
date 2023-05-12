@@ -23,6 +23,7 @@ public sealed class RabbitMqSubscriptionConfiguration<T> where T : IMessage
     public string Topic { get; set; } = "#";
     public string? Exchange { get; set; }
     public string? Queue  {get; set; }
+    public string MessageName => typeof(T).FullName!;
 }
 
 public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMessage
@@ -72,7 +73,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                     activity.SetTag("messaging.destination_kind", "queue");
                     activity.SetTag("messaging.protocol", "AMQP");
                     activity.SetTag("messaging.protocol_version", "0.9.1");
-                    activity.SetTag("messaging.message_name", typeof(T).FullName);
+                    activity.SetTag("messaging.message_name", _subscriptionConfiguration.MessageName);
                 }
                 var serializer = serviceScope.ServiceProvider.GetRequiredService<ISerializer>();
                 if (serializer.BytesToMessage(typeof(T), body) is not T message)
