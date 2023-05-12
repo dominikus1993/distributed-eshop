@@ -17,7 +17,7 @@ public abstract partial class CustomerBasket
             return ActiveBasket.Zero(CustomerId).AddItem(item);
         }
 
-        public override CustomerBasket AddItems(IReadOnlyCollection<Product> items)
+        public override CustomerBasket AddItems(IEnumerable<Product> items)
         {
             return ActiveBasket.Zero(CustomerId).AddItems(items);
         }

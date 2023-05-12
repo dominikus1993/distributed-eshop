@@ -22,14 +22,14 @@ public abstract partial class CustomerBasket
             return new ActiveBasket(CustomerId, items);
         }
 
-        public override CustomerBasket AddItems(IReadOnlyCollection<Product> items)
+        public override CustomerBasket AddItems(IEnumerable<Product> items)
         {
-            if (items is { Count: 0} && Products.IsEmpty)
+            var basketItems = Products.AddItems(items);
+            if (basketItems.IsEmpty)
             {
                 return new EmptyBasket(CustomerId);
             }
             
-            var basketItems = Products.AddItems(items);
             return new ActiveBasket(CustomerId, basketItems);
         }
 
@@ -45,11 +45,5 @@ public abstract partial class CustomerBasket
         }
 
         public override Products Products { get; }
-
-        public void Deconstruct(out CustomerId CustomerId, out Products Items)
-        {
-            CustomerId = this.CustomerId;
-            Items = this.Products;
-        }
     }   
 }

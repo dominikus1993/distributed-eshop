@@ -21,7 +21,7 @@ public abstract partial class CustomerBasket
 
     public abstract CustomerBasket AddItem(Product item);
     
-    public abstract CustomerBasket AddItems(IReadOnlyCollection<Product> items);
+    public abstract CustomerBasket AddItems(IEnumerable<Product> items);
 
     public abstract CustomerBasket RemoveItem(Product item);
 

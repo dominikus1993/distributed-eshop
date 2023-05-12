@@ -1,5 +1,7 @@
 using System.Collections;
 
+using Basket.Infrastructure.Extensions;
+
 namespace Basket.Core.Model;
 
 public sealed class Products : IEnumerable<Product>
@@ -36,21 +38,9 @@ public sealed class Products : IEnumerable<Product>
         return items.Aggregate(this, (basketItems, item) => basketItems.AddItem(item));
     }
 
-    public IEnumerable<T> MapItems<T>(Func<Product, T> map)
+    public IReadOnlyList<T> MapItems<T>(Func<Product, T> map)
     {
-        if (_items is {Count: 0})
-        {
-            return Enumerable.Empty<T>();
-        }
-
-        var array = new T[_items.Count];
-
-        for (int i = 0; i < _items.Count; i++)
-        {
-            array[i] = map(_items[i]);
-        }
-
-        return array;
+        return _items.Map(map);
     }
     
     public Products RemoveOrDecreaseItem(Product item)
