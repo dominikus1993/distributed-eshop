@@ -17,7 +17,7 @@ using Shouldly;
 
 namespace Basket.Tests.Core.RequestHandlers;
 
-public class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
+public sealed class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
 {
     private readonly RedisFixture _redisFixture;
     private readonly AutoFixture.Fixture _autoFixture = new();
@@ -58,6 +58,6 @@ public class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
     public async Task TestCheckoutWhenCustomerBasketIsEmptyShouldThrowCustomerBasketNotExistsException(CustomerId customerId)
     {
         // Act
-        await Assert.ThrowsAsync<CustomerBasketNotExists>(async () => await _checkoutCustomerBasketHandler.Handle(new CheckoutCustomerBasket(customerId), CancellationToken.None));
+        await Assert.ThrowsAsync<CustomerBasketNotExistsException>(async () => await _checkoutCustomerBasketHandler.Handle(new CheckoutCustomerBasket(customerId), CancellationToken.None));
     }
 }

@@ -27,6 +27,6 @@ public sealed class CheckoutCustomerBasketHandler : IRequestHandler<CheckoutCust
             return Unit.Value;
         }
 
-        throw new CustomerBasketNotExists(request.CustomerId);
+        throw new CustomerBasketNotExistsException(request.CustomerId);
     }
 }

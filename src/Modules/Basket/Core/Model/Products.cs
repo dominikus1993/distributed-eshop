@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 using Basket.Infrastructure.Extensions;
 
@@ -35,7 +36,7 @@ public sealed class Products : IEnumerable<Product>
     
     public Products AddItems(IEnumerable<Product> items)
     {
-        return items.Aggregate(this, (basketItems, item) => basketItems.AddItem(item));
+        return items.Aggregate(this, [MethodImpl(MethodImplOptions.AggressiveInlining)]static (basketItems, item) => basketItems.AddItem(item));
     }
 
     public IReadOnlyList<T> MapItems<T>(Func<Product, T> map)
