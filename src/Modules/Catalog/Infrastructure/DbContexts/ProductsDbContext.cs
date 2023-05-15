@@ -1,3 +1,4 @@
+using Catalog.Core.Model;
 using Catalog.Infrastructure.DbContexts.Configuration;
 using Catalog.Infrastructure.Model;
 
@@ -17,5 +18,15 @@ public sealed class ProductsDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductsDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+    }
+
+    private static Func<ProductsDbContext, ProductId, CancellationToken, Task<EfProduct?>> GetById =
+        EF.CompileAsyncQuery(
+            (ProductsDbContext context, ProductId id, CancellationToken CancellationToken) =>
+                context.Products.FirstOrDefault(c => c.ProductId == id));
+    
+    public async Task<EfProduct?> GetProductById(ProductId id, CancellationToken cancellationToken = default)
+    {
+        return await GetById(this, id, cancellationToken);
     }
 }

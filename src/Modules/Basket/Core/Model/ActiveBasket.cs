@@ -19,7 +19,7 @@ public abstract partial class CustomerBasket
         public override CustomerBasket AddItem(Product item)
         {
             var items = Products.AddItem(item);
-            return new ActiveBasket(CustomerId, items);
+            return Active(this.CustomerId, items);
         }
 
         public override CustomerBasket AddItems(IEnumerable<Product> items)

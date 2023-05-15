@@ -28,7 +28,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
             return null;
         }
 
-        var items = model.Items.Select(item => new Product(new ItemId(item.ItemId), new ItemQuantity(item.Quantity)));
+        var items = model.Items.Select(static item => new Product(new ItemId(item.ItemId), new ItemQuantity(item.Quantity)));
 
         return CustomerBasket.Empty(customerId).AddItems(items);
     }

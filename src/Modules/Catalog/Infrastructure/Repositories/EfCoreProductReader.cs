@@ -21,7 +21,7 @@ public sealed class EfCoreProductReader : IProductReader
     public async Task<Product?> GetById(ProductId id, CancellationToken cancellationToken = default)
     {
         await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
-        var result = await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == id, cancellationToken: cancellationToken);
+        var result = await context.GetProductById(id, cancellationToken);
         return result?.ToProduct();
     }
 
