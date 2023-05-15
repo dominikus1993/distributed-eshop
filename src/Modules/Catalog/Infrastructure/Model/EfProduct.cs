@@ -20,7 +20,7 @@ public sealed class EfProduct
 
     public NpgsqlTsVector SearchVector { get; set; } = null!;
     
-    public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+    public DateTimeOffset DateCreated { get; set; } = DateTimeOffset.UtcNow;
     
     [Timestamp]
     public byte[] Version { get; set; }

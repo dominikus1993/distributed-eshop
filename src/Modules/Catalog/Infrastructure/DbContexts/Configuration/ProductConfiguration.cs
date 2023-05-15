@@ -19,11 +19,11 @@ internal sealed class ProductIdConverter : ValueConverter<ProductId, Guid>
     }
 }
 
-internal class UtcTimeConverter : ValueConverter<DateTime, DateTime>
+internal class UtcTimeConverter : ValueConverter<DateTimeOffset, DateTime>
 {
     public UtcTimeConverter()
         : base(
-            v => v,
+            v => DateTime.SpecifyKind(v.DateTime, DateTimeKind.Utc),
             v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
     {
     }

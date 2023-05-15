@@ -22,8 +22,8 @@ public sealed class ProductsDbContext : DbContext
 
     private static Func<ProductsDbContext, ProductId, CancellationToken, Task<EfProduct?>> GetById =
         EF.CompileAsyncQuery(
-            (ProductsDbContext context, ProductId id, CancellationToken CancellationToken) =>
-                context.Products.FirstOrDefault(c => c.ProductId == id));
+            (ProductsDbContext context, ProductId id, CancellationToken cancellationToken) =>
+                context.Products.AsNoTracking().FirstOrDefault(c => c.ProductId == id));
     
     public async Task<EfProduct?> GetProductById(ProductId id, CancellationToken cancellationToken = default)
     {
