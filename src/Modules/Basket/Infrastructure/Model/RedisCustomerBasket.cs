@@ -31,6 +31,7 @@ internal sealed partial class RedisCustomerBasket
 {
     public Guid CustomerId { get; set; }
     public IReadOnlyCollection<RedisBasketItem> Items { get; set; } = null!;
+    public long ModifiedAtTimestamp { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     
     [MemoryPackConstructor]
     public RedisCustomerBasket()

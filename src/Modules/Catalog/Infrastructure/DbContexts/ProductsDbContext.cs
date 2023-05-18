@@ -20,7 +20,7 @@ public sealed class ProductsDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 
-    private static Func<ProductsDbContext, ProductId, CancellationToken, Task<EfProduct?>> GetById =
+    private static readonly Func<ProductsDbContext, ProductId, CancellationToken, Task<EfProduct?>> GetById =
         EF.CompileAsyncQuery(
             (ProductsDbContext context, ProductId id, CancellationToken cancellationToken) =>
                 context.Products.AsNoTracking().FirstOrDefault(c => c.ProductId == id));

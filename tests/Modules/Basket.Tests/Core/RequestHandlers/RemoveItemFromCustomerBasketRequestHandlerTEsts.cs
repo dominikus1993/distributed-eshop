@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using Basket.Core.Events;
 using Basket.Core.Model;
 using Basket.Core.RequestHandlers;
@@ -24,8 +26,9 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
         _redisFixture = redisFixture;
     }
 
-    [Fact]
-    public async Task TestAddItemToEmptyBasket_AndRemoveIt_ShouldReturnEmptyBasket()
+    [AutoData]
+    [Theory]
+    public async Task TestAddItemToEmptyBasket_AndRemoveIt_ShouldReturnEmptyBasket(CustomerId customerId)
     {
         // Arrange
         var publisherMock = new Mock<IMessagePublisher<BasketItemWasAdded>>();
@@ -36,7 +39,6 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
         publisherRemovedMock.Setup(x =>
             x.Publish(It.IsAny<BasketItemWasRemoved>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
         
-        var customerId = CustomerId.New();
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
