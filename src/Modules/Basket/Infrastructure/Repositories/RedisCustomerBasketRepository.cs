@@ -41,6 +41,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
         var json = _redisObjectDeserializer.Serialize(redisBasket);
 
         var db = _connectionMultiplexer.GetDatabase();
+        
         await db.StringSetAsync(basket.CustomerId.ToRedisKey(), json);
 
         return UpdateBasketSuccess.Instance;

@@ -6,8 +6,8 @@ public sealed class ProductDto
 {
     public Guid ProductId { get; init; }
     
-    public string Name { get; init; } = null!;
-    public string Description { get; init; } = null!;
+    public string Name { get; init; }
+    public string Description { get; init; }
 
     public decimal? PromotionalPrice { get; init; }
 

@@ -10,10 +10,10 @@ namespace Basket.Infrastructure.Extensions;
 internal static class RedisExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RedisKey ToRedisKey(this CustomerId id) => new($"CustomerBasket:{id.Value.ToString()}");
+    public static RedisKey ToRedisKey(this in CustomerId id) => new($"CustomerBasket:{id.Value.ToString()}");
         
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool TryGetValue(this RedisValue value, [NotNullWhen(true)]out string? result)
+    public static bool TryGetValue(this in RedisValue value, [NotNullWhen(true)]out string? result)
     {
         if (value.IsNullOrEmpty)
         {

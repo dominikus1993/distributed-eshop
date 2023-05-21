@@ -2,8 +2,9 @@ using StronglyTypedIds;
 
 namespace Catalog.Core.Model;
 
-[StronglyTypedId(backingType: StronglyTypedIdBackingType.Guid, converters: StronglyTypedIdConverter.SystemTextJson)]
-public readonly partial struct ProductId
+public readonly record struct ProductId(Guid Value)
 {
     public static ProductId From(Guid id) => new ProductId(id);
+    
+    public static ProductId New() => new ProductId(Guid.NewGuid());
 }
