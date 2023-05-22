@@ -16,7 +16,10 @@ public sealed class EfProduct
     
     public int AvailableQuantity { get; set; }
     
-    public string[]? Tags { get; set; }
+#pragma warning disable CA1819
+    public List<string>? Tags { get; set; }
+#pragma warning restore CA1819
+    public string? TagsIndex { get; set; }
 
     public NpgsqlTsVector SearchVector { get; set; } = null!;
     
@@ -35,7 +38,12 @@ public sealed class EfProduct
         AvailableQuantity = product.AvailableQuantity.Value;
         Price = product.Price.CurrentPrice;
         PromotionalPrice = product.Price.PromotionalPrice;
-        Tags = product.Tags?.Select(x => x.Name).ToArray();
+        if (product.Tags?.HasElements() is true)
+        {
+            var tags = product.Tags.Select(x => x.Name).ToList();
+            Tags = tags;
+            TagsIndex = string.Join(',', tags);
+        }
     }
 
     public Product ToProduct()

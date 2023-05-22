@@ -45,9 +45,9 @@ public sealed class EfCoreProductFilter : IProductFilter
                     : product.Price <= filter.PriceTo.Value);
         }
 
-        var result = query.OrderBy(x => x.DateCreated).Skip(filter.Skip).Take(filter.PageSize);
+        var result = await query.OrderBy(x => x.DateCreated).Skip(filter.Skip).Take(filter.PageSize).ToListAsync();
 
-        await foreach (var product in result.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        foreach (var product in result)
         {
             yield return product.ToProduct();
         }

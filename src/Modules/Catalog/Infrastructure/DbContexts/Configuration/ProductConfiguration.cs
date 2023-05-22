@@ -4,10 +4,27 @@ using Catalog.Core.Model;
 using Catalog.Infrastructure.Model;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace Catalog.Infrastructure.DbContexts.Configuration;
+
+public class TagsIndexGenerator : ValueGenerator<DateTimeOffset>
+{
+    public override DateTimeOffset Next(EntityEntry entry)
+    {
+        if (entry == null)
+        {
+            throw new ArgumentNullException(nameof(entry));
+        }
+
+        return DateTimeOffset.UtcNow;
+    }
+
+    public override bool GeneratesTemporaryValues { get; }
+}
 
 internal sealed class ProductIdConverter : ValueConverter<ProductId, Guid>
 {
@@ -39,6 +56,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
         builder.Property(product => product.ProductId).HasConversion<ProductIdConverter>();
         builder.Property(product => product.Name).IsRequired();
         builder.Property(product => product.Description).IsRequired();
+        builder.Property(product => product.TagsIndex);
         builder.Property(product => product.DateCreated)
             .HasDefaultValueSql("(now() at time zone 'utc')")
             .HasConversion<UtcTimeConverter>();
@@ -46,7 +64,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
             .HasGeneratedTsVectorColumn(
                 p => p.SearchVector,
                 "english",  
-                p => new { p.Name, p.Description, p.Tags })  
+                p => new { p.Name, p.Description, p.TagsIndex })  
             .HasIndex(p => p.SearchVector)
             .HasMethod("GIN");
     }

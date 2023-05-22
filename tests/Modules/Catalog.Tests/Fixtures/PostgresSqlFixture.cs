@@ -27,7 +27,7 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
         await this.PostgreSql.StartAsync()
             .ConfigureAwait(false);
         var builder = new DbContextOptionsBuilder<ProductsDbContext>()
-            .UseModel(ProductsDbContextModel.Instance)
+            // .UseModel(ProductsDbContextModel.Instance)
             .UseNpgsql(this.PostgreSql.GetConnectionString(),
                 optionsBuilder =>
                 {
@@ -39,7 +39,6 @@ public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
         DbContextFactory = new TestDbContextFactory(builder);
         DbContext = context;
         await context.Database.MigrateAsync();
-
     }
 
     public async Task DisposeAsync()

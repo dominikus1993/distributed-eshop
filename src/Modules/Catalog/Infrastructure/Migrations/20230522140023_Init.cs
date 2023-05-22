@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NpgsqlTypes;
 
@@ -22,10 +23,11 @@ namespace Catalog.Infrastructure.Migrations
                     promotional_price = table.Column<decimal>(type: "numeric", nullable: true),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     available_quantity = table.Column<int>(type: "integer", nullable: false),
-                    tags = table.Column<string[]>(type: "text[]", nullable: true),
+                    tags = table.Column<List<string>>(type: "text[]", nullable: true),
+                    tags_index = table.Column<string>(type: "text", nullable: true),
                     search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
                         .Annotation("Npgsql:TsVectorConfig", "english")
-                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "description", "tags" }),
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "description", "tags_index" }),
                     date_created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "(now() at time zone 'utc')")
                 },
                 constraints: table =>

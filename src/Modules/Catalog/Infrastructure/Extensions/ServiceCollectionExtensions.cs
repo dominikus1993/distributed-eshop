@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IProductReader, EfCoreProductReader>();
         services.AddPooledDbContextFactory<ProductsDbContext>(builder =>
         {
-            builder.UseModel(ProductsDbContextModel.Instance);
+            // builder.UseModel(ProductsDbContextModel.Instance);
             builder.UseNpgsql(configuration.GetConnectionString("CatalogDb"), optionsBuilder =>
             {
                 optionsBuilder.EnableRetryOnFailure(5);

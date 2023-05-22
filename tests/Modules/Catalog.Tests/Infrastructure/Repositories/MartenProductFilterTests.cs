@@ -170,12 +170,9 @@ public sealed class MartenProductFilterTests : IDisposable
         
         await Verify(subject);
     }
-
-#pragma warning disable CA1816
-#pragma warning disable CA1063
+    
     public void Dispose()
-#pragma warning restore CA1063
-#pragma warning restore CA1816
+
     {
         _postgresSqlFixture.DbContext.Products.RemoveRange(_postgresSqlFixture.DbContext.Products);
         _postgresSqlFixture.DbContext.SaveChanges();
