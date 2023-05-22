@@ -18,7 +18,7 @@ namespace Catalog.Infrastructure.DbContexts
             EfProductEntityType.CreateAnnotations(efProduct);
 
             AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-            AddAnnotation("ProductVersion", "7.0.1");
+            AddAnnotation("ProductVersion", "7.0.5");
             AddAnnotation("Relational:MaxIdentifierLength", 63);
         }
     }

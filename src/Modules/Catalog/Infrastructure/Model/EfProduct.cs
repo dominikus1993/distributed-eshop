@@ -17,6 +17,8 @@ public sealed class EfProduct
     public decimal Price { get; set; }
     
     public int AvailableQuantity { get; set; }
+    
+    public List<string> Tags { get; set; }
 
     public NpgsqlTsVector SearchVector { get; set; } = null!;
     

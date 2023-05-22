@@ -49,7 +49,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
             .HasGeneratedTsVectorColumn(
                 p => p.SearchVector,
                 "english",  
-                p => new { p.Name, p.Description })  
+                p => new { p.Name, p.Description, p.Tags })  
             .HasIndex(p => p.SearchVector)
             .HasMethod("GIN");
     }
