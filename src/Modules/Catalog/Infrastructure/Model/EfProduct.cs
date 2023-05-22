@@ -18,7 +18,7 @@ public sealed class EfProduct
     
     public int AvailableQuantity { get; set; }
     
-    public List<string> Tags { get; set; }
+    public List<string>? Tags { get; set; }
 
     public NpgsqlTsVector SearchVector { get; set; } = null!;
     
@@ -41,11 +41,13 @@ public sealed class EfProduct
         AvailableQuantity = product.AvailableQuantity.Value;
         Price = product.Price.CurrentPrice;
         PromotionalPrice = product.Price.PromotionalPrice;
+        Tags = product.Tags?.Select(x => x.Name).ToList();
     }
 
     public Product ToProduct()
     {
+        var tags = Tags?.Select(tag => new Tag(tag)).ToArray() ?? Array.Empty<Tag>();
         return new Product(ProductId, new ProductName(Name), new ProductDescription(Description),
-            new ProductPrice(Price, PromotionalPrice), new AvailableQuantity(AvailableQuantity));
+            new ProductPrice(Price, PromotionalPrice), new AvailableQuantity(AvailableQuantity), new Tags(tags));
     }
 }

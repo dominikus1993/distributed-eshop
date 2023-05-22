@@ -1,6 +1,25 @@
+using System.Collections;
+
 namespace Catalog.Core.Model;
 
 public readonly record struct ProductName(string Name);
+
+public sealed record Tag(string Name);
+
+public sealed record Tags(IReadOnlyCollection<Tag> Value) : IEnumerable<Tag>
+{
+    public static readonly Tags Empty = new Tags(Array.Empty<Tag>());
+    public IEnumerator<Tag> GetEnumerator()
+    {
+        return Value.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}
+
 public sealed record ProductDescription(string Description);
 
 public readonly record struct Price(decimal Value)
@@ -30,4 +49,4 @@ public sealed record ProductPrice(Price CurrentPrice, Price? PromotionalPrice = 
 public readonly record struct AvailableQuantity(int Value);
 
 public sealed record Product(ProductId Id, ProductName ProductName, ProductDescription ProductDescription, ProductPrice Price,
-    AvailableQuantity AvailableQuantity);
+    AvailableQuantity AvailableQuantity, Tags? Tags);

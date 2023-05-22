@@ -45,7 +45,7 @@ public sealed class SearchProductsModuleTests : IDisposable
         await using var host = await _apiFixture.GetHost();
         var productId = ProductId.New();
         // Act
-        var resp = await host.Scenario(s =>
+        await host.Scenario(s =>
         {
             s.Get.Url($"/api/products/{productId.Value}");
             s.StatusCodeShouldBe(404);
@@ -62,7 +62,7 @@ public sealed class SearchProductsModuleTests : IDisposable
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         var productId = ProductId.New();
         var product = new Product(productId, new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         // Act
     
         await _apiFixture.ProductsWriter.AddProduct(product, cts.Token);
@@ -91,7 +91,7 @@ public sealed class SearchProductsModuleTests : IDisposable
         {
             s.Get.Url($"/api/products");
             s.StatusCodeShouldBe(204);
-        }); ;
+        });
     }
     
     [Fact]
@@ -104,11 +104,11 @@ public sealed class SearchProductsModuleTests : IDisposable
         await using var host = await _apiFixture.GetHost();
 
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
@@ -135,11 +135,11 @@ public sealed class SearchProductsModuleTests : IDisposable
 
         await using var host = await _apiFixture.GetHost();
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(11m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(11m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10), Tags.Empty);
         await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
       
@@ -168,11 +168,11 @@ public sealed class SearchProductsModuleTests : IDisposable
 
         await using var host = await _apiFixture.GetHost();
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         var resp = await host.Scenario(s =>
@@ -200,11 +200,11 @@ public sealed class SearchProductsModuleTests : IDisposable
         await using var host = await _apiFixture.GetHost();
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
@@ -234,15 +234,15 @@ public sealed class SearchProductsModuleTests : IDisposable
         await using var host = await _apiFixture.GetHost();
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _apiFixture.ProductsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
-        var resp = await host.Scenario(s =>
+        await host.Scenario(s =>
         {
             s.Get.Url($"/api/products?query=nivea&pageSize=1&page=2137");
             s.StatusCodeShouldBe(204);

@@ -50,11 +50,11 @@ public sealed class MartenProductFilterTests : IDisposable
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
@@ -67,6 +67,32 @@ public sealed class MartenProductFilterTests : IDisposable
         await Verify(subject);
     }
     
+    [Theory]
+    [AutoData]
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnProductsWithNameOrDescriptionContainsNiveaTag(string tag)
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), new Tags(new []{ new Tag(tag)}));
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        
+        var subject = await _productFilter.FilterProducts(new Filter() { Tag = tag } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+
+        subject.Count.ShouldBe(1);
+        subject[0].Id.ShouldBe(product1.Id);
+    }
+    
     [Fact]
     public async Task FilterProductWhenProductsInPriceConditionExistsShouldReturnProductsWithPriceCondition()
     {
@@ -75,11 +101,11 @@ public sealed class MartenProductFilterTests : IDisposable
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(11m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(11m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
@@ -101,11 +127,11 @@ public sealed class MartenProductFilterTests : IDisposable
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
@@ -127,11 +153,11 @@ public sealed class MartenProductFilterTests : IDisposable
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         

@@ -12,7 +12,7 @@ using Shouldly;
 namespace Catalog.Tests.Core.RequestHandlers;
 
 [UsesVerify]
-public class SearchProductsRequestHandlerTests : IClassFixture<PostgresSqlFixture>, IDisposable
+public sealed class SearchProductsRequestHandlerTests : IClassFixture<PostgresSqlFixture>, IDisposable
 {
     private readonly PostgresSqlFixture _postgresSqlFixture;
     private readonly IProductFilter _productFilter;
@@ -48,11 +48,11 @@ public class SearchProductsRequestHandlerTests : IClassFixture<PostgresSqlFixtur
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription($"some {keyword}"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName($"{keyword.ToUpperInvariant()} xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         
@@ -75,11 +75,11 @@ public class SearchProductsRequestHandlerTests : IClassFixture<PostgresSqlFixtur
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(11m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(11m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { PriceFrom = 2m, PriceTo = 12m } , cts.Token).ToListAsync(cancellationToken: cts.Token);
@@ -100,11 +100,11 @@ public class SearchProductsRequestHandlerTests : IClassFixture<PostgresSqlFixtur
         cts.CancelAfter(TimeSpan.FromSeconds(30));
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = "nivea", PageSize = 1 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
@@ -125,11 +125,11 @@ public class SearchProductsRequestHandlerTests : IClassFixture<PostgresSqlFixtur
         cts.CancelAfter(TimeSpan.FromSeconds(30));
 
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
         

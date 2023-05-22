@@ -9,6 +9,7 @@ public sealed class Filter
     public string? Query { get; init; }
     public decimal? PriceFrom { get; init; }
     public decimal? PriceTo { get; init; }
+    public string Tag { get; init; }
     internal int Skip => (Page - 1) * PageSize;
 }
 

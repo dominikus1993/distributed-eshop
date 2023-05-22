@@ -26,6 +26,11 @@ public sealed class EfCoreProductFilter : IProductFilter
         {
             query = query.Where(x => x.SearchVector.Matches(filter.Query));
         }
+        
+        if (!string.IsNullOrEmpty(filter.Tag))
+        {
+            query = query.Where(x => x.SearchVector.Matches(filter.Tag));
+        }
 
         if (filter.PriceFrom.HasValue)
         {
