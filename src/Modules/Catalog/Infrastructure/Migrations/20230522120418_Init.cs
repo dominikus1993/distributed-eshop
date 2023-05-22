@@ -16,20 +16,21 @@ namespace Catalog.Infrastructure.Migrations
                 name: "products",
                 columns: table => new
                 {
-                    productid = table.Column<Guid>(name: "product_id", type: "uuid", nullable: false),
+                    product_id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
-                    promotionalprice = table.Column<decimal>(name: "promotional_price", type: "numeric", nullable: true),
+                    promotional_price = table.Column<decimal>(type: "numeric", nullable: true),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
-                    availablequantity = table.Column<int>(name: "available_quantity", type: "integer", nullable: false),
-                    searchvector = table.Column<NpgsqlTsVector>(name: "search_vector", type: "tsvector", nullable: false)
+                    available_quantity = table.Column<int>(type: "integer", nullable: false),
+                    tags = table.Column<string[]>(type: "text[]", nullable: true),
+                    search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
                         .Annotation("Npgsql:TsVectorConfig", "english")
-                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "description" }),
-                    datecreated = table.Column<DateTime>(name: "date_created", type: "timestamp with time zone", nullable: false, defaultValueSql: "(now() at time zone 'utc')")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "description", "tags" }),
+                    date_created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "(now() at time zone 'utc')")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_products", x => x.productid);
+                    table.PrimaryKey("pk_products", x => x.product_id);
                 });
 
             migrationBuilder.CreateIndex(

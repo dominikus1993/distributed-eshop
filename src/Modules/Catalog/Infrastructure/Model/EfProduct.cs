@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 using Catalog.Core.Model;
 
 using NpgsqlTypes;
@@ -18,15 +16,11 @@ public sealed class EfProduct
     
     public int AvailableQuantity { get; set; }
     
-    public List<string>? Tags { get; set; }
+    public string[]? Tags { get; set; }
 
     public NpgsqlTsVector SearchVector { get; set; } = null!;
     
     public DateTimeOffset DateCreated { get; set; } = DateTimeOffset.UtcNow;
-    
-    [Timestamp]
-    public byte[] Version { get; set; }
-    
 
     public EfProduct()
     {
@@ -41,7 +35,7 @@ public sealed class EfProduct
         AvailableQuantity = product.AvailableQuantity.Value;
         Price = product.Price.CurrentPrice;
         PromotionalPrice = product.Price.PromotionalPrice;
-        Tags = product.Tags?.Select(x => x.Name).ToList();
+        Tags = product.Tags?.Select(x => x.Name).ToArray();
     }
 
     public Product ToProduct()
