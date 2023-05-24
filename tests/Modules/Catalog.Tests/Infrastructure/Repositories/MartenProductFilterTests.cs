@@ -93,6 +93,32 @@ public sealed class MartenProductFilterTests : IDisposable
         subject[0].Id.ShouldBe(product1.Id);
     }
     
+    [Theory]
+    [AutoData]
+    public async Task FilterProductWhenNiveaProductNotExistsShouldReturnEmptyCollectionNiveaTag(Tags tags, string tag2)
+    {
+        // Arrange 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), tags);
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        // Act
+        
+        var subject = await _productFilter.FilterProducts(new Filter() { Tag = tag2 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.ShouldNotBeEmpty();
+
+        subject.Count.ShouldBe(1);
+        subject[0].Id.ShouldBe(product1.Id);
+    }
+    
     [Fact]
     public async Task FilterProductWhenProductsInPriceConditionExistsShouldReturnProductsWithPriceCondition()
     {
