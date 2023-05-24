@@ -40,10 +40,7 @@ public sealed class EfProduct
         AvailableQuantity = product.AvailableQuantity.Value;
         Price = product.Price.CurrentPrice;
         PromotionalPrice = product.Price.PromotionalPrice;
-        if (product.Tags?.HasElements() is true)
-        {
-            Tags = product.Tags.Select(x => x.Name).ToList();
-        }
+        Tags = product.Tags?.Select(x => x.Name).ToList();
     }
 
     public Product ToProduct()
