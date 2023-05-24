@@ -14,7 +14,7 @@ using NpgsqlTypes;
 namespace Catalog.Infrastructure.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
-    [Migration("20230524074236_Init")]
+    [Migration("20230524074356_Init")]
     partial class Init
     {
         /// <inheritdoc />
