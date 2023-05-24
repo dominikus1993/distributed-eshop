@@ -64,15 +64,11 @@ namespace Catalog.Infrastructure.Migrations
                         .HasColumnType("tsvector")
                         .HasColumnName("search_vector")
                         .HasAnnotation("Npgsql:TsVectorConfig", "english")
-                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "TagsIndex" });
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "Tags" });
 
                     b.Property<List<string>>("Tags")
-                        .HasColumnType("text[]")
+                        .HasColumnType("jsonb")
                         .HasColumnName("tags");
-
-                    b.Property<string>("TagsIndex")
-                        .HasColumnType("text")
-                        .HasColumnName("tags_index");
 
                     b.HasKey("ProductId")
                         .HasName("pk_products");

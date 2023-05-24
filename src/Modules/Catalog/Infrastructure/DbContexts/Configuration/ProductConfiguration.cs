@@ -56,7 +56,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
         builder.Property(product => product.ProductId).HasConversion<ProductIdConverter>();
         builder.Property(product => product.Name).IsRequired();
         builder.Property(product => product.Description).IsRequired();
-        builder.Property(product => product.TagsIndex);
         builder.Property(product => product.DateCreated)
             .HasDefaultValueSql("(now() at time zone 'utc')")
             .HasConversion<UtcTimeConverter>();
@@ -64,7 +63,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<EfProduct>
             .HasGeneratedTsVectorColumn(
                 p => p.SearchVector,
                 "english",  
-                p => new { p.Name, p.Description, p.TagsIndex })  
+                p => new { p.Name, p.Description, p.Tags })  
             .HasIndex(p => p.SearchVector)
             .HasMethod("GIN");
     }

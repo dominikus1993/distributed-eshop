@@ -14,7 +14,7 @@ using NpgsqlTypes;
 namespace Catalog.Infrastructure.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
-    [Migration("20230522140236_Init")]
+    [Migration("20230524074236_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -67,15 +67,11 @@ namespace Catalog.Infrastructure.Migrations
                         .HasColumnType("tsvector")
                         .HasColumnName("search_vector")
                         .HasAnnotation("Npgsql:TsVectorConfig", "english")
-                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "TagsIndex" });
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "Description", "Tags" });
 
                     b.Property<List<string>>("Tags")
-                        .HasColumnType("text[]")
+                        .HasColumnType("jsonb")
                         .HasColumnName("tags");
-
-                    b.Property<string>("TagsIndex")
-                        .HasColumnType("text")
-                        .HasColumnName("tags_index");
 
                     b.HasKey("ProductId")
                         .HasName("pk_products");

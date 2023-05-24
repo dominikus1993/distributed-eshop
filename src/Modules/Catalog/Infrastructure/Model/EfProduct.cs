@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 using Catalog.Core.Model;
 
 using NpgsqlTypes;
@@ -17,9 +19,9 @@ public sealed class EfProduct
     public int AvailableQuantity { get; set; }
     
 #pragma warning disable CA1819
+    [Column(TypeName = "jsonb")]
     public List<string>? Tags { get; set; }
 #pragma warning restore CA1819
-    public string? TagsIndex { get; set; }
 
     public NpgsqlTsVector SearchVector { get; set; } = null!;
     
@@ -40,9 +42,7 @@ public sealed class EfProduct
         PromotionalPrice = product.Price.PromotionalPrice;
         if (product.Tags?.HasElements() is true)
         {
-            var tags = product.Tags.Select(x => x.Name).ToList();
-            Tags = tags;
-            TagsIndex = string.Join(',', tags);
+            Tags = product.Tags.Select(x => x.Name).ToList();
         }
     }
 
