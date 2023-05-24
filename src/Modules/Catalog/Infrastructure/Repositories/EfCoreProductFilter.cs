@@ -21,7 +21,7 @@ public sealed class EfCoreProductFilter : IProductFilter
     public async IAsyncEnumerable<Product> FilterProducts(Filter filter, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
-        var query = context.Products.AsNoTracking();
+        var query = context.Products.AsNoTracking().AsQueryable();
         if (!string.IsNullOrEmpty(filter.Query))
         {
             query = query.Where(x => x.SearchVector.Matches(filter.Query));
@@ -44,10 +44,8 @@ public sealed class EfCoreProductFilter : IProductFilter
                     ? product.PromotionalPrice <= filter.PriceTo.Value
                     : product.Price <= filter.PriceTo.Value);
         }
-
-        var result = await query.OrderBy(x => x.DateCreated).Skip(filter.Skip).Take(filter.PageSize).ToListAsync();
-
-        foreach (var product in result)
+        
+        await foreach (var product in query.OrderBy(x => x.DateCreated).Skip(filter.Skip).Take(filter.PageSize).AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return product.ToProduct();
         }

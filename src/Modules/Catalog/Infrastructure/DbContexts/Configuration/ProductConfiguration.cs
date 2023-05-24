@@ -11,21 +11,6 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace Catalog.Infrastructure.DbContexts.Configuration;
 
-public class TagsIndexGenerator : ValueGenerator<DateTimeOffset>
-{
-    public override DateTimeOffset Next(EntityEntry entry)
-    {
-        if (entry == null)
-        {
-            throw new ArgumentNullException(nameof(entry));
-        }
-
-        return DateTimeOffset.UtcNow;
-    }
-
-    public override bool GeneratesTemporaryValues { get; }
-}
-
 internal sealed class ProductIdConverter : ValueConverter<ProductId, Guid>
 {
     public ProductIdConverter()
