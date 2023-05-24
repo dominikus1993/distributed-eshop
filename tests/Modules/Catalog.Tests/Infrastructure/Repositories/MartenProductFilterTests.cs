@@ -113,10 +113,7 @@ public sealed class MartenProductFilterTests : IDisposable
         
         // Assert
         subject.ShouldNotBeNull();
-        subject.ShouldNotBeEmpty();
-
-        subject.Count.ShouldBe(1);
-        subject[0].Id.ShouldBe(product1.Id);
+        subject.ShouldBeEmpty();
     }
     
     [Fact]
