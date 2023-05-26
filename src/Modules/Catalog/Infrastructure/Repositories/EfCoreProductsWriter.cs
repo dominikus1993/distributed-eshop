@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 using Catalog.Core.Model;
 using Catalog.Core.Repository;
@@ -27,9 +26,15 @@ public sealed class UnableToWriteRecordException : Exception
         ProductId = productId;
     }
     
-    private UnableToWriteRecordException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+    private UnableToWriteRecordException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext)
     {
         
+    }
+
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        base.GetObjectData(info, context);
+        info.AddValue(nameof(ProductId), ProductId);
     }
 
     public override string ToString()
@@ -52,7 +57,7 @@ public sealed class UnableToWriteRecordsException : Exception
         ProductIds = productIds;
     }
     
-    private UnableToWriteRecordsException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+    private UnableToWriteRecordsException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext)
     {
         
     }
