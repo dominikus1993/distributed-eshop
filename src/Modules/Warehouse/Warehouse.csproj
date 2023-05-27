@@ -1,3 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    
+  <ItemGroup>
+    <Folder Include="Core\Repositories\" />
+    <Folder Include="Core\UseCase\" />
+  </ItemGroup>
 </Project>

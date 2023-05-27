@@ -33,13 +33,13 @@ public static class RabbitMqTelemetry
     internal static void AddActivityToHeader(Activity activity, MessageProperties props)
     {
         var context = new PropagationContext(activity.Context, Baggage.Current);
-        Propagators.DefaultTextMapPropagator.Inject(context, props,(properties, key, value) =>  InjectContextIntoHeader(properties, key, value));
+        Propagators.DefaultTextMapPropagator.Inject(context, props,InjectContextIntoHeader);
     }
     
     internal static PropagationContext GetHeaderFromProps(MessageProperties props)
     {
         var context = new PropagationContext();
-        return Propagators.DefaultTextMapPropagator.Extract(context, props, (properties, s) => ExtractContextFromHeader(properties, s));
+        return Propagators.DefaultTextMapPropagator.Extract(context, props, ExtractContextFromHeader);
     }
 
     private static void InjectContextIntoHeader(MessageProperties props, string key, string value)
