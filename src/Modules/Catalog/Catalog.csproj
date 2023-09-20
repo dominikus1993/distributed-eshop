@@ -5,5 +5,4 @@
             <_Parameter1>Catalog.Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-    <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

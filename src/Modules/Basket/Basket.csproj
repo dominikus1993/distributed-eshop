@@ -8,5 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Messaging\Messaging.csproj" />
   </ItemGroup>
-  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <None Remove="packages.lock.json" />
+  </ItemGroup>
 </Project>
