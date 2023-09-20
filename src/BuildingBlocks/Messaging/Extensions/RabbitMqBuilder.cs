@@ -10,8 +10,6 @@ using Messaging.Abstraction;
 using Messaging.Configuration;
 using Messaging.RabbitMq.Configuration;
 using Messaging.RabbitMq.Publisher;
-
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

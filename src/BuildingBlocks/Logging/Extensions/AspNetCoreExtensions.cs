@@ -24,7 +24,7 @@ public static class AspNetCoreExtensions
                 b.ParseStateValues = true;
                 b.AttachLogsToActivityEvent();
                 b.SetResourceBuilder(
-                    ResourceBuilderExtensions.GetResourceBuilder(service, builder.Environment.EnvironmentName));
+                    service.GetResourceBuilder(builder.Environment.EnvironmentName));
             
                 if (service.OpenTelemetryConfiguration.OltpExporterEnabled)
                 {
