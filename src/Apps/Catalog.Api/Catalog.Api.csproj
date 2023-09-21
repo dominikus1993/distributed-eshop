@@ -20,4 +20,9 @@
     <ProjectReference Include="..\..\BuildingBlocks\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\..\Modules\Catalog\Catalog.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Carter" />
+    <PackageReference Include="Npgsql.OpenTelemetry" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
 </Project>

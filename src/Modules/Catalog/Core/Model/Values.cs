@@ -1,5 +1,3 @@
-using StronglyTypedIds;
-
 namespace Catalog.Core.Model;
 
 public readonly record struct ProductId(Guid Value)
