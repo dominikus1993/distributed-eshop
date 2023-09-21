@@ -8,5 +8,19 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Messaging\Messaging.csproj" />
   </ItemGroup>
-  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <None Remove="packages.lock.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Mediator.Abstractions" />
+    <PackageReference Include="Mediator.SourceGenerator">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MemoryPack" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="OneOf" />
+    <PackageReference Include="OneOf.SourceGenerator" />
+    <PackageReference Include="StackExchange.Redis" />
+  </ItemGroup>
 </Project>

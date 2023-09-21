@@ -26,7 +26,7 @@ public class MemoryPackObjectDeserializerTests
         result!.CustomerId.Should().Be(basket.CustomerId);
         result.Items.Should().NotBeNull();
         result.Items.Should().NotBeEmpty();
-        result.Items.Should().HaveCount(basket.Items.Count());
+        result.Items.Should().HaveCount(basket.Items.Count);
         foreach (var item in basket.Items)
         {
             result.Items.Should().ContainEquivalentOf(item);

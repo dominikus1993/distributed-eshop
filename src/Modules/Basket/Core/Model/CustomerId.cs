@@ -1,9 +1,6 @@
-using StronglyTypedIds;
-
 namespace Basket.Core.Model;
 
-[StronglyTypedId(converters: StronglyTypedIdConverter.SystemTextJson)]
-public readonly partial struct CustomerId
+public readonly record struct CustomerId(Guid Value)
 {
-    
+    public static CustomerId New() => new CustomerId(Guid.NewGuid());
 }

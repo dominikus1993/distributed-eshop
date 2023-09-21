@@ -14,5 +14,13 @@
             <_Parameter1>Basket.Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+    <ItemGroup>
+      <Folder Include="Infrastructure\" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="FastEndpoints" />
+      <PackageReference Include="FastEndpoints.Security" />
+      <PackageReference Include="FastEndpoints.Swagger" />
+      <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
+    </ItemGroup>
 </Project>

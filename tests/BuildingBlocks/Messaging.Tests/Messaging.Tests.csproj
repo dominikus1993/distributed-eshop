@@ -3,5 +3,19 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\BuildingBlocks\Messaging\Messaging.csproj" />
     </ItemGroup>
-    <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+    <ItemGroup>
+        <PackageReference Include="AutoFixture.Xunit2" />
+        <PackageReference Include="coverlet.collector">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Shouldly" />
+        <PackageReference Include="System.Linq.Async" />
+        <PackageReference Include="Testcontainers" />
+        <PackageReference Include="Testcontainers.RabbitMq" />
+        <PackageReference Include="Verify.Xunit" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.runner.visualstudio" />
+    </ItemGroup>
 </Project>

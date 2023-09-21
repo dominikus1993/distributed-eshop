@@ -14,13 +14,9 @@ namespace Catalog.Tests.Fixtures;
 
 public sealed class PostgresSqlFixture: IAsyncLifetime, IDisposable
 {
-    public PostgreSqlContainer PostgreSql { get; }
+    public PostgreSqlContainer PostgreSql { get; } = new PostgreSqlBuilder().Build();
     public TestDbContextFactory DbContextFactory { get; private set; } = null!;
     public ProductsDbContext DbContext { get; private set; } = null!;
-    public PostgresSqlFixture()
-    {
-        this.PostgreSql = new PostgreSqlBuilder().Build();
-    }
 
     public async Task InitializeAsync()
     {

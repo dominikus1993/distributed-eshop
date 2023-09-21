@@ -73,35 +73,7 @@ public static class OpenTelemetryExtensions
 
         return builder;
     }
-
-    public static WebApplicationBuilder AddOpenTelemetryLogging(this WebApplicationBuilder builder,
-        Service? configure = null, Action<OpenTelemetryLoggerOptions>? setup = null)
-    {
-        var config = configure ?? new Service();
-        if (config.OpenTelemetryConfiguration.OpenTelemetryLoggingEnabled)
-        {
-            builder.Logging.AddOpenTelemetry(b =>
-            {
-                b.IncludeFormattedMessage = true;
-                b.IncludeScopes = true;
-                b.ParseStateValues = true;
-                b.AttachLogsToActivityEvent();
-                b.SetResourceBuilder(config.GetResourceBuilder(builder.Environment.EnvironmentName));
-                setup?.Invoke(b);
-                if (config.OpenTelemetryConfiguration.OltpExporterEnabled)
-                {
-                    b.AddOtlpExporter();
-                }
-
-                if (config.OpenTelemetryConfiguration.ConsoleExporterEnabled)
-                {
-                    b.AddConsoleExporter();
-                }
-            });
-        }
-
-        return builder;
-    }
+    
 
     public static SampleOpenTelemetryBuilder AddOpenTelemetryMetrics(this SampleOpenTelemetryBuilder builder,
         Action<MeterProviderBuilder>? setup = null)

@@ -8,5 +8,12 @@
             <_Parameter1>Messaging.Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+    <ItemGroup>
+      <PackageReference Include="EasyNetQ.DI.Microsoft" />
+      <PackageReference Include="EasyNetQ.Logging.Microsoft" />
+      <PackageReference Include="EasyNetQ.Serialization.SystemTextJson" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" />
+      <PackageReference Include="System.Linq.Async" />
+    </ItemGroup>
 </Project>
