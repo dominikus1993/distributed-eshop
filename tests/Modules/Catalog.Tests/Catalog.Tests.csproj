@@ -34,7 +34,4 @@
         <PackageReference Include="xunit" />
         <PackageReference Include="xunit.runner.visualstudio" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Testcontainers\" />
-    </ItemGroup>
 </Project>
