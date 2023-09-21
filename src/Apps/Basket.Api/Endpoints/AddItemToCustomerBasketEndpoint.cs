@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using Basket.Api.Infrastructure.Logging;
 using Basket.Core.Model;
 using Basket.Core.Requests;
 
@@ -67,7 +66,6 @@ public sealed class AddItemToCustomerBasketEndpoint : Endpoint<AddItemToCustomer
         var userId = User.UserId();
         if (ValidationFailed)
         {
-            base.Logger.LogInvalidRequest(ValidationFailures);
             await SendErrorsAsync(cancellation: ct);
             return;
         }
