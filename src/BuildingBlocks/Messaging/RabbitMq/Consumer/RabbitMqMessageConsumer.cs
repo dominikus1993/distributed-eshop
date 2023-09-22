@@ -109,7 +109,6 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
     public override void Dispose()
     {
         _disposable?.Dispose();
-        GC.SuppressFinalize(this);
         base.Dispose();
     }
 }
