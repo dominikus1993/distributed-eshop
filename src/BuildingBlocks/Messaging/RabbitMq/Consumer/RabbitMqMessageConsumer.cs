@@ -6,6 +6,7 @@ using EasyNetQ.Topology;
 
 using Messaging.Abstraction;
 using Messaging.Logging;
+using Messaging.RabbitMq.Configuration;
 using Messaging.RabbitMq.Telemetry;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,9 @@ public sealed class RabbitMqSubscriptionConfiguration<T> where T : IMessage
     public string? Exchange { get; set; }
     public string? Queue  {get; set; }
     public string MessageName => typeof(T).FullName!;
+    public DefaultErrorHandlingStrategy DefaultErrorHandlingStrategy { get; set; } =
+        DefaultErrorHandlingStrategy.NackWithRequeue;
+    internal AckStrategy AckStrategy => DefaultErrorHandlingStrategy.Convert();
 }
 
 public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMessage
@@ -85,14 +89,14 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                 }
                 var subscriber = serviceScope.ServiceProvider.GetRequiredService<IMessageSubscriber<T>>();
                 await subscriber.Handle(message, ct);
-                return AckStrategies.Ack;
+                return _subscriptionConfiguration.AckStrategy;
             }
             catch (Exception exc)
             {
                 var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<RabbitMqMessageConsumer<T>>>();
                 logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue);
                 activity?.RecordException(exc);
-                return AckStrategies.NackWithRequeue;
+                return _subscriptionConfiguration.AckStrategy;
             }
         }, configuration =>
         {
