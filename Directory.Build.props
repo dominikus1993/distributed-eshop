@@ -8,7 +8,7 @@
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisMode>AllEnabledByDefault</AnalysisMode>
         <AnalysisLevel>latest</AnalysisLevel>
-        <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
         <LangVersion>Preview</LangVersion>
