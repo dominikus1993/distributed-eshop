@@ -21,6 +21,8 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="OneOf" />
         <PackageReference Include="OneOf.SourceGenerator" />
+        <PackageReference Include="OpenSearch.Client" />
+        <PackageReference Include="OpenSearch.Net" />
         <PackageReference Include="System.Linq.Async" />
     </ItemGroup>
 </Project>

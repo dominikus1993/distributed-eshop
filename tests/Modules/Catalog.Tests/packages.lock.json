@@ -309,8 +309,8 @@
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
-        "resolved": "4.5.0",
-        "contentHash": "kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ=="
+        "resolved": "4.7.0",
+        "contentHash": "pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA=="
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
@@ -1823,6 +1823,8 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.11, )",
           "OneOf": "[3.0.263, )",
           "OneOf.SourceGenerator": "[3.0.263, )",
+          "OpenSearch.Client": "[1.5.0, )",
+          "OpenSearch.Net": "[1.5.0, )",
           "System.Linq.Async": "[6.0.1, )"
         }
       },
@@ -1833,6 +1835,7 @@
           "Catalog": "[1.0.0, )",
           "Hosting": "[1.0.0, )",
           "Npgsql.OpenTelemetry": "[7.0.6, )",
+          "OpenSearch.Client": "[1.5.0, )",
           "Swashbuckle.AspNetCore": "[6.5.0, )",
           "Telemetry": "[1.0.0, )"
         }
@@ -1994,6 +1997,26 @@
         "requested": "[3.0.263, )",
         "resolved": "3.0.263",
         "contentHash": "GxgryFHS0Te/Oq0ZBxCXInNefR6tELQcP5g2WUmgoeXALPrvMss8xWyBFyzS2ucLRpQa7pV+ZXhqO+7NPVxtoQ=="
+      },
+      "OpenSearch.Client": {
+        "type": "CentralTransitive",
+        "requested": "[1.5.0, )",
+        "resolved": "1.5.0",
+        "contentHash": "BDRd7grmNRHAdTSrhJEgJHrNkQE9D/1dD0aFxC+OCueBydyAYsDpycEzrFu55bjCRJct9ZGqu/0F2tUlH54UKQ==",
+        "dependencies": {
+          "OpenSearch.Net": "1.5.0"
+        }
+      },
+      "OpenSearch.Net": {
+        "type": "CentralTransitive",
+        "requested": "[1.5.0, )",
+        "resolved": "1.5.0",
+        "contentHash": "JBvmPxNU9kz5B4lhl/mGkIm6TDSBXyA8pbN91Nb6QyXgRobC96ziVBk1zkcs8pQ3VbgD1J5PwcR9p2Ovy84uMA==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.Buffers": "4.5.1",
+          "System.Diagnostics.DiagnosticSource": "6.0.1"
+        }
       },
       "OpenTelemetry.Exporter.Console": {
         "type": "CentralTransitive",

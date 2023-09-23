@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Carter" />
     <PackageReference Include="Npgsql.OpenTelemetry" />
+    <PackageReference Include="OpenSearch.Client" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 </Project>

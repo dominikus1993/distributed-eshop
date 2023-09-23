@@ -35,6 +35,8 @@
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.16" />
     <PackageVersion Include="OneOf" Version="3.0.263" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.263" />
+    <PackageVersion Include="OpenSearch.Client" Version="1.5.0" />
+    <PackageVersion Include="OpenSearch.Net" Version="1.5.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.6.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.6.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" Version="1.5.0-rc.1" />
