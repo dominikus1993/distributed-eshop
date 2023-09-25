@@ -8,19 +8,12 @@ using IMessage = Messaging.Abstraction.IMessage;
 
 namespace Basket.Core.Events;
 
-public sealed class BasketItemWasRemoved: INotification, IMessage
+[method: SetsRequiredMembers]
+public sealed class BasketItemWasRemoved(CustomerId customerId, Product item) : INotification, IMessage
 
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public required Guid CustomerId { get; set; }
-    public required Guid ItemId { get; set; }
-    public required uint Quantity { get; set; }
-
-    [SetsRequiredMembers]
-    public BasketItemWasRemoved(CustomerId customerId, Product item)
-    {
-        ItemId = item.ItemId.Value;
-        CustomerId = customerId.Value;
-        Quantity = item.Quantity.Value;
-    }
+    public required Guid CustomerId { get; set; } = customerId.Value;
+    public required Guid ItemId { get; set; } = item.ItemId.Value;
+    public required uint Quantity { get; set; } = item.Quantity.Value;
 }
