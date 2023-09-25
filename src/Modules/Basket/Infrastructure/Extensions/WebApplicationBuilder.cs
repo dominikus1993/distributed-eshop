@@ -18,7 +18,7 @@ public static class WebApplicationBuilderExtensions
     {
         var redis = RedisConnectionFactory.Connect(builder.Configuration.GetConnectionString("BasketDb")!);
         builder.Services.AddSingleton(redis);
-        builder.Services.AddSingleton<IRedisObjectDeserializer, MemoryPackObjectDeserializer>();
+        builder.Services.AddSingleton<IRedisObjectDeserializer, SystemTextRedisObjectDeserializer>();
         builder.Services.AddTransient<ICustomerBasketReader, RedisCustomerBasketRepository>();
         builder.Services.AddTransient<ICustomerBasketWriter, RedisCustomerBasketRepository>();
 

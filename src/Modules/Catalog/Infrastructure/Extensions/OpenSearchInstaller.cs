@@ -134,7 +134,7 @@ public static class OpenSearchInstaller
 
     public static IOpenSearchClient Setup(OpenSearchConfiguration configuration)
     {
-        var settings = new ConnectionSettings(configuration.Url)
+        using var settings = new ConnectionSettings(configuration.Url)
             .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
             .DefaultIndex(OpenSearchProductIndex.Name)
             .DefaultMappingFor<OpenSearchProduct>(m => m
