@@ -8,6 +8,7 @@ using Messaging.RabbitMq.Consumer;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using IMessage = Messaging.Abstraction.IMessage;
 
@@ -47,7 +48,7 @@ public static class RabbitMqTestConsumer
         var services = new ServiceCollection();
         services.AddSingleton<IMessageSubscriber<T>>(testSubscriber);
         services.AddSingleton<ISerializer>(new SystemTextJsonSerializer());
-        services.AddSingleton(LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<RabbitMqMessageConsumer<T>>());
+        services.AddSingleton(NullLoggerFactory.Instance.CreateLogger<RabbitMqMessageConsumer<T>>());
         var consumer = new RabbitMqMessageConsumer<T>(bus, services.BuildServiceProvider(),
             configuration);
         await consumer.StartAsync(cancellationToken);

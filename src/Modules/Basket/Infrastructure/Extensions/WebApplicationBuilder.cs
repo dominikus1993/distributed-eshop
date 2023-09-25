@@ -24,7 +24,7 @@ public static class WebApplicationBuilderExtensions
 
         builder.Services.AddRabbitMq(builder.Configuration, configuration =>
             {
-                configuration.SetJsonTypeInfoResolver(RabbitMqEventsJsonSerializerContext.Default);
+                configuration.SetJsonSerializerOptions(RabbitMqEventsJsonSerializerContext.Default.Options);
             })
             .AddPublisher<BasketItemWasAdded>()
             .AddPublisher<BasketItemWasRemoved>();

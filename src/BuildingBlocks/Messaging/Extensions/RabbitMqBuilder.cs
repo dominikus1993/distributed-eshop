@@ -30,24 +30,13 @@ public sealed class RabbitMqBuilder
 
 public sealed class RabbitMqConfiguration
 {
-    private IJsonTypeInfoResolver? JsonTypeInfoResolver { get; set; }
-    internal JsonSerializerOptions JsonSerializerOptions { get; private set; } = new(JsonSerializerDefaults.General);
-
-    public RabbitMqConfiguration SetJsonTypeInfoResolver(IJsonTypeInfoResolver jsonTypeInfoResolver)
-    {
-        ArgumentNullException.ThrowIfNull(jsonTypeInfoResolver);
-        JsonSerializerOptions.TypeInfoResolver = jsonTypeInfoResolver;
-        return this;
-    }
+    internal JsonSerializerOptions JsonSerializerOptions { get; private set; } = JsonSerializerOptions.Default;
+    
     
     public RabbitMqConfiguration SetJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions)
     {
         ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
         JsonSerializerOptions = jsonSerializerOptions;
-        if (JsonTypeInfoResolver is not null)
-        {
-            JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver;
-        }
         return this;
     }
 }
