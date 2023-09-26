@@ -41,7 +41,22 @@ public sealed class Products : IEnumerable<Product>
 
     public IReadOnlyList<T> MapItems<T>(Func<Product, T> map)
     {
-        return _items.Map(map);
+        switch (_items)
+        {
+            case null or {Count: 0}:
+                return Array.Empty<T>();
+            case [var element]:
+                return new[] { map(element) };
+        }
+
+        var array = new T[_items.Count];
+
+        for (int i = 0; i < _items.Count; i++)
+        {
+            array[i] = map(_items[i]);
+        }
+
+        return array;
     }
     
     public Products RemoveOrDecreaseItem(Product item)

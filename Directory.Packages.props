@@ -63,7 +63,7 @@
     <PackageVersion Include="Testcontainers.PostgreSql" Version="3.5.0" />
     <PackageVersion Include="Testcontainers.RabbitMq" Version="3.5.0" />
     <PackageVersion Include="Testcontainers.Redis" Version="3.5.0" />
-    <PackageVersion Include="Verify.Xunit" Version="21.1.6" />
+    <PackageVersion Include="Verify.Xunit" Version="21.2.0" />
     <PackageVersion Include="NBench" Version="2.0.1" />
     <PackageVersion Include="WireMock.Net" Version="1.5.28" />
     <PackageVersion Include="WireMock.Net.xUnit" Version="1.5.28" />
