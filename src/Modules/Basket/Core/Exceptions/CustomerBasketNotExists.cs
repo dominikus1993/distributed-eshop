@@ -20,17 +20,6 @@ public sealed class CustomerBasketNotExistsException : Exception
         CustomerId = customerId;
     }
 
-    private CustomerBasketNotExistsException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-        CustomerId = (CustomerId)info.GetValue(nameof(CustomerId), typeof(CustomerId))!;
-    }
-
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        base.GetObjectData(info, context);
-        info.AddValue(nameof(CustomerId), CustomerId);
-    }
-
     public override string ToString()
     {
         return $"{base.ToString()}, {nameof(CustomerId)}: {CustomerId}";

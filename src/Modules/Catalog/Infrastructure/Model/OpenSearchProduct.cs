@@ -1,10 +1,13 @@
 using Catalog.Core.Model;
 
+using OpenSearch.Client;
+
 namespace Catalog.Infrastructure.Model;
 
+[OpenSearchType(IdProperty = nameof(ProductId))]
 internal sealed class OpenSearchProduct
 {
-    public ProductId ProductId { get; set; }
+    public Guid ProductId { get; set; }
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
 
