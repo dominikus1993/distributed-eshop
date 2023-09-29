@@ -1,5 +1,6 @@
 using Catalog.Core.Model;
 using Catalog.Core.Repository;
+using Catalog.Infrastructure.Extensions;
 using Catalog.Infrastructure.Model;
 
 using Mediator;
@@ -43,8 +44,13 @@ public sealed class OpenSearchProductsWriter : IProductsWriter
         return AddProductResult.Error(new InvalidOperationException("can't add products to opensearch", response.OriginalException));
     }
 
-    public Task RemoveAllProducts(CancellationToken cancellationToken = default)
+    public async Task RemoveAllProducts(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var result = 
+            await _openSearchClient.DeleteByQueryAsync<OpenSearchProduct>(q => q.Index(OpenSearchProductIndex.SearchIndex).Query(d => d.MatchAll()), cancellationToken);
+        if (!result.IsValid)
+        {
+            throw new InvalidOperationException("remove documents error");
+        }
     }
 }
