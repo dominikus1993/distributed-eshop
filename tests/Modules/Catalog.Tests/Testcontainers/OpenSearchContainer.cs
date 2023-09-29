@@ -37,4 +37,14 @@ public sealed class OpenSearchContainer : DockerContainer
         };
         return endpoint.Uri;
     }
+    
+    public Catalog.Infrastructure.Extensions.OpenSearchConfiguration GetConfiguration()
+    {
+        var endpoint = new UriBuilder(Uri.UriSchemeHttps, Hostname,
+            GetMappedPublicPort(OpenSearchBuilder.DefaultOpenSearchHttpPort));
+        return new Catalog.Infrastructure.Extensions.OpenSearchConfiguration()
+        {
+            Url = endpoint.Uri, UserName = _configuration.Username, Password = _configuration.Password,
+        };
+    }
 }

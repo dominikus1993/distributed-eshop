@@ -12,9 +12,9 @@ namespace Catalog.Infrastructure.Repositories;
 
 public sealed class OpenSearchProductsWriter : IProductsWriter
 {
-    private OpenSearchClient _openSearchClient;
+    private readonly IOpenSearchClient _openSearchClient;
 
-    public OpenSearchProductsWriter(OpenSearchClient openSearchClient)
+    public OpenSearchProductsWriter(IOpenSearchClient openSearchClient)
     {
         _openSearchClient = openSearchClient;
     }
