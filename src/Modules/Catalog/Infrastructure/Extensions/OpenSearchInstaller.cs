@@ -53,25 +53,25 @@ public static class OpenSearchInstaller
                     )
                     .Analyzers(an => an
                         .Custom(ProductsAnalyzer, ca => ca
-                            .CharFilters("pattern_replace_char_filter", "mapping_char_filter")
+                            .CharFilters("pattern_replace_char_filter")
                             .Tokenizer("standard_tokenizer")
                             .Filters("lowercase_filter", "shops_synonyms", "edge_ngram_filter")
                         )
                         .Custom(ProductsQueryAnalyzer, ca => ca
-                            .CharFilters("pattern_replace_char_filter", "mapping_char_filter")
+                            .CharFilters("pattern_replace_char_filter")
                             .Tokenizer("standard_tokenizer")
                             .Filters("lowercase_filter", "shops_synonyms")
                         )
                     )
                     .Normalizers(n => n.Custom(ProductsNormaliser,
-                        cn => cn.CharFilters("pattern_replace_char_filter", "mapping_char_filter")
+                        cn => cn.CharFilters("pattern_replace_char_filter")
                             .Filters("lowercase_filter")))
                 )
             )
             .Map<OpenSearchProduct>(m => m
                 .AutoMap()
                 .Properties(ps => ps
-                    .Number(t => t
+                    .Text(t => t
                         .Name(n => n.ProductId)
                         .Index(true)
                         .Store(true)

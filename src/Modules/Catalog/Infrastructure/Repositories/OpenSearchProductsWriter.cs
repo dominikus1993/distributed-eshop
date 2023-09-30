@@ -24,24 +24,38 @@ public sealed class OpenSearchProductsWriter : IProductsWriter
         var openSearchProduct = new OpenSearchProduct(product);
         var indexReq = new IndexRequest<OpenSearchProduct>() { Document = openSearchProduct, Refresh = Refresh.True, };
         var response = await _openSearchClient.IndexAsync(indexReq, ct: cancellationToken);
-        if (response.IsValid)
+        
+        if (!response.IsValid)
         {
-            return Unit.Value;
+            return AddProductResult.Error(new InvalidOperationException("can't add product to opensearch", response.OriginalException));
+        }
+        var refreshRes = await _openSearchClient.Indices.RefreshAsync(OpenSearchProductIndex.SearchIndex, ct: cancellationToken);
+        
+        if (!refreshRes.IsValid)
+        {
+            return AddProductResult.Error(new InvalidOperationException("can't refresh product index in opensearch", response.OriginalException));
         }
 
-        return AddProductResult.Error(new InvalidOperationException("can't add product to opensearch", response.OriginalException));
+        return Unit.Value;
     }
 
     public async Task<AddProductResult> AddProducts(IEnumerable<Product> products, CancellationToken cancellationToken = default)
     {
         var openSearchProduct = products.Select(product => new OpenSearchProduct(product));
         var response = await _openSearchClient.IndexManyAsync(openSearchProduct, cancellationToken: cancellationToken);
-        if (response.IsValid)
+        if (!response.IsValid)
         {
-            return Unit.Value;
+            return AddProductResult.Error(new InvalidOperationException("can't add products to opensearch", response.OriginalException));
+        }
+        
+        var refreshRes = await _openSearchClient.Indices.RefreshAsync(OpenSearchProductIndex.SearchIndex, ct: cancellationToken);
+        
+        if (!refreshRes.IsValid)
+        {
+            return AddProductResult.Error(new InvalidOperationException("can't refresh products index in opensearch", response.OriginalException));
         }
 
-        return AddProductResult.Error(new InvalidOperationException("can't add products to opensearch", response.OriginalException));
+        return Unit.Value;
     }
 
     public async Task RemoveAllProducts(CancellationToken cancellationToken = default)
