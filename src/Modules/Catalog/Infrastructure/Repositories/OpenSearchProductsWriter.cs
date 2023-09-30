@@ -22,8 +22,8 @@ public sealed class OpenSearchProductsWriter : IProductsWriter
     public async Task<AddProductResult> AddProduct(Product product, CancellationToken cancellationToken = default)
     {
         var openSearchProduct = new OpenSearchProduct(product);
-        var indexReq = new IndexRequest<OpenSearchProduct>() { Document = openSearchProduct, Refresh = Refresh.True, };
-        var response = await _openSearchClient.IndexAsync(indexReq, ct: cancellationToken);
+        var response = await _openSearchClient.IndexAsync(openSearchProduct, descriptor => descriptor.Id(openSearchProduct.ProductId).Refresh(Refresh.True)
+                .Index(OpenSearchProductIndex.Name), cancellationToken);
         
         if (!response.IsValid)
         {
@@ -42,7 +42,7 @@ public sealed class OpenSearchProductsWriter : IProductsWriter
     public async Task<AddProductResult> AddProducts(IEnumerable<Product> products, CancellationToken cancellationToken = default)
     {
         var openSearchProduct = products.Select(product => new OpenSearchProduct(product));
-        var response = await _openSearchClient.IndexManyAsync(openSearchProduct, cancellationToken: cancellationToken);
+        var response = await _openSearchClient.IndexManyAsync(openSearchProduct, OpenSearchProductIndex.Name, cancellationToken: cancellationToken);
         if (!response.IsValid)
         {
             return AddProductResult.Error(new InvalidOperationException("can't add products to opensearch", response.OriginalException));
