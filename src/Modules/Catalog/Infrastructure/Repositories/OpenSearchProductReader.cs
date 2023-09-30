@@ -1,9 +1,12 @@
+using System.Runtime.CompilerServices;
+
 using Catalog.Core.Model;
 using Catalog.Core.Repository;
 using Catalog.Infrastructure.Extensions;
 using Catalog.Infrastructure.Model;
 
 using OpenSearch.Client;
+using static OpenSearch.Client.Infer;
 
 namespace Catalog.Infrastructure.Repositories;
 
@@ -31,8 +34,25 @@ public sealed class OpenSearchProductReader : IProductReader
         return null;
     }
 
-    public IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> ids, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> ids, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var terms = new TermsQuery()
+        {
+            Field = Field<OpenSearchProduct>(static x => x.ProductId),
+            Terms = ids.Select(x => new Id(x.Value))
+        };
+
+        var query = new SearchRequest(OpenSearchProductIndex.Name) { Query = terms, };
+        var result = await _openSearchClient.SearchAsync<OpenSearchProduct>(query, cancellationToken);
+
+        if (!result.IsValid || result.Total == 0)
+        {
+            yield break;
+        }
+
+        foreach (var product in result.Documents)
+        {
+            yield return product.ToProduct();
+        }
     }
 }
