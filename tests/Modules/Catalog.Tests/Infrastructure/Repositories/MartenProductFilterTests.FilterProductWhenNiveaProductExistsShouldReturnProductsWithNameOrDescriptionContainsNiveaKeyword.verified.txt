@@ -19,7 +19,8 @@
     },
     AvailableQuantity: {
       Value: 10
-    }
+    },
+    Tags: []
   },
   {
     Id: {
@@ -41,6 +42,7 @@
     },
     AvailableQuantity: {
       Value: 10
-    }
+    },
+    Tags: []
   }
 ]

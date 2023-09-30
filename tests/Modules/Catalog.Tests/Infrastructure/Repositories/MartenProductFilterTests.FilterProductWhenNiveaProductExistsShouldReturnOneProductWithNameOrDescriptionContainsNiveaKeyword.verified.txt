@@ -19,6 +19,7 @@
     },
     AvailableQuantity: {
       Value: 10
-    }
+    },
+    Tags: []
   }
 ]

@@ -9,6 +9,7 @@ namespace Catalog.Core.Repository;
 [GenerateOneOf]
 public sealed partial class AddProductResult : OneOfBase<Unit, Exception>
 {
+    public bool IsSuccess => IsT0;
     public static AddProductResult Ok() => new AddProductResult(Unit.Value);
     public static AddProductResult Error(Exception exception) => new AddProductResult(exception);
 }
