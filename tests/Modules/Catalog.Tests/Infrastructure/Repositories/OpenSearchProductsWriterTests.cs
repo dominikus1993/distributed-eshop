@@ -53,6 +53,21 @@ public class OpenSearchProductsWriterTests : IClassFixture<OpenSearchFixture>
     
     [Theory]
     [InlineAutoData]
+    public async Task WriteProductsAndRead(Product product)
+    {
+        // Act
+        var subject = await _productsWriter.AddProducts(new []{product});
+        
+        subject.ShouldNotBeNull();
+        subject.IsSuccess.ShouldBeTrue();
+        
+        var productFromDb = await _productReader.GetById(product.Id);
+        
+        productFromDb.ShouldBeEquivalentTo(product);
+    }
+    
+    [Theory]
+    [InlineAutoData]
     public async Task WriteProductTwoTimesTest(Product product, ProductName newProductName)
     {
         // Act
