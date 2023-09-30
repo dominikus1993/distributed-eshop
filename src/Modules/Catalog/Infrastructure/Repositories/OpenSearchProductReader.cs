@@ -18,8 +18,9 @@ public sealed class OpenSearchProductReader : IProductReader
     
     public async Task<Product?> GetById(ProductId id, CancellationToken cancellationToken = default)
     {
+        Id searchId = id.Value;
         var productQueryResult =
-            await _openSearchClient.GetAsync<OpenSearchProduct>(new GetRequest(OpenSearchProductIndex.Name, id.Value),
+            await _openSearchClient.GetAsync<OpenSearchProduct>(new GetRequest(OpenSearchProductIndex.Name, searchId),
                 cancellationToken);
 
         if (productQueryResult.Found)

@@ -45,7 +45,6 @@ public static class OpenSearchInstaller
                     )
                     .TokenFilters(f => f
                         .Lowercase("lowercase_filter")
-                        .Synonym("shops_synonyms", descriptor => descriptor.Synonyms("aleje", "aleja", "al"))
                         .EdgeNGram("edge_ngram_filter", e => e
                             .MinGram(1)
                             .MaxGram(25)
@@ -55,12 +54,12 @@ public static class OpenSearchInstaller
                         .Custom(ProductsAnalyzer, ca => ca
                             .CharFilters("pattern_replace_char_filter")
                             .Tokenizer("standard_tokenizer")
-                            .Filters("lowercase_filter", "shops_synonyms", "edge_ngram_filter")
+                            .Filters("lowercase_filter", "edge_ngram_filter")
                         )
                         .Custom(ProductsQueryAnalyzer, ca => ca
                             .CharFilters("pattern_replace_char_filter")
                             .Tokenizer("standard_tokenizer")
-                            .Filters("lowercase_filter", "shops_synonyms")
+                            .Filters("lowercase_filter")
                         )
                     )
                     .Normalizers(n => n.Custom(ProductsNormaliser,

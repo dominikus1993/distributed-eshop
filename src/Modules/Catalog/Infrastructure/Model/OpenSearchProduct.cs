@@ -7,7 +7,7 @@ namespace Catalog.Infrastructure.Model;
 [OpenSearchType(IdProperty = nameof(ProductId))]
 internal sealed class OpenSearchProduct
 {
-    public Guid ProductId { get; set; }
+    public Id ProductId { get; set; }
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
 
@@ -29,7 +29,7 @@ internal sealed class OpenSearchProduct
 
     public OpenSearchProduct(Product product)
     {
-        ProductId = product.Id;
+        ProductId = product.Id.Value;
         Description = product.ProductDescription.Description;
         Name = product.ProductName.Name;
         AvailableQuantity = product.AvailableQuantity.Value;
@@ -41,7 +41,8 @@ internal sealed class OpenSearchProduct
     public Product ToProduct()
     {
         var tags = Tags?.Select(tag => new Tag(tag)).ToArray() ?? Array.Empty<Tag>();
-        return new Product(ProductId, new ProductName(Name), new ProductDescription(Description),
+        Guid id = Guid.Parse(ProductId.ToString());
+        return new Product(id, new ProductName(Name), new ProductDescription(Description),
             new ProductPrice(Price, PromotionalPrice), new AvailableQuantity(AvailableQuantity), new Tags(tags));
     }
 }

@@ -29,7 +29,7 @@ public sealed class OpenSearchProductsWriter : IProductsWriter
         {
             return AddProductResult.Error(new InvalidOperationException("can't add product to opensearch", response.OriginalException));
         }
-        var refreshRes = await _openSearchClient.Indices.RefreshAsync(OpenSearchProductIndex.SearchIndex, ct: cancellationToken);
+        var refreshRes = await _openSearchClient.Indices.RefreshAsync(OpenSearchProductIndex.Name, ct: cancellationToken);
         
         if (!refreshRes.IsValid)
         {
@@ -48,7 +48,7 @@ public sealed class OpenSearchProductsWriter : IProductsWriter
             return AddProductResult.Error(new InvalidOperationException("can't add products to opensearch", response.OriginalException));
         }
         
-        var refreshRes = await _openSearchClient.Indices.RefreshAsync(OpenSearchProductIndex.SearchIndex, ct: cancellationToken);
+        var refreshRes = await _openSearchClient.Indices.RefreshAsync(OpenSearchProductIndex.Name, ct: cancellationToken);
         
         if (!refreshRes.IsValid)
         {
