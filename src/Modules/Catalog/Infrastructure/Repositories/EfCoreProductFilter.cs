@@ -18,7 +18,7 @@ public sealed class EfCoreProductFilter : IProductFilter
         _storeFactory = storeFactory;
     }
     
-    public async IAsyncEnumerable<Product> FilterProducts(Filter filter, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async Task<PagedResult<Product>> FilterProducts(Filter filter, CancellationToken cancellationToken = default)
     {
         await using var context = await _storeFactory.CreateDbContextAsync(cancellationToken);
         var query = context.Products.AsNoTracking().AsQueryable();
@@ -44,10 +44,13 @@ public sealed class EfCoreProductFilter : IProductFilter
                     ? product.PromotionalPrice <= filter.PriceTo.Value
                     : product.Price <= filter.PriceTo.Value);
         }
-        
-        await foreach (var product in query.OrderBy(x => x.DateCreated).Skip(filter.Skip).Take(filter.PageSize).AsAsyncEnumerable().WithCancellation(cancellationToken))
+
+        var count = await query.CountAsync(cancellationToken: cancellationToken);
+        var result = await query.OrderBy(x => x.DateCreated).Skip(filter.Skip).Take(filter.PageSize).ToListAsync(cancellationToken: cancellationToken);
+        if (result.Count == 0)
         {
-            yield return product.ToProduct();
+            return PagedResult<Product>.Empty;
         }
+        return new PagedResult<Product>(result.Select(x => x.ToProduct()), (uint)result.Count, (uint)count);
     }
 }

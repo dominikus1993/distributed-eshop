@@ -19,7 +19,7 @@ public sealed class OpenSearchProductFilter : IProductFilter
         _openSearchClient = openSearchClient;
     }
     
-    public async IAsyncEnumerable<Product> FilterProducts(Filter filter, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async Task<PagedResult<Product>> FilterProducts(Filter filter, CancellationToken cancellationToken = default)
     {
         var searchRequest = new SearchRequest<OpenSearchProduct>(OpenSearchProductIndex.Name)
         {
@@ -90,12 +90,11 @@ public sealed class OpenSearchProductFilter : IProductFilter
 
         if (!result.IsValid || result.Total == 0)
         {
-            yield break;
+            return PagedResult<Product>.Empty;
         }
 
-        foreach (var openSearchProduct in result.Documents)
-        {
-            yield return openSearchProduct.ToProduct();
-        }
+        var res = result.Documents.Select(x => x.ToProduct()).ToArray();
+        
+        return new PagedResult<Product>(res, (uint)res.Length, (uint)result.Total);
     }
 }

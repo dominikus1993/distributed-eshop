@@ -13,7 +13,14 @@ public sealed class Filter
     internal int Skip => (Page - 1) * PageSize;
 }
 
+public sealed class PagedResult<T>(IEnumerable<T> Data, uint Count, uint Total)
+{
+    public bool IsEmpty => Count == 0;
+
+    public static PagedResult<T> Empty = new PagedResult<T>(Enumerable.Empty<T>(), 0, 0);
+}
+
 public interface IProductFilter
 {
-    IAsyncEnumerable<Product> FilterProducts(Filter filter, CancellationToken cancellationToken = default);
+    Task<PagedResult<Product>> FilterProducts(Filter filter, CancellationToken cancellationToken = default);
 }
