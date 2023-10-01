@@ -6,7 +6,7 @@ using Mediator;
 
 namespace Catalog.Core.RequestHandlers;
 
-public sealed class SearchProductsRequestHandler : IStreamRequestHandler<SearchProducts, ProductDto>
+public sealed class SearchProductsRequestHandler : IRequestHandler<SearchProducts, PagedResult<ProductDto>>
 {
     private readonly IProductFilter _productFilter;
 
@@ -15,9 +15,9 @@ public sealed class SearchProductsRequestHandler : IStreamRequestHandler<SearchP
         _productFilter = productFilter;
     }
 
-    public IAsyncEnumerable<ProductDto> Handle(SearchProducts request, CancellationToken cancellationToken)
+    public async ValueTask<PagedResult<ProductDto>> Handle(SearchProducts request, CancellationToken cancellationToken)
     {
-        return _productFilter.FilterProducts(
+        var res = await _productFilter.FilterProducts(
             new Filter()
             {
                 PageSize = request.PageSize,
@@ -25,6 +25,14 @@ public sealed class SearchProductsRequestHandler : IStreamRequestHandler<SearchP
                 Query = request.Query,
                 PriceFrom = request.PriceFrom,
                 PriceTo = request.PriceTo
-            }, cancellationToken).Select(product => new ProductDto(product));
+            }, cancellationToken);
+
+        if (res.IsEmpty)
+        {
+            return PagedResult<ProductDto>.Empty;
+        }
+
+        var products = res.Data.Select(p => new ProductDto(p));
+        return new PagedResult<ProductDto>(products, res.Count, res.Total);
     }
 }

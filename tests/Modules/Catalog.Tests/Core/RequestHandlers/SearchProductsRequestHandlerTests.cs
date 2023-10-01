@@ -32,10 +32,11 @@ public sealed class SearchProductsRequestHandlerTests : IClassFixture<PostgresSq
     public async Task ReadFilterProductsWhenNoExistsShouldReturnEmptyCollection(SearchProducts query)
     {
         // Act
-        var subject = await _searchProductsRequestHandler.Handle(query, CancellationToken.None).ToListAsync();
-
+        var subject = await _searchProductsRequestHandler.Handle(query, CancellationToken.None);
+        
         subject.ShouldNotBeNull();
-        subject.ShouldBeEmpty();
+        subject.Count.ShouldBe(0u);
+        subject.Data.ShouldBeEmpty();
     }
 
 
@@ -55,24 +56,22 @@ public sealed class SearchProductsRequestHandlerTests : IClassFixture<PostgresSq
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
-        
-        var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = keyword} , cts.Token).ToListAsync(cancellationToken: cts.Token);
+
+        var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = keyword }, cts.Token);
         
         // Assert
         subject.ShouldNotBeNull();
-        subject.ShouldNotBeEmpty();
+        subject.Data.ShouldNotBeEmpty();
         
-        subject.ShouldContain(dto => dto.ProductId == product1.Id.Value);
-        subject.ShouldContain(dto => dto.ProductId == product2.Id.Value);
-        subject.ShouldNotContain(dto => dto.ProductId == product3.Id.Value);
+        subject.Data.ShouldContain(dto => dto.ProductId == product1.Id.Value);
+        subject.Data.ShouldContain(dto => dto.ProductId == product2.Id.Value);
+        subject.Data.ShouldNotContain(dto => dto.ProductId == product3.Id.Value);
     }
     
     [Fact]
     public async Task FilterProductWhenProductsInPriceConditionExistsShouldReturnProductsWithPriceCondition()
     {
         // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
         
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
             new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10), Tags.Empty);
@@ -80,14 +79,15 @@ public sealed class SearchProductsRequestHandlerTests : IClassFixture<PostgresSq
             new ProductPrice(new Price(11m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10), Tags.Empty);
-        await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        await _productsWriter.AddProducts(new[] { product1, product2, product3 });
         // Act
-        var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { PriceFrom = 2m, PriceTo = 12m } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject =
+            await _searchProductsRequestHandler.Handle(new SearchProducts() { PriceFrom = 2m, PriceTo = 12m }, default);
 
         // Assert
         subject.ShouldNotBeNull();
-        subject.ShouldNotBeEmpty();
-        subject.Count.ShouldBe(1);
+        subject.Data.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1u);
         
         await Verify(subject);
     }
@@ -96,23 +96,21 @@ public sealed class SearchProductsRequestHandlerTests : IClassFixture<PostgresSq
     public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeyword()
     {
         // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
-        
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
-        await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
+        await _productsWriter.AddProducts(new[] { product1, product2, product3 });
         // Act
-        var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = "nivea", PageSize = 1 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject =
+            await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = "nivea", PageSize = 1 }, default);
 
         // Assert
         subject.ShouldNotBeNull();
-        subject.ShouldNotBeEmpty();
-        subject.Count.ShouldBe(1);
+        subject.Data.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1u);
         
         await Verify(subject);
     }
@@ -132,13 +130,15 @@ public sealed class SearchProductsRequestHandlerTests : IClassFixture<PostgresSq
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
         // Act
-        
-        var subject = await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = "nivea", PageSize = 1, Page = 2 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
+
+        var subject =
+            await _searchProductsRequestHandler.Handle(new SearchProducts() { Query = "nivea", PageSize = 1, Page = 2 },
+                cts.Token);
 
         // Assert
         subject.ShouldNotBeNull();
-        subject.ShouldNotBeEmpty();
-        subject.Count.ShouldBe(1);
+        subject.Data.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1u);
         
         await Verify(subject);
     }

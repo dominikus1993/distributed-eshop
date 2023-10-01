@@ -26,6 +26,8 @@ public sealed class SearchProductsRequest
     }
 }
 
+public sealed record PagedProductsResult(IEnumerable<ProductDto> Products, uint Count, uint Total);
+
 public sealed class SearchProductsModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -46,7 +48,7 @@ public sealed class SearchProductsModule : ICarterModule
         return TypedResults.Ok(result);
     }
     
-    private static async Task<Results<Ok<IReadOnlyCollection<ProductDto>>, NoContent>> SearchProducts([AsParameters]SearchProductsRequest request, CancellationToken cancellationToken)
+    private static async Task<Results<Ok<PagedProductsResult>, NoContent>> SearchProducts([AsParameters]SearchProductsRequest request, CancellationToken cancellationToken)
     {
         var query = new SearchProducts()
         {
@@ -57,13 +59,13 @@ public sealed class SearchProductsModule : ICarterModule
             PageSize = request.PageSize ?? 12
         };
 
-        var result = await request.Sender.CreateStream(query, cancellationToken).ToListAsync(cancellationToken: cancellationToken);
+        var result = await request.Sender.Send(query, cancellationToken);
 
         if (result is { Count: 0 })
         {
             return TypedResults.NoContent();
         }
 
-        return TypedResults.Ok<IReadOnlyCollection<ProductDto>>(result);
+        return TypedResults.Ok(new PagedProductsResult(result.Data, result.Count, result.Total));
     }
 }
