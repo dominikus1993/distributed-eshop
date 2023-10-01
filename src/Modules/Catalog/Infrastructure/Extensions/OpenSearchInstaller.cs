@@ -9,6 +9,7 @@ internal static class OpenSearchProductIndex
 {
     public const string Name = "products";
     public const string SearchIndex = "products_search";
+    public const string TagsKeyword = "tags_keyword";
 }
 
 public sealed class OpenSearchConfiguration
@@ -114,6 +115,7 @@ public static class OpenSearchInstaller
                         .Index(false)
                         .Store(true)
                     )
+                    .Keyword(t => t.Name(OpenSearchProductIndex.TagsKeyword).Index(true).Store(false))
                     .Text(t => t
                         .Name(OpenSearchProductIndex.SearchIndex)
                         .Index(true)
