@@ -13,17 +13,16 @@ using Xunit;
 
 namespace Catalog.Tests.Infrastructure.Repositories;
 
-[Collection(nameof(PostgresSqlFixtureCollectionTests))]
-public class MartenProductReaderTests 
+public sealed class OpenSearchProductReaderTests : IClassFixture<OpenSearchFixture>
 {
-    private readonly PostgresSqlFixture _postgresSqlFixture;
+    private readonly OpenSearchFixture _fixture;
     private readonly IProductReader _productReader;
     private readonly IProductsWriter _productsWriter;
-    public MartenProductReaderTests(PostgresSqlFixture postgresSqlFixture)
+    public OpenSearchProductReaderTests(OpenSearchFixture fixture)
     {
-        _postgresSqlFixture = postgresSqlFixture;
-        _productsWriter = new EfCoreProductsWriter(_postgresSqlFixture.DbContextFactory);
-        _productReader = new EfCoreProductReader(_postgresSqlFixture.DbContextFactory);
+        _fixture = fixture;
+        _productsWriter = _fixture.ProductsWriter;
+        _productReader = _fixture.ProductReader;
     }
 
     [Theory]
@@ -41,12 +40,9 @@ public class MartenProductReaderTests
     [InlineAutoData]
     public async Task ReadProductByIdsWhenNoExistsShouldReturnEmptyEnumerable(IEnumerable<ProductId> productIds)
     {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
         // Act
         
-        var subject = await _productReader.GetByIds(productIds , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject = await _productReader.GetByIds(productIds).ToListAsync();
         
         // Assert
         subject.ShouldNotBeNull();
@@ -57,13 +53,9 @@ public class MartenProductReaderTests
     [InlineAutoData]
     public async Task ReadProductsByIdsWhenNoExistsShouldReturnEmptyEnumerable(IEnumerable<ProductId> productIds)
     {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
-
         // Act
         
-        var subject = await _productReader.GetByIds(productIds , cts.Token).ToListAsync(cancellationToken: cts.Token);
+        var subject = await _productReader.GetByIds(productIds).ToListAsync();
         
         // Assert
         subject.ShouldNotBeNull();
@@ -74,14 +66,10 @@ public class MartenProductReaderTests
     [InlineAutoData]
     public async Task ReadProductByIdWhenExistsShouldReturnProduct(Product product)
     {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
-        
         // Act
 
-        await _productsWriter.AddProduct(product, cts.Token);
-        var subject = await _productReader.GetById(product.Id, cts.Token);
+        await _productsWriter.AddProduct(product);
+        var subject = await _productReader.GetById(product.Id);
         
         subject.ShouldNotBeNull();
         subject.Id.ShouldBe(product.Id);
@@ -95,14 +83,11 @@ public class MartenProductReaderTests
     [AutoData]
     public async Task ReadProductsByIdsWhenExistsShouldReturnProducts(Product[] products)
     {
-        // Arrange 
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(30));
 
         // Act
 
-        await _productsWriter.AddProducts(products, cts.Token);
-        var subject = await _productReader.GetByIds(products.Select(x => x.Id), cts.Token).ToArrayAsync(cancellationToken: cts.Token);
+        await _productsWriter.AddProducts(products);
+        var subject = await _productReader.GetByIds(products.Select(x => x.Id)).ToArrayAsync();
         
         subject.ShouldNotBeNull();
         subject.ShouldNotBeEmpty();
