@@ -21,7 +21,11 @@ public sealed class OpenSearchProductFilter : IProductFilter
     
     public async IAsyncEnumerable<Product> FilterProducts(Filter filter, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var searchRequest = new SearchRequest<OpenSearchProduct>(OpenSearchProductIndex.Name);
+        var searchRequest = new SearchRequest<OpenSearchProduct>(OpenSearchProductIndex.Name)
+        {
+            Size = filter.PageSize,
+            From = filter.Skip,
+        };
         if (!string.IsNullOrEmpty(filter.Query))
         {
             searchRequest.Query &= new MatchQuery()
