@@ -8,6 +8,8 @@ using Catalog.Infrastructure.Model;
 using OpenSearch.Client;
 using static OpenSearch.Client.Infer;
 
+using Id = OpenSearch.Client.Id;
+
 namespace Catalog.Infrastructure.Repositories;
 
 public sealed class OpenSearchProductReader : IProductReader
@@ -36,13 +38,10 @@ public sealed class OpenSearchProductReader : IProductReader
 
     public async IAsyncEnumerable<Product> GetByIds(IEnumerable<ProductId> ids, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var terms = new TermsQuery()
-        {
-            Field = Field<OpenSearchProduct>(static x => x.ProductId),
-            Terms = ids.Select(x => new Id(x.Value))
-        };
+        var q =
+            new IdsQuery() { Values = ids.Select(x => (Id)x.Value) };
 
-        var query = new SearchRequest(OpenSearchProductIndex.Name) { Query = terms, };
+        var query = new SearchRequest(OpenSearchProductIndex.Name) { Query = q,  };
         var result = await _openSearchClient.SearchAsync<OpenSearchProduct>(query, cancellationToken);
 
         if (!result.IsValid || result.Total == 0)

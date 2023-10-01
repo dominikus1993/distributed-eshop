@@ -81,17 +81,19 @@ public sealed class OpenSearchProductReaderTests : IClassFixture<OpenSearchFixtu
     
     [Theory]
     [AutoData]
-    public async Task ReadProductsByIdsWhenExistsShouldReturnProducts(Product[] products)
+    public async Task ReadProductsByIdsWhenExistsShouldReturnProducts(Product[] products, Product[] additionalProducts)
     {
 
         // Act
-
         await _productsWriter.AddProducts(products);
+        await _productsWriter.AddProducts(additionalProducts);
+        
         var subject = await _productReader.GetByIds(products.Select(x => x.Id)).ToArrayAsync();
         
         subject.ShouldNotBeNull();
         subject.ShouldNotBeEmpty();
         subject.Length.ShouldBe(products.Length);
         subject.ShouldBeEquivalentTo(products);
+        subject.ShouldNotContain(x => additionalProducts.Any(p => p.Id == x.Id));
     }
 }
