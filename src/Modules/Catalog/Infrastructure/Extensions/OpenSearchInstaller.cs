@@ -109,6 +109,7 @@ public static class OpenSearchInstaller
                         .Name(n => n.Tags)
                         .Index(true)
                         .Store(true)
+                        .CopyTo(f => f.Field(OpenSearchProductIndex.TagsKeyword))
                     )
                     .Date(t => t
                         .Name(n => n.DateCreated)
