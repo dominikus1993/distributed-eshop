@@ -44,7 +44,7 @@ public sealed class OpenSearchProductFilter : IProductFilter
                 Field = Field(OpenSearchProductIndex.TagsKeyword),
                 Query = filter.Tag,
                 Operator = Operator.And,
-                Fuzziness = Fuzziness.Auto,
+                Fuzziness = Fuzziness.EditDistance(0),
             };
         }
 
