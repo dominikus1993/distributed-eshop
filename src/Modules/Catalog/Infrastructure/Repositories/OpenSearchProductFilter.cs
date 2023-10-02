@@ -8,6 +8,8 @@ using Catalog.Infrastructure.Model;
 using OpenSearch.Client;
 using static OpenSearch.Client.Infer;
 
+using SortOrder = Catalog.Core.Repository.SortOrder;
+
 namespace Catalog.Infrastructure.Repositories;
 
 public sealed class OpenSearchProductFilter : IProductFilter
@@ -18,13 +20,13 @@ public sealed class OpenSearchProductFilter : IProductFilter
     {
         _openSearchClient = openSearchClient;
     }
-    
+
     public async Task<PagedResult<Product>> FilterProducts(Filter filter, CancellationToken cancellationToken = default)
     {
         var searchRequest = new SearchRequest<OpenSearchProduct>(OpenSearchProductIndex.Name)
         {
-            Size = filter.PageSize,
-            From = filter.Skip,
+            Size = filter.PageSize, From = filter.Skip,
+            Sort = GetSortOrder(filter.SortOrder),
         };
         if (!string.IsNullOrEmpty(filter.Query))
         {
@@ -36,7 +38,7 @@ public sealed class OpenSearchProductFilter : IProductFilter
                 Fuzziness = Fuzziness.Auto,
             };
         }
-        
+
         if (!string.IsNullOrEmpty(filter.Tag))
         {
             searchRequest.Query &= new MatchQuery()
@@ -60,7 +62,7 @@ public sealed class OpenSearchProductFilter : IProductFilter
 
             searchRequest.Query &= priceQ;
         }
-        
+
         if (filter.PriceTo.HasValue)
         {
             var priceTo = decimal.ToDouble(filter.PriceTo.Value);
@@ -82,7 +84,33 @@ public sealed class OpenSearchProductFilter : IProductFilter
         }
 
         var res = result.Documents.Select(x => x.ToProduct()).ToArray();
-        
+
         return new PagedResult<Product>(res, (uint)res.Length, (uint)result.Total);
     }
+
+    public static IList<ISort> GetSortOrder(SortOrder sortOrder)
+    {
+        return sortOrder switch
+        {
+            SortOrder.Default => Array.Empty<ISort>(),
+            SortOrder.PriceAsc => new ISort[]
+            {
+                new FieldSort()
+                {
+                    Field = Field<OpenSearchProduct>(static p => p.SalePrice),
+                    Order = OpenSearch.Client.SortOrder.Ascending
+                }
+            },
+            SortOrder.PriceDesc => new ISort[]
+            {
+                new FieldSort()
+                {
+                    Field = Field<OpenSearchProduct>(static p => p.SalePrice),
+                    Order = OpenSearch.Client.SortOrder.Descending
+                }
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(sortOrder), sortOrder, null)
+        };
+    }
+
 }
