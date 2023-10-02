@@ -51,39 +51,27 @@ public sealed class OpenSearchProductFilter : IProductFilter
         if (filter.PriceFrom.HasValue)
         {
             var priceFrom = decimal.ToDouble(filter.PriceFrom.Value);
-            var promotionalPriceQ = new NumericRangeQuery()
-            {
-                Field = Field<OpenSearchProduct>(static p => p.PromotionalPrice),
-                GreaterThanOrEqualTo = priceFrom,
-                Name = "promotional priceFrom query"
-            };
             var priceQ = new NumericRangeQuery()
             {
-                Field = Field<OpenSearchProduct>(static p => p.Price),
+                Field = Field<OpenSearchProduct>(static p => p.SalePrice),
                 GreaterThanOrEqualTo = priceFrom,
                 Name = "priceFrom query"
             };
 
-            searchRequest.Query &= (promotionalPriceQ || priceQ);
+            searchRequest.Query &= priceQ;
         }
         
         if (filter.PriceTo.HasValue)
         {
             var priceTo = decimal.ToDouble(filter.PriceTo.Value);
-            var promotionalPriceQ = new NumericRangeQuery()
-            {
-                Field = Field<OpenSearchProduct>(static p => p.PromotionalPrice),
-                LessThanOrEqualTo = priceTo,
-                Name = "promotional priceTo query"
-            };
             var priceQ = new NumericRangeQuery()
             {
-                Field = Field<OpenSearchProduct>(static p => p.Price),
+                Field = Field<OpenSearchProduct>(static p => p.SalePrice),
                 LessThanOrEqualTo = priceTo,
                 Name = "priceTo query"
             };
 
-            searchRequest.Query &= (promotionalPriceQ || priceQ);
+            searchRequest.Query &= priceQ;
         }
 
         var result = await _openSearchClient.SearchAsync<OpenSearchProduct>(searchRequest, cancellationToken);

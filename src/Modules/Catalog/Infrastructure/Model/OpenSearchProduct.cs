@@ -15,6 +15,8 @@ internal sealed class OpenSearchProduct
 
     public decimal Price { get; set; }
     
+    public decimal SalePrice { get; set; } 
+    
     public int AvailableQuantity { get; set; }
     
     public IReadOnlyList<string>? Tags { get; set; }
@@ -36,6 +38,7 @@ internal sealed class OpenSearchProduct
         Price = product.Price.CurrentPrice;
         PromotionalPrice = product.Price.PromotionalPrice;
         Tags = product.Tags?.Select(x => x.Name).ToArray();
+        SalePrice = PromotionalPrice ?? Price;
     }
 
     public Product ToProduct()

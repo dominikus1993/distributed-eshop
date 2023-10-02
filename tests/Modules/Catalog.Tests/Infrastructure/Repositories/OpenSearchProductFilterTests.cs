@@ -106,81 +106,75 @@ public sealed class OpenSearchProductFilterTests : IAsyncLifetime, IClassFixture
         subject.Data.ShouldContain(p => p.Id == product1.Id);
     }
     
-    // [Theory]
-    // [AutoData]
-    // public async Task FilterProductWhenNiveaProductNotExistsShouldReturnEmptyCollectionNiveaTag(Tags tags, string tag2)
-    // {
-    //     // Arrange 
-    //     using var cts = new CancellationTokenSource();
-    //     cts.CancelAfter(TimeSpan.FromSeconds(30));
-    //     var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-    //         new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), tags);
-    //     var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-    //         new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
-    //     var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-    //         new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
-    //     await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
-    //     // Act
-    //     
-    //     var subject = await _productFilter.FilterProducts(new Filter() { Tag = tag2 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
-    //     
-    //     // Assert
-    //     subject.ShouldNotBeNull();
-    //     subject.ShouldBeEmpty();
-    // }
-    //
-    // [Fact]
-    // public async Task FilterProductWhenProductsInPriceConditionExistsShouldReturnProductsWithPriceCondition()
-    // {
-    //     // Arrange 
-    //     using var cts = new CancellationTokenSource();
-    //     cts.CancelAfter(TimeSpan.FromSeconds(30));
-    //     
-    //     var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-    //         new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10), Tags.Empty);
-    //     var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-    //         new ProductPrice(new Price(11m)), new AvailableQuantity(10), Tags.Empty);
-    //     var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-    //         new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10), Tags.Empty);
-    //     await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
-    //     // Act
-    //     
-    //     var subject = await _productFilter.FilterProducts(new Filter() { PriceFrom = 2m, PriceTo = 12m } , cts.Token).ToListAsync(cancellationToken: cts.Token);
-    //     
-    //     // Assert
-    //     subject.ShouldNotBeNull();
-    //     subject.ShouldNotBeEmpty();
-    //     subject.Count.ShouldBe(1);
-    //     
-    //     await Verify(subject);
-    // }
-    //
-    // [Fact]
-    // public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeyword()
-    // {
-    //     // Arrange 
-    //     using var cts = new CancellationTokenSource();
-    //     cts.CancelAfter(TimeSpan.FromSeconds(30));
-    //     
-    //     var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-    //         new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
-    //     var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-    //         new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
-    //     var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
-    //         new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
-    //     await _productsWriter.AddProducts(new[] { product1, product2, product3 }, cts.Token);
-    //     // Act
-    //     
-    //     var subject = await _productFilter.FilterProducts(new Filter() { Query = "nivea", PageSize = 1 } , cts.Token).ToListAsync(cancellationToken: cts.Token);
-    //     
-    //     // Assert
-    //     subject.ShouldNotBeNull();
-    //     subject.ShouldNotBeEmpty();
-    //     subject.Count.ShouldBe(1);
-    //     
-    //     await Verify(subject);
-    // }
-    //
+    [Theory]
+    [AutoData]
+    public async Task FilterProductWhenNiveaProductNotExistsShouldReturnEmptyCollectionNiveaTag(Tags tags, string tag2)
+    {
+        // Arrange 
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), tags);
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        await _productsWriter.AddProducts(new[] { product1, product2, product3 });
+        // Act
+
+        var subject = await _productFilter.FilterProducts(new Filter() { Tag = tag2 });
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.IsEmpty.ShouldBeTrue();
+        subject.Data.ShouldBeEmpty();
+    }
+    
+    [Fact]
+    public async Task FilterProductWhenProductsInPriceConditionExistsShouldReturnProductsWithPriceCondition()
+    {
+        // Arrange 
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(5m), new Price(1m)), new AvailableQuantity(10), Tags.Empty);
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(11m)), new AvailableQuantity(10), Tags.Empty);
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(20m), new Price(20m)), new AvailableQuantity(10), Tags.Empty);
+        await _productsWriter.AddProducts(new[] { product1, product2, product3 });
+        // Act
+        
+        var subject = await _productFilter.FilterProducts(new Filter() { PriceFrom = 2m, PriceTo = 12m });
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.Data.ShouldNotBeEmpty();
+        subject.Total.ShouldBe(1u);
+        subject.Count.ShouldBe(1u);
+        
+        await Verify(subject);
+    }
+    
+    [Fact]
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeyword()
+    {
+        // Arrange 
+        var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+        await _productsWriter.AddProducts(new[] { product1, product2, product3 });
+        // Act
+        
+        var subject = await _productFilter.FilterProducts(new Filter() { Query = "nivea", PageSize = 1 });
+        
+        // Assert
+        subject.ShouldNotBeNull();
+        subject.Data.ShouldNotBeEmpty();
+        subject.Count.ShouldBe(1u);
+        
+        await Verify(subject);
+    }
+    
     // [Fact]
     // public async Task FilterProductWhenNiveaProductExistsShouldReturnOneProductWithNameOrDescriptionContainsNiveaKeywordOnTheSecondPage()
     // {

@@ -93,6 +93,11 @@ public static class OpenSearchInstaller
                         .Index(true)
                         .Store(true)
                     )
+                    .Number(b => b
+                        .Name(n => n.SalePrice)
+                        .Index(true)
+                        .Store(true)
+                    )
                     .Text(b => b
                         .Name(n => n.Description)
                         .Index(true)
