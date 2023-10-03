@@ -84,13 +84,13 @@ public sealed class OpenSearchProductFilterTests : IAsyncLifetime, IClassFixture
     
     [Theory]
     [AutoData]
-    public async Task FilterProductWhenNiveaProductExistsShouldReturnProductsWithNameOrDescriptionContainsNiveaTag(string tag)
+    public async Task FilterProductWhenNiveaProductExistsShouldReturnProductsWithNameOrDescriptionContainsNiveaTag(string tag, string tag2)
     {
         // Arrange 
         var product1 = new Product(ProductId.New(), new ProductName("not xDDD"), new ProductDescription("nivea"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), new Tags(new []{ new Tag(tag)}));
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), new Tags(new []{ new Tag(tag), new Tag(tag2)}));
         var product2 = new Product(ProductId.New(), new ProductName("Nivea xDDD"), new ProductDescription("xDDD"),
-            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
+            new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), new Tags(new[] { new Tag(tag2) }));
         var product3 = new Product(ProductId.New(), new ProductName("xDDD"), new ProductDescription("xDDD"),
             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), Tags.Empty);
         await _productsWriter.AddProducts(new[] { product1, product2, product3 });

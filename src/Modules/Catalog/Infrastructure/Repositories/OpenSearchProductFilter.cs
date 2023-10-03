@@ -88,7 +88,7 @@ public sealed class OpenSearchProductFilter : IProductFilter
         return new PagedResult<Product>(res, (uint)res.Length, (uint)result.Total);
     }
 
-    public static IList<ISort> GetSortOrder(SortOrder sortOrder)
+    private static ISort[] GetSortOrder(SortOrder sortOrder)
     {
         return sortOrder switch
         {
