@@ -15,18 +15,10 @@ using Xunit;
 namespace Catalog.Tests.Infrastructure.Repositories;
 
 [UsesVerify]
-public sealed class OpenSearchProductFilterTests : IAsyncLifetime, IClassFixture<OpenSearchFixture>
+public sealed class OpenSearchProductFilterTests(OpenSearchFixture fixture) : IAsyncLifetime, IClassFixture<OpenSearchFixture>
 {
-    private readonly OpenSearchFixture _fixture;
-    private readonly IProductFilter _productFilter;
-    private readonly IProductsWriter _productsWriter;
-    
-    public OpenSearchProductFilterTests(OpenSearchFixture fixture)
-    {
-        _fixture = fixture;
-        _productsWriter = fixture.ProductsWriter;
-        _productFilter = fixture.ProductFilter;
-    }
+    private readonly IProductFilter _productFilter = fixture.ProductFilter;
+    private readonly IProductsWriter _productsWriter = fixture.ProductsWriter;
 
     [Theory]
     [InlineAutoData]
@@ -42,6 +34,7 @@ public sealed class OpenSearchProductFilterTests : IAsyncLifetime, IClassFixture
 
         subject.ShouldNotBeNull();
         subject.IsEmpty.ShouldBeFalse();
+        subject.Data.Count().ShouldBe(products.Length);
         subject.Count.ShouldBe((uint)products.Length);
         subject.Total.ShouldBe((uint)products.Length);
         
@@ -205,6 +198,6 @@ public sealed class OpenSearchProductFilterTests : IAsyncLifetime, IClassFixture
 
     public Task DisposeAsync()
     {
-        return _fixture.Clean();
+        return fixture.Clean();
     }
 }
