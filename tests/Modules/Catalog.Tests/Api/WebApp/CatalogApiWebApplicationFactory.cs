@@ -22,7 +22,9 @@ public class CatalogApiWebApplicationFactory : WebApplicationFactory<Program>
             configurationBuilder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("./Api/appsettings.json", optional: false, reloadOnChange: true);
             var dict = new Dictionary<string, string>()
             {
-                { "ConnectionStrings:CatalogDb", _searchConfiguration.Url.ToString() }
+                { "OpenSearch:Url", _searchConfiguration.Url.ToString() },
+                { "OpenSearch:UserName", _searchConfiguration.UserName },
+                { "OpenSearch:Password", _searchConfiguration.Password },
             };
             configurationBuilder.AddInMemoryCollection(dict!);
         });
