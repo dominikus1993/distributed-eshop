@@ -11,7 +11,7 @@ using Shouldly;
 
 namespace Basket.Tests.Api.Endpoints;
 
-public class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixture>, IAsyncLifetime
+public sealed class AddItemToCustomerBasketEndpointTests : IClassFixture<BasketApiFixture>, IAsyncLifetime
 {
     private readonly BasketApiFixture _basketApiFixture;
     private JwtSecurityStub _jwtSecurityStub;
