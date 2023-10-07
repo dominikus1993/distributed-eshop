@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Telemetry\Telemetry.csproj" />
   </ItemGroup>
     <ItemGroup>
@@ -14,6 +15,8 @@
       <PackageReference Include="EasyNetQ.Serialization.SystemTextJson" />
       <PackageReference Include="Microsoft.Extensions.Configuration" />
       <PackageReference Include="Microsoft.Extensions.Hosting" />
+      <PackageReference Include="OneOf" />
+      <PackageReference Include="OneOf.SourceGenerator" />
       <PackageReference Include="System.Linq.Async" />
     </ItemGroup>
 </Project>

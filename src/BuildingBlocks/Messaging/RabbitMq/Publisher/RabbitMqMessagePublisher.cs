@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
+using Common.Types;
+
 using EasyNetQ;
 using EasyNetQ.Topology;
 
@@ -48,10 +50,18 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
         _publisherConfig = publisherConfig;
     }
 
-    public Task Publish([NotNull] T message, IMessageContext? ctx = null, CancellationToken cancellationToken = default)
+    public async Task<PublishResult> Publish([NotNull] T message, IMessageContext? ctx = null, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(message);
-        return PublishInternal(message, ctx, cancellationToken);
+        try
+        {
+            ArgumentNullException.ThrowIfNull(message);
+            await PublishInternal(message, ctx, cancellationToken);
+            return PublishResult.Ok;
+        }
+        catch (Exception e)
+        {
+            return e;
+        }
     }
 
     private async Task PublishInternal(T message, IMessageContext? ctx = null,

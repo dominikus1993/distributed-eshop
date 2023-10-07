@@ -13,16 +13,6 @@
           "Microsoft.AspNetCore.Mvc.Testing": "7.0.0"
         }
       },
-      "AutoFixture.AutoMoq": {
-        "type": "Direct",
-        "requested": "[4.18.0, )",
-        "resolved": "4.18.0",
-        "contentHash": "bKYr0AykPInIu4OBKoujK3w8j1N4czz+EAbX93DFG/w4mM9otvbgFT6FUlIvqfcB08gRuRSCqmHhpWa0Thgh6g==",
-        "dependencies": {
-          "AutoFixture": "4.18.0",
-          "Moq": "[4.7.0, 5.0.0)"
-        }
-      },
       "AutoFixture.Xunit2": {
         "type": "Direct",
         "requested": "[4.18.0, )",
@@ -696,34 +686,6 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "Moq": {
-        "type": "Transitive",
-        "resolved": "4.7.0",
-        "contentHash": "EARB1hiT51yYWHynI+7FWOIZ9Lc3Pf83DlE3yROrgkiQ7xJy3+I52A5yMgvFe9GhOdXmXhBxZKApeOtWTV5MEQ==",
-        "dependencies": {
-          "Castle.Core": "4.0.0",
-          "System.Collections": "4.0.11",
-          "System.Collections.Concurrent": "4.0.12",
-          "System.Diagnostics.Debug": "4.0.11",
-          "System.Diagnostics.Tools": "4.0.1",
-          "System.Globalization": "4.0.11",
-          "System.Linq": "4.1.0",
-          "System.Linq.Expressions": "4.1.0",
-          "System.Linq.Queryable": "4.0.1",
-          "System.Reflection": "4.1.0",
-          "System.Reflection.Emit": "4.0.1",
-          "System.Reflection.Emit.ILGeneration": "4.0.1",
-          "System.Reflection.Extensions": "4.0.1",
-          "System.Reflection.Primitives": "4.0.1",
-          "System.Reflection.TypeExtensions": "4.1.0",
-          "System.Resources.ResourceManager": "4.0.1",
-          "System.Runtime": "4.1.0",
-          "System.Runtime.Extensions": "4.1.0",
-          "System.Text.RegularExpressions": "4.1.0",
-          "System.Threading": "4.0.11",
-          "System.Threading.Tasks": "4.0.11"
-        }
-      },
       "Namotion.Reflection": {
         "type": "Transitive",
         "resolved": "2.1.2",
@@ -1331,21 +1293,6 @@
           "System.Threading": "4.3.0"
         }
       },
-      "System.Linq.Queryable": {
-        "type": "Transitive",
-        "resolved": "4.0.1",
-        "contentHash": "Yn/WfYe9RoRfmSLvUt2JerP0BTGGykCZkQPgojaxgzF2N0oPo+/AhB8TXOpdCcNlrG3VRtsamtK2uzsp3cqRVw==",
-        "dependencies": {
-          "System.Collections": "4.0.11",
-          "System.Diagnostics.Debug": "4.0.11",
-          "System.Linq": "4.1.0",
-          "System.Linq.Expressions": "4.1.0",
-          "System.Reflection": "4.1.0",
-          "System.Reflection.Extensions": "4.0.1",
-          "System.Resources.ResourceManager": "4.0.1",
-          "System.Runtime": "4.1.0"
-        }
-      },
       "System.Management": {
         "type": "Transitive",
         "resolved": "6.0.2",
@@ -1911,6 +1858,9 @@
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.10, )"
         }
       },
+      "common": {
+        "type": "Project"
+      },
       "hosting": {
         "type": "Project",
         "dependencies": {
@@ -1920,11 +1870,14 @@
       "messaging": {
         "type": "Project",
         "dependencies": {
+          "Common": "[1.0.0, )",
           "EasyNetQ.DI.Microsoft": "[7.5.5, )",
           "EasyNetQ.Logging.Microsoft": "[7.5.5, )",
           "EasyNetQ.Serialization.SystemTextJson": "[7.5.5, )",
           "Microsoft.Extensions.Configuration": "[8.0.0-rc.1.23419.4, )",
           "Microsoft.Extensions.Hosting": "[8.0.0-rc.1.23419.4, )",
+          "OneOf": "[3.0.263, )",
+          "OneOf.SourceGenerator": "[3.0.263, )",
           "System.Linq.Async": "[6.0.1, )",
           "Telemetry": "[1.0.0, )"
         }

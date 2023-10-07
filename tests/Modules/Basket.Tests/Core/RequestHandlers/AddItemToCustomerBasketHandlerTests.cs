@@ -1,3 +1,5 @@
+using AutoFixture.Xunit2;
+
 using Basket.Core.Events;
 using Basket.Core.Model;
 using Basket.Core.RequestHandlers;
@@ -6,16 +8,18 @@ using Basket.Infrastructure.Repositories;
 using Basket.Infrastructure.Serialization;
 using Basket.Tests.Fixture;
 
+using Common.Types;
+
 using Messaging.Abstraction;
 
-using Moq;
+using NSubstitute;
 
 using Shouldly;
 
 namespace Basket.Tests.Core.RequestHandlers;
 
 [Collection(nameof(RedisFixtureCollectionTest))]
-public class AddItemToCustomerBasketHandlerTests
+public sealed class AddItemToCustomerBasketHandlerTests
 {
     private readonly RedisFixture _redisFixture;
 
@@ -24,18 +28,16 @@ public class AddItemToCustomerBasketHandlerTests
         _redisFixture = redisFixture;
     }
 
-    [Fact]
-    public async Task TestAddItemToEmptyBasket_ShouldReturnBasketWithOneItem()
+    [Theory]
+    [AutoData]
+    public async Task TestAddItemToEmptyBasket_ShouldReturnBasketWithOneItem(CustomerId customerId, Product basketItem)
     {
         // Arrange
-        var publisherMock = new Mock<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Setup(x =>
-            x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
+        var publisherMock = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
+        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
         
-        var customerId = CustomerId.New();
-        var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
+        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock);
         // Act
         await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
         var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
@@ -45,22 +47,21 @@ public class AddItemToCustomerBasketHandlerTests
         result.Items.ShouldNotBeEmpty();
         result.Items.Count.ShouldBe(1);
         result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == basketItem.Quantity.Value);
-        
-        publisherMock.Verify(x => x.Publish(It.IsAny<BasketItemWasAdded>(), null, It.IsAny<CancellationToken>()), Times.Exactly(1));
+
+        await publisherMock.Received(1).Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>());
     }  
     
     [Fact]
     public async Task TestAddItemToNotEmptyBasket_ShouldReturnBasketWithTwoItems()
     {
         // Arrange
-        var publisherMock = new Mock<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Setup(x =>
-            x.Publish(It.IsAny<BasketItemWasAdded>(), It.IsAny<IMessageContext>(), It.IsAny<CancellationToken>()));
+        var publisherMock = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
+        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
         
         var customerId = CustomerId.New();
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock.Object);
+        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock);
         await handler.Handle(new AddItemToCustomerBasket(customerId, new Product(ItemId.New(), new ItemQuantity(2))), CancellationToken.None);
         
         // Act
@@ -73,6 +74,6 @@ public class AddItemToCustomerBasketHandlerTests
         result.Items.Count.ShouldBe(2);
         result.Items.ShouldContain(x => x.ItemId == basketItem.ItemId.Value && x.Quantity == basketItem.Quantity.Value);
         
-        publisherMock.Verify(x => x.Publish(It.IsAny<BasketItemWasAdded>(), null, It.IsAny<CancellationToken>()), Times.Exactly(2));
+        await publisherMock.Received(2).Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>());
     }
 }

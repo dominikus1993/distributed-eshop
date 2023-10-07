@@ -39,6 +39,11 @@ public sealed class RedisFixture : IAsyncLifetime, IDisposable
         await Redis.DisposeAsync();
     }
 
+    public async Task CleanDatabase()
+    {
+        await Task.Yield();
+    }
+
     public void Dispose()
     {
     }

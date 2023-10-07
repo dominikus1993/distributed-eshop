@@ -1523,14 +1523,20 @@
           "xunit.extensibility.core": "[2.5.1]"
         }
       },
+      "common": {
+        "type": "Project"
+      },
       "messaging": {
         "type": "Project",
         "dependencies": {
+          "Common": "[1.0.0, )",
           "EasyNetQ.DI.Microsoft": "[7.5.5, )",
           "EasyNetQ.Logging.Microsoft": "[7.5.5, )",
           "EasyNetQ.Serialization.SystemTextJson": "[7.5.5, )",
           "Microsoft.Extensions.Configuration": "[8.0.0-rc.1.23419.4, )",
           "Microsoft.Extensions.Hosting": "[8.0.0-rc.1.23419.4, )",
+          "OneOf": "[3.0.263, )",
+          "OneOf.SourceGenerator": "[3.0.263, )",
           "System.Linq.Async": "[6.0.1, )",
           "Telemetry": "[1.0.0, )"
         }
@@ -1632,6 +1638,18 @@
         "requested": "[13.0.3, )",
         "resolved": "13.0.1",
         "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
+      },
+      "OneOf": {
+        "type": "CentralTransitive",
+        "requested": "[3.0.263, )",
+        "resolved": "3.0.263",
+        "contentHash": "2xXFnUxkAA0rJ2sJz9FPeW/gzJIBvyj+xIvfTIkz42pz9JlcYse4/rwRnkmCsYxw6osy1whnBO6Ox6HBKEqDMw=="
+      },
+      "OneOf.SourceGenerator": {
+        "type": "CentralTransitive",
+        "requested": "[3.0.263, )",
+        "resolved": "3.0.263",
+        "contentHash": "GxgryFHS0Te/Oq0ZBxCXInNefR6tELQcP5g2WUmgoeXALPrvMss8xWyBFyzS2ucLRpQa7pV+ZXhqO+7NPVxtoQ=="
       },
       "OpenTelemetry.Exporter.Console": {
         "type": "CentralTransitive",
