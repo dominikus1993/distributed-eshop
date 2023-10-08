@@ -3,36 +3,38 @@ using AutoFixture.Xunit2;
 using Catalog.Core.Model;
 using Catalog.Infrastructure.Model;
 
+using OpenSearch.Client;
+
 using Shouldly;
 
 using Xunit;
 
 namespace Catalog.Tests.Infrastructure.Model;
 
-public class EfProductTests
+public class OpenSearchProductTests
 {
     [Theory]
     [AutoData]
-    public void TestToProduct(EfProduct efproduct)
+    internal void TestToProduct(OpenSearchProduct product)
     {
-        var subject = efproduct.ToProduct();
+        product.ProductId = Guid.NewGuid();
+        var subject = product.ToProduct();
 
         subject.ShouldNotBeNull();
-        subject.Id.ShouldBe(efproduct.ProductId);
-        subject.ProductName.ShouldBe(new ProductName(efproduct.Name));
-        subject.ProductDescription.ShouldBe(new ProductDescription(efproduct.Description));
-        subject.AvailableQuantity.ShouldBe(new AvailableQuantity(efproduct.AvailableQuantity));
-        subject.Price.ShouldBe(new ProductPrice(efproduct.Price, efproduct.PromotionalPrice));
+        subject.ProductName.ShouldBe(new ProductName(product.Name));
+        subject.ProductDescription.ShouldBe(new ProductDescription(product.Description));
+        subject.AvailableQuantity.ShouldBe(new AvailableQuantity(product.AvailableQuantity));
+        subject.Price.ShouldBe(new ProductPrice(product.Price, product.PromotionalPrice));
     }
     
     [Theory]
     [AutoData]
     public void TestFromProduct(Product product)
     {
-        var subject = new EfProduct(product);
+        var subject = new OpenSearchProduct(product);
 
         subject.ShouldNotBeNull();
-        subject.ProductId.ShouldBe(product.Id);
+        subject.ProductId.ToString().ShouldBe(product.Id.Value.ToString());
         subject.Name.ShouldBe(product.ProductName.Name);
         subject.Description.ShouldBe(product.ProductDescription.Description);
         subject.AvailableQuantity.ShouldBe(product.AvailableQuantity.Value);
