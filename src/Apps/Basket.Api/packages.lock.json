@@ -4,33 +4,33 @@
     "net8.0": {
       "FastEndpoints": {
         "type": "Direct",
-        "requested": "[5.17.1.1, )",
-        "resolved": "5.17.1.1",
-        "contentHash": "o9956vy3Sa14A+0LPImB5RX04f0YKfW7q5NdPL3q3UBz5LtU9TuNQv5rWHlPIiJ593PNPTlHdJq6ocLWuhhxOA==",
+        "requested": "[5.18.0, )",
+        "resolved": "5.18.0",
+        "contentHash": "twN5lRPyzz0X/DlduDOdQgCC7E9XxufemKi3CK7mmAvbYUnfjCDYUS03ejMy5TYLC+R2UJHEzYpjXUt8Kzu5+A==",
         "dependencies": {
-          "FastEndpoints.Attributes": "5.17.1.1",
-          "FastEndpoints.Messaging.Core": "5.17.1.1",
+          "FastEndpoints.Attributes": "5.18.0",
+          "FastEndpoints.Messaging.Core": "5.18.0",
           "FluentValidation": "11.7.1"
         }
       },
       "FastEndpoints.Security": {
         "type": "Direct",
-        "requested": "[5.17.1.1, )",
-        "resolved": "5.17.1.1",
-        "contentHash": "64LmDlQTeU1zSPJ/JF7c6y3TuyQpxnYvuGKo1wuxhhEMnIp8vYdJQ9OcCF21WKUNWGmVnTiVQd8kxAaEYozqCA==",
+        "requested": "[5.18.0, )",
+        "resolved": "5.18.0",
+        "contentHash": "AtGuB34F1shy5MKEYEVw1v1z9xzoHMIFncxFVpvxnc4fAl3bgXjw8bW9PkZ3jRfazbhbazOy0VMq6qcWByHgEQ==",
         "dependencies": {
-          "FastEndpoints": "5.17.1.1",
+          "FastEndpoints": "5.18.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.10",
           "Microsoft.Bcl.TimeProvider": "8.0.0-preview.7.23375.6"
         }
       },
       "FastEndpoints.Swagger": {
         "type": "Direct",
-        "requested": "[5.17.1.1, )",
-        "resolved": "5.17.1.1",
-        "contentHash": "IprksZ4B7Zesw7yczhTnHd/x8OMrxTOhl1iz5FwGsN+OlBaijfw34q155jtiX2VLTOWqN9Hg/BPRRpC5Fc1Pew==",
+        "requested": "[5.18.0, )",
+        "resolved": "5.18.0",
+        "contentHash": "/7eYZ2e9AqhuhFu665VLeTzKetWtONJfMZPDO3x1x8KaSyX5wYaGupyjzmcRPoZzGE7qsD+wn1DoESEAJybrag==",
         "dependencies": {
-          "FastEndpoints": "5.17.1.1",
+          "FastEndpoints": "5.18.0",
           "NSwag.AspNetCore": "13.20.0"
         }
       },
@@ -65,13 +65,13 @@
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
-        "resolved": "5.17.1.1",
-        "contentHash": "LUpLOw87fanVCeF+qFIDVGz/OTbKy+QT71i1ETCXUDAiCLoj05osX7gWADvyj4IGdfB1KgKjXnms+lW6WlSPkA=="
+        "resolved": "5.18.0",
+        "contentHash": "/zedEb+CTFouY8QGVYvU+iUsgYtIWqYp1AGw7QzpEnsTG89Xk8Et3q0+5fQqwbws3CzRxsYPkBb/9O1JbKBgaw=="
       },
       "FastEndpoints.Messaging.Core": {
         "type": "Transitive",
-        "resolved": "5.17.1.1",
-        "contentHash": "K1OeAcmgmKF9TUnkyzVsxdgMZD/gXdZA6U+dtUHRkfkRkokUtWDR8MAIs07WfmkiJ/hjkaZCoYX41Kf89qiZWg=="
+        "resolved": "5.18.0",
+        "contentHash": "Ba2V/zobvzdoOYWtH+eB7O022PyzGOTKd/Bp32Fs4iq6HWL5VMS57V/12qItr4lEDXgW9qZWkLaejQQhBXT0sw=="
       },
       "FluentValidation": {
         "type": "Transitive",

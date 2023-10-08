@@ -118,12 +118,12 @@
       },
       "Verify.Xunit": {
         "type": "Direct",
-        "requested": "[21.2.0, )",
-        "resolved": "21.2.0",
-        "contentHash": "/LIHNDvELqrvpdbMCJnzlcJxx3wJOujflfyBo9sDId0r1/0RbQLqxq93In8Ip43NX5COp330AfUfcHU2cr5E4g==",
+        "requested": "[22.1.1, )",
+        "resolved": "22.1.1",
+        "contentHash": "6R0cVB9r0AJrIKK5MwvUxOHqXbvM5lxASvJ4noCZb4cE+guTugiVxjvZO29RcHtSrx2GmYbwmCleVUkzcNiJxA==",
         "dependencies": {
           "EmptyFiles": "4.5.1",
-          "Verify": "21.2.0",
+          "Verify": "22.1.1",
           "xunit.abstractions": "2.0.3",
           "xunit.extensibility.execution": "2.5.1"
         }
@@ -147,8 +147,8 @@
       },
       "Argon": {
         "type": "Transitive",
-        "resolved": "0.10.0",
-        "contentHash": "mt/xp+muvKd6a2TWgZgj+GRQw7z1xwGwhJBto8M34J66ajnpahULFDZDuK809D7dOm0agr6RqwgyBbQRHj17KQ=="
+        "resolved": "0.12.0",
+        "contentHash": "m+adxpBa+mKuvCbNnCqpffdTJYKLbrIOLZMPnNfUmuJ5jmSpVQf0rkZ9qLoH+nClk0sUDRAypBOArWvXmsCCOQ=="
       },
       "AspNetCore.HealthChecks.UI.Core": {
         "type": "Transitive",
@@ -231,13 +231,13 @@
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
-        "resolved": "5.17.1.1",
-        "contentHash": "LUpLOw87fanVCeF+qFIDVGz/OTbKy+QT71i1ETCXUDAiCLoj05osX7gWADvyj4IGdfB1KgKjXnms+lW6WlSPkA=="
+        "resolved": "5.18.0",
+        "contentHash": "/zedEb+CTFouY8QGVYvU+iUsgYtIWqYp1AGw7QzpEnsTG89Xk8Et3q0+5fQqwbws3CzRxsYPkBb/9O1JbKBgaw=="
       },
       "FastEndpoints.Messaging.Core": {
         "type": "Transitive",
-        "resolved": "5.17.1.1",
-        "contentHash": "K1OeAcmgmKF9TUnkyzVsxdgMZD/gXdZA6U+dtUHRkfkRkokUtWDR8MAIs07WfmkiJ/hjkaZCoYX41Kf89qiZWg=="
+        "resolved": "5.18.0",
+        "contentHash": "Ba2V/zobvzdoOYWtH+eB7O022PyzGOTKd/Bp32Fs4iq6HWL5VMS57V/12qItr4lEDXgW9qZWkLaejQQhBXT0sw=="
       },
       "FluentValidation": {
         "type": "Transitive",
@@ -1775,10 +1775,10 @@
       },
       "Verify": {
         "type": "Transitive",
-        "resolved": "21.2.0",
-        "contentHash": "EJNzvwf1K5oqfA355xQ83JP5qAa3hKg9L9esKbcU0NaMVbtrSNK/o8J8IR4U16NjBMTn1liN8WH/4UrIZsZN4g==",
+        "resolved": "22.1.1",
+        "contentHash": "nS7bpObYy7Yuxrs9rckgDebwXpgXvrpXaSlR/BokYP7+5EfM7Y8E/xbfFjoXxmGdt628LTP7eIf4z/Cchv8LXQ==",
         "dependencies": {
-          "Argon": "0.10.0",
+          "Argon": "0.12.0",
           "DiffEngine": "12.3.0",
           "EmptyFiles": "4.5.1",
           "SimpleInfoName": "2.1.1",
@@ -1851,9 +1851,9 @@
         "type": "Project",
         "dependencies": {
           "Basket": "[1.0.0, )",
-          "FastEndpoints": "[5.17.1.1, )",
-          "FastEndpoints.Security": "[5.17.1.1, )",
-          "FastEndpoints.Swagger": "[5.17.1.1, )",
+          "FastEndpoints": "[5.18.0, )",
+          "FastEndpoints.Security": "[5.18.0, )",
+          "FastEndpoints.Swagger": "[5.18.0, )",
           "Hosting": "[1.0.0, )",
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.10, )"
         }
@@ -1935,33 +1935,33 @@
       },
       "FastEndpoints": {
         "type": "CentralTransitive",
-        "requested": "[5.17.1.1, )",
-        "resolved": "5.17.1.1",
-        "contentHash": "o9956vy3Sa14A+0LPImB5RX04f0YKfW7q5NdPL3q3UBz5LtU9TuNQv5rWHlPIiJ593PNPTlHdJq6ocLWuhhxOA==",
+        "requested": "[5.18.0, )",
+        "resolved": "5.18.0",
+        "contentHash": "twN5lRPyzz0X/DlduDOdQgCC7E9XxufemKi3CK7mmAvbYUnfjCDYUS03ejMy5TYLC+R2UJHEzYpjXUt8Kzu5+A==",
         "dependencies": {
-          "FastEndpoints.Attributes": "5.17.1.1",
-          "FastEndpoints.Messaging.Core": "5.17.1.1",
+          "FastEndpoints.Attributes": "5.18.0",
+          "FastEndpoints.Messaging.Core": "5.18.0",
           "FluentValidation": "11.7.1"
         }
       },
       "FastEndpoints.Security": {
         "type": "CentralTransitive",
-        "requested": "[5.17.1.1, )",
-        "resolved": "5.17.1.1",
-        "contentHash": "64LmDlQTeU1zSPJ/JF7c6y3TuyQpxnYvuGKo1wuxhhEMnIp8vYdJQ9OcCF21WKUNWGmVnTiVQd8kxAaEYozqCA==",
+        "requested": "[5.18.0, )",
+        "resolved": "5.18.0",
+        "contentHash": "AtGuB34F1shy5MKEYEVw1v1z9xzoHMIFncxFVpvxnc4fAl3bgXjw8bW9PkZ3jRfazbhbazOy0VMq6qcWByHgEQ==",
         "dependencies": {
-          "FastEndpoints": "5.17.1.1",
+          "FastEndpoints": "5.18.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.10",
           "Microsoft.Bcl.TimeProvider": "8.0.0-preview.7.23375.6"
         }
       },
       "FastEndpoints.Swagger": {
         "type": "CentralTransitive",
-        "requested": "[5.17.1.1, )",
-        "resolved": "5.17.1.1",
-        "contentHash": "IprksZ4B7Zesw7yczhTnHd/x8OMrxTOhl1iz5FwGsN+OlBaijfw34q155jtiX2VLTOWqN9Hg/BPRRpC5Fc1Pew==",
+        "requested": "[5.18.0, )",
+        "resolved": "5.18.0",
+        "contentHash": "/7eYZ2e9AqhuhFu665VLeTzKetWtONJfMZPDO3x1x8KaSyX5wYaGupyjzmcRPoZzGE7qsD+wn1DoESEAJybrag==",
         "dependencies": {
-          "FastEndpoints": "5.17.1.1",
+          "FastEndpoints": "5.18.0",
           "NSwag.AspNetCore": "13.20.0"
         }
       },
