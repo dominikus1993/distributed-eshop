@@ -3,8 +3,6 @@ using System.Runtime.Serialization;
 using Basket.Core.Model;
 
 namespace Basket.Core.Exceptions;
-
-[Serializable]
 public sealed class CustomerBasketNotExistsException : Exception
 {
     private const string Message = "CustomerBasket not exists";
