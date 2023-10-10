@@ -3,4 +3,7 @@
     <Folder Include="Core\Repositories\" />
     <Folder Include="Core\UseCase\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Marten" />
+  </ItemGroup>
 </Project>
