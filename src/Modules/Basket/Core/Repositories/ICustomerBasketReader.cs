@@ -1,5 +1,7 @@
 using Basket.Core.Model;
 
+using Common.Types;
+
 using OneOf;
 
 namespace Basket.Core.Repositories;
@@ -109,21 +111,10 @@ public readonly struct RemoveBasketSuccess
     }
 }
 
-[GenerateOneOf]
-public sealed partial class UpdateCustomerBasketResult : OneOfBase<UpdateBasketSuccess, UpdateBasketException>
-{
-    
-}
-
-[GenerateOneOf]
-public sealed partial class RemoveCustomerBasketResult : OneOfBase<RemoveBasketSuccess, RemoveBasketException>
-{
-    
-}
 
 public interface ICustomerBasketWriter
 {
-    Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default);
+    Task<Result<UpdateBasketSuccess>> Update(CustomerBasket basket, CancellationToken cancellationToken = default);
     
-    Task<RemoveCustomerBasketResult> Remove(CustomerId customerId, CancellationToken cancellationToken = default);
+    Task<Result<RemoveBasketSuccess>> Remove(CustomerId customerId, CancellationToken cancellationToken = default);
 }

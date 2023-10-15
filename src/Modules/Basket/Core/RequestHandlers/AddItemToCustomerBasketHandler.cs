@@ -29,8 +29,12 @@ public sealed class AddItemToCustomerBasketHandler : IRequestHandler<AddItemToCu
 
         basket = basket.AddItem(request.Item);
 
-        await _customerBasketWriter.Update(basket, cancellationToken);
-
+        var result = await _customerBasketWriter.Update(basket, cancellationToken);
+        if (!result.IsSuccess)
+        {
+            throw new InvalidOperationException("can't update basket", result.ErrorValue());
+        }
+        
         var res = await _messagePublisher.Publish(new BasketItemWasAdded(request.CustomerId, request.Item), cancellationToken: cancellationToken);
         if (!res.IsSuccess)
         {

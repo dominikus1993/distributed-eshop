@@ -4,6 +4,8 @@ using Basket.Infrastructure.Extensions;
 using Basket.Infrastructure.Model;
 using Basket.Infrastructure.Serialization;
 
+using Common.Types;
+
 using StackExchange.Redis;
 
 namespace Basket.Infrastructure.Repositories;
@@ -33,7 +35,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
         return CustomerBasket.Empty(customerId).AddItems(items);
     }
 
-    public async Task<UpdateCustomerBasketResult> Update(CustomerBasket basket, CancellationToken cancellationToken = default)
+    public async Task<Result<UpdateBasketSuccess>> Update(CustomerBasket basket, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var redisBasket = new RedisCustomerBasket(basket);
@@ -44,16 +46,16 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
         
         await db.StringSetAsync(basket.CustomerId.ToRedisKey(), json);
 
-        return UpdateBasketSuccess.Instance;
+        return Result.Ok(UpdateBasketSuccess.Instance);
     }
 
-    public async Task<RemoveCustomerBasketResult> Remove(CustomerId customerId, CancellationToken cancellationToken = default)
+    public async Task<Result<RemoveBasketSuccess>> Remove(CustomerId customerId, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var key = customerId.ToRedisKey();
         var db = _connectionMultiplexer.GetDatabase();
         await db.KeyDeleteAsync(key);
 
-        return RemoveBasketSuccess.Instance;
+        return Result.Ok(RemoveBasketSuccess.Instance);
     }
 }
