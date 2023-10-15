@@ -32,6 +32,16 @@ public abstract partial class Result<T>
             return ToError<T2>();
         }
 
+        public override Result<T2> Bind<T2>(Func<T, Result<T2>> func)
+        {
+            return ToError<T2>();
+        }
+
+        public override Result<T2> Bind<T2, T3>(Func<T, T3, Result<T2>> func, T3 dependency)
+        {
+            return ToError<T2>();
+        }
+
         public void Deconstruct(out Exception error)
         {
             error = Error;

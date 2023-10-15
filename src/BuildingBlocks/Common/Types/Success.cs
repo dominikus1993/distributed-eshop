@@ -36,6 +36,20 @@ public abstract partial class Result<T>
             return new Result<T2>.Success(value);
         }
 
+        public override Result<T2> Bind<T2>(Func<T, Result<T2>> func)
+        {
+            ArgumentNullException.ThrowIfNull(func);
+            var result = func(Ok);
+            return result;
+        }
+
+        public override Result<T2> Bind<T2, T3>(Func<T, T3, Result<T2>> func, T3 dependency)
+        {
+            ArgumentNullException.ThrowIfNull(func);
+            var result = func(Ok, dependency);
+            return result;
+        }
+
         public void Deconstruct(out T ok)
         {
             ok = Ok;

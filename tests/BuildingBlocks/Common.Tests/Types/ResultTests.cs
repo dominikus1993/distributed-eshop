@@ -131,4 +131,50 @@ public class ResultTests
         Assert.NotNull(subject);
         Assert.Equal(newValue, subject.Value());
     }
+    
+    // spierdlaak
+    
+    [Theory]
+    [AutoData]
+    public void TestResultBindIfResultIsError(Exception error)
+    {
+        var result = Result.Failure<int>(error);
+
+        var ex = result.Bind((x) => Result.Ok(x));
+        Assert.False(ex.IsSuccess);
+        Assert.Equivalent(error, ex.ErrorValue());
+    }
+    
+    [Theory]
+    [AutoData]
+    public void TestResultBindIfResultIsSuccess(int value, int newValue)
+    {
+        var result = Result.Ok(value);
+
+        var subject = result.Bind(_ => Result.Ok(newValue));
+        Assert.NotNull(subject);
+        Assert.Equal(newValue, subject.Value());
+    }
+    
+    [Theory]
+    [AutoData]
+    public void TestResultBindWithClosureDependencyIfResultIsError(Exception error, int newValue)
+    {
+        var result = Result.Failure<int>(error);
+
+        var ex = result.Map((x, val) => Result.Ok(x + val), newValue);
+        Assert.False(ex.IsSuccess);
+        Assert.Equivalent(error, ex.ErrorValue());
+    }
+    
+    [Theory]
+    [AutoData]
+    public void TestResultBindWithClosureDependencyIfResultIsSuccess(int value, int newValue)
+    {
+        var result = Result.Ok(value);
+
+        var subject = result.Bind((_, newVal) => Result.Ok(newVal), newValue);
+        Assert.NotNull(subject);
+        Assert.Equal(newValue, subject.Value());
+    }
 }

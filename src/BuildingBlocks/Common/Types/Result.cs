@@ -30,4 +30,7 @@ public abstract partial class Result<T>
     public abstract Result<T2> ToError<T2>();
     public abstract Result<T2> Map<T2>(Func<T, T2> func);
     public abstract Result<T2> Map<T2, T3>(Func<T, T3, T2> func, T3 dependency);
+    
+    public abstract Result<T2> Bind<T2>(Func<T, Result<T2>> func);
+    public abstract Result<T2> Bind<T2, T3>(Func<T, T3, Result<T2>> func, T3 dependency);
 }
