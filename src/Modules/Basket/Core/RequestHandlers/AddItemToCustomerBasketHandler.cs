@@ -34,7 +34,7 @@ public sealed class AddItemToCustomerBasketHandler : IRequestHandler<AddItemToCu
         var res = await _messagePublisher.Publish(new BasketItemWasAdded(request.CustomerId, request.Item), cancellationToken: cancellationToken);
         if (!res.IsSuccess)
         {
-            throw new InvalidOperationException("can't publish message", res.Error);
+            throw new InvalidOperationException("can't publish message", res.ErrorValue());
         }
         return Unit.Value;
     }

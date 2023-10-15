@@ -28,7 +28,7 @@ public sealed class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
     public CheckoutCustomerBasketTests(RedisFixture redisFixture)
     {
         _messagePublisher = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
-        _messagePublisher.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
+        _messagePublisher.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         _redisFixture = redisFixture;
         _getCustomerBasketHandler = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         _addItemToCustomerBasketHandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader,

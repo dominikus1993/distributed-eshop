@@ -34,10 +34,10 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
     {
         // Arrange
         var publisherMock = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
+        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         
         var publisherRemovedMock =Substitute.For<IMessagePublisher<BasketItemWasRemoved>>();
-        publisherRemovedMock.Publish(Arg.Any<BasketItemWasRemoved>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
+        publisherRemovedMock.Publish(Arg.Any<BasketItemWasRemoved>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
@@ -59,10 +59,10 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
     {
         // Arrange
         var publisherMock = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
+        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         
         var publisherRemovedMock =Substitute.For<IMessagePublisher<BasketItemWasRemoved>>();
-        publisherRemovedMock.Publish(Arg.Any<BasketItemWasRemoved>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
+        publisherRemovedMock.Publish(Arg.Any<BasketItemWasRemoved>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         
         var customerId = CustomerId.New();
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));

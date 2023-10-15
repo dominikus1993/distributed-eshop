@@ -34,7 +34,7 @@ public sealed class AddItemToCustomerBasketHandlerTests
     {
         // Arrange
         var publisherMock = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
+        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock);
@@ -56,7 +56,7 @@ public sealed class AddItemToCustomerBasketHandlerTests
     {
         // Arrange
         var publisherMock = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
-        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(new PublishResult(Unit.Value));
+        publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         
         var customerId = CustomerId.New();
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));

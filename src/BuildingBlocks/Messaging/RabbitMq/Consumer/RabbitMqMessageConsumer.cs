@@ -66,6 +66,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
         {
             using var activity = RabbitMqTelemetry.RabbitMqActivitySource.Start("rabbitmq.consume", ActivityKind.Consumer, RabbitMqTelemetry.GetHeaderFromProps(properties).ActivityContext);
             await using var serviceScope = _serviceProvider.CreateAsyncScope(); 
+            var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<RabbitMqMessageConsumer<T>>>();
             try
             {
                 if (activity is not null)
@@ -82,18 +83,22 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                 var serializer = serviceScope.ServiceProvider.GetRequiredService<ISerializer>();
                 if (serializer.BytesToMessage(typeof(T), body) is not T message)
                 {
-                    var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<RabbitMqMessageConsumer<T>>>();
                     logger.LogCantDeserializeMessage(info.Exchange, info.RoutingKey, info.Queue);
                     activity?.AddEvent(new ActivityEvent("Message is null or can't be deserialized"));
                     return AckStrategies.NackWithRequeue;
                 }
                 var subscriber = serviceScope.ServiceProvider.GetRequiredService<IMessageSubscriber<T>>();
-                await subscriber.Handle(message, ct);
-                return _subscriptionConfiguration.AckStrategy;
+                var result = await subscriber.Handle(message, ct);
+                if (!result.IsSuccess)
+                {
+                    logger.LogCantProcessMessage(result.ErrorValue(), info.Exchange, info.RoutingKey, info.Queue);
+                    return _subscriptionConfiguration.AckStrategy;
+                }
+                
+                return AckStrategies.Ack;
             }
             catch (Exception exc)
             {
-                var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<RabbitMqMessageConsumer<T>>>();
                 logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue);
                 activity?.RecordException(exc);
                 return _subscriptionConfiguration.AckStrategy;

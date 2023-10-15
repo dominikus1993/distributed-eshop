@@ -1,5 +1,7 @@
 using System.Threading.Channels;
 
+using Common.Types;
+
 using EasyNetQ;
 using EasyNetQ.Serialization.SystemTextJson;
 
@@ -26,7 +28,7 @@ file sealed class TestSubscriber<T> : IMessageSubscriber<T> where T : IMessage
         _take = take;
     }
 
-    public async Task Handle(T message, CancellationToken cancellationToken = default)
+    public async Task<Result<Unit>> Handle(T message, CancellationToken cancellationToken = default)
     {
         await _writer.WaitToWriteAsync(cancellationToken);
         await _writer.WriteAsync(message, cancellationToken);
@@ -36,6 +38,8 @@ file sealed class TestSubscriber<T> : IMessageSubscriber<T> where T : IMessage
         {
             _writer.Complete();
         }
+
+        return Result.UnitResult;
     }
 }
 

@@ -50,17 +50,17 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
         _publisherConfig = publisherConfig;
     }
 
-    public async Task<PublishResult> Publish([NotNull] T message, IMessageContext? ctx = null, CancellationToken cancellationToken = default)
+    public async Task<Result<Unit>> Publish([NotNull] T message, IMessageContext? ctx = null, CancellationToken cancellationToken = default)
     {
         try
         {
             ArgumentNullException.ThrowIfNull(message);
             await PublishInternal(message, ctx, cancellationToken);
-            return PublishResult.Ok;
+            return Result.UnitResult;
         }
         catch (Exception e)
         {
-            return e;
+            return Result.Failure<Unit>(e);
         }
     }
 

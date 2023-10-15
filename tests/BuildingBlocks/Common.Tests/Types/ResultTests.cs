@@ -5,7 +5,7 @@ using Common.Types;
 
 namespace Common.Tests.Types;
 
-public class ResultTests
+public sealed class ResultTests
 {
     [Theory]
     [AutoData]
