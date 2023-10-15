@@ -13,6 +13,8 @@ public static class Result
     {
         return new Result<T>.Failure(exception);
     }
+
+    public static readonly Result<Unit> UnitResult = new Result<Unit>.Success(Unit.Value);
 }
 
 public abstract partial class Result<T>
@@ -25,4 +27,7 @@ public abstract partial class Result<T>
     public abstract bool IsSuccess { get; }
     public abstract T Value();
     public abstract Exception ErrorValue();
+    public abstract Result<T2> ToError<T2>();
+    public abstract Result<T2> Map<T2>(Func<T, T2> func);
+    public abstract Result<T2> Map<T2, T3>(Func<T, T3, T2> func, T3 dependency);
 }
