@@ -633,12 +633,12 @@
       "System.Memory": {
         "type": "CentralTransitive",
         "requested": "[4.5.5, )",
-        "resolved": "4.5.3",
-        "contentHash": "3oDzvc/zzetpTKWMShs1AADwZjQ/36HnsufHRPcOjyRAAMLDlu2iD33MBI2opxnezcVUtXyqDXXjoFMOU9c7SA=="
+        "resolved": "4.5.5",
+        "contentHash": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw=="
       },
       "System.Text.Json": {
         "type": "CentralTransitive",
-        "requested": "[8.0.0-rc.1.23419.4, )",
+        "requested": "[8.0.0-rc.2.23479.6, )",
         "resolved": "8.0.0-rc.2.23479.6",
         "contentHash": "SXMjrmm/e0Om+731AEUgm+81dC+i9mV54nKJGOq9+zTYpzujMCmSQSMS1sgQb0gmiiAfTfRC5WgD3l92cfAP+g==",
         "dependencies": {
