@@ -4,6 +4,8 @@ using Catalog.Tests.Testcontainers;
 
 using OpenSearch.Client;
 
+using Xunit.Abstractions;
+
 namespace Catalog.Tests.Fixtures;
 
 public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
@@ -11,7 +13,6 @@ public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
     public OpenSearchContainer OpenSearch { get; } = new OpenSearchBuilder().Build();
     private IOpenSearchClient OpenSearchClient { get; set; }
     public IProductsWriter ProductsWriter { get; private set; }
-    public CatalogApiWebApplicationFactory CatalogApi { get; private set; }
     public CatalogApiFixture()
     {
     }
@@ -25,8 +26,10 @@ public sealed class CatalogApiFixture: IAsyncLifetime, IDisposable
     public async Task DisposeAsync()
     {
         await this.OpenSearch.DisposeAsync();
-        await CatalogApi.DisposeAsync();
     }
+
+    public CatalogApiWebApplicationFactory CatalogApi(ITestOutputHelper helper) =>
+        new CatalogApiWebApplicationFactory(OpenSearch.GetConfiguration(), helper);
 
     public void Dispose()
     {

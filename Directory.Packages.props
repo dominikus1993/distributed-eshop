@@ -23,6 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="MemoryPack" Version="1.9.16" />
+    <PackageVersion Include="Meziantou.Extensions.Logging.Xunit" Version="1.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0-rc.2.23479.6" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0-rc.2.23479.6" />
