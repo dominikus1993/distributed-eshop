@@ -39,7 +39,7 @@ public class RemoveItemFromCustomerBasketRequestHandler : IRequestHandler<Remove
             var result = await _customerBasketWriter.Remove(request.CustomerId, cancellationToken);
             if (!result.IsSuccess)
             {
-                throw new InvalidOperationException("can't update basket", result.ErrorValue());
+                throw new InvalidOperationException("can't update basket", result.ErrorValue);
             }
         }
         else

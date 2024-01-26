@@ -31,7 +31,7 @@ public sealed class ResultTests
     {
         var result = Result.Ok(data);
         
-        Assert.Equal(data, result.Value());
+        Assert.Equal(data, result.Value);
     }
     
     [Theory]
@@ -40,7 +40,7 @@ public sealed class ResultTests
     {
         var result = Result.Ok(data);
 
-        var ex = Assert.Throws<ValueIsSuccessException<string>>(() => result.ErrorValue());
+        var ex = Assert.Throws<ValueIsSuccessException<string>>(() => result.ErrorValue);
         Assert.NotNull(ex);
         Assert.Equivalent(data, ex.CurrentValue);
     }
@@ -62,7 +62,7 @@ public sealed class ResultTests
     {
         var result = Result.Failure<string>(error);
 
-        var ex = result.ErrorValue();
+        var ex = result.ErrorValue;
         Assert.Equivalent(error, ex);
     }
     
