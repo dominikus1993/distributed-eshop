@@ -22,7 +22,6 @@ public static class AspNetCoreExtensions
                 b.IncludeFormattedMessage = true;
                 b.IncludeScopes = true;
                 b.ParseStateValues = true;
-                b.AttachLogsToActivityEvent();
                 b.SetResourceBuilder(
                     service.GetResourceBuilder(builder.Environment.EnvironmentName));
             

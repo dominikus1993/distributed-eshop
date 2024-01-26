@@ -24,7 +24,7 @@ builder.Services.AddFastEndpoints();
 builder.AddBasket();
 builder.AddBasketInfrastructure();
 builder.Services.AddJWTBearerAuth(builder.Configuration["Security:Jwt:Secret"]!);
-builder.Services.AddSwaggerDoc();
+builder.Services.AddSwaggerDocument();
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
