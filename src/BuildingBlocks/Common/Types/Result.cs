@@ -17,6 +17,16 @@ public static class Result
     }
 
     public static readonly Result<Unit> UnitResult = new Success<Unit>(Unit.Value);
+
+    public static Result<B> ToError<A, B>(this Result<A> res)
+    {
+        if (res.IsSuccess)
+        {
+            throw new ValueIsSuccessException<A>(res.Value);
+        }
+        
+        return Failure<B>(res.ErrorValue);
+    }
 }
 
 public abstract class Result<T>
