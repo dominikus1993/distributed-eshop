@@ -713,6 +713,11 @@
           "Microsoft.CSharp": "4.3.0"
         }
       },
+      "NATS.Client": {
+        "type": "Transitive",
+        "resolved": "1.1.2",
+        "contentHash": "FIzyiX2dOAc6vjjObIF51gOnPfgFWkLf9gOcRggHm3xKLiIehHZz7TxYgF0eJ6EBGuubIaR8ZRD6pAMCLeHwjA=="
+      },
       "NETStandard.Library": {
         "type": "Transitive",
         "resolved": "1.6.1",
@@ -1941,6 +1946,7 @@
           "EasyNetQ.Serialization.SystemTextJson": "[7.8.0, )",
           "Microsoft.Extensions.Configuration": "[8.0.0, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
+          "NATS.Client": "[1.1.2, )",
           "OneOf": "[3.0.263, )",
           "OneOf.SourceGenerator": "[3.0.263, )",
           "System.Linq.Async": "[6.0.1, )",

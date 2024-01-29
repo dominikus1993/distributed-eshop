@@ -72,6 +72,12 @@
           "Microsoft.Extensions.Options": "8.0.0"
         }
       },
+      "NATS.Client": {
+        "type": "Direct",
+        "requested": "[1.1.2, )",
+        "resolved": "1.1.2",
+        "contentHash": "FIzyiX2dOAc6vjjObIF51gOnPfgFWkLf9gOcRggHm3xKLiIehHZz7TxYgF0eJ6EBGuubIaR8ZRD6pAMCLeHwjA=="
+      },
       "OneOf": {
         "type": "Direct",
         "requested": "[3.0.263, )",
