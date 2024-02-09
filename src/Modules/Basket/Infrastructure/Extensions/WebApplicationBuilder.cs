@@ -4,7 +4,7 @@ using Basket.Infrastructure.Redis;
 using Basket.Infrastructure.Repositories;
 using Basket.Infrastructure.Serialization;
 
-using Messaging.Extensions;
+using Messaging.RabbitMq.Extensions;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;

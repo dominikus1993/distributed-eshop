@@ -2,8 +2,8 @@ using AutoFixture.Xunit2;
 
 using EasyNetQ;
 
-using Messaging.Extensions;
 using Messaging.RabbitMq.Configuration;
+using Messaging.RabbitMq.Extensions;
 using Messaging.RabbitMq.Publisher;
 using Messaging.Tests.Extensions;
 using Messaging.Tests.Fixtures;

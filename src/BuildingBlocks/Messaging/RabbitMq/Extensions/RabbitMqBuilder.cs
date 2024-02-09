@@ -1,21 +1,19 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 
 using EasyNetQ;
 using EasyNetQ.ConnectionString;
-using EasyNetQ.DI;
 
 using Messaging.Abstraction;
 using Messaging.Configuration;
 using Messaging.RabbitMq.Configuration;
 using Messaging.RabbitMq.Publisher;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using IMessage = Messaging.Abstraction.IMessage;
 
-namespace Messaging.Extensions;
+namespace Messaging.RabbitMq.Extensions;
 
 public sealed class RabbitMqBuilder
 {

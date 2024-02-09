@@ -4,9 +4,9 @@ using EasyNetQ;
 using EasyNetQ.Serialization.SystemTextJson;
 using EasyNetQ.Topology;
 
-using Messaging.Extensions;
 using Messaging.RabbitMq.Configuration;
 using Messaging.RabbitMq.Consumer;
+using Messaging.RabbitMq.Extensions;
 using Messaging.RabbitMq.Publisher;
 using Messaging.Tests.Extensions;
 using Messaging.Tests.Fixtures;

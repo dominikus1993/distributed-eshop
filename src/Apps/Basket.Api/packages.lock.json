@@ -481,10 +481,56 @@
           "Microsoft.CSharp": "4.3.0"
         }
       },
-      "NATS.Client": {
+      "NATS.Client.Core": {
         "type": "Transitive",
-        "resolved": "1.1.2",
-        "contentHash": "FIzyiX2dOAc6vjjObIF51gOnPfgFWkLf9gOcRggHm3xKLiIehHZz7TxYgF0eJ6EBGuubIaR8ZRD6pAMCLeHwjA=="
+        "resolved": "2.0.3",
+        "contentHash": "J3r5sxqLB+nIlc42yY4Vzh10lJrFVK9sTnrXVh7YhWWaPD2zpQmXkDeRe5DV0+1RXD40c/JXsCykB219mXsjUg==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
+          "Microsoft.Extensions.Primitives": "6.0.0",
+          "System.IO.Hashing": "6.0.1"
+        }
+      },
+      "NATS.Client.Hosting": {
+        "type": "Transitive",
+        "resolved": "2.0.3",
+        "contentHash": "DvVDBUSTAMbprxCc0od+SUqv9ianhJlZWAqR7/LWImtZCmWl1VH26pa2O5wk9DmfL8X0B6xX0fqkFBfZChNrig==",
+        "dependencies": {
+          "Microsoft.Extensions.Hosting.Abstractions": "6.0.0",
+          "NATS.Client.Core": "2.0.3"
+        }
+      },
+      "NATS.Client.JetStream": {
+        "type": "Transitive",
+        "resolved": "2.0.3",
+        "contentHash": "7AUTlM8XChQcf5/BBih4ksKcOH0Sc3Ktn9V3jWmSFammaRRpyNTFMZewg6eY8M/aB51vDzXR50EvDB5+p/RIqg==",
+        "dependencies": {
+          "NATS.Client.Core": "2.0.3"
+        }
+      },
+      "NATS.Client.KeyValueStore": {
+        "type": "Transitive",
+        "resolved": "2.0.3",
+        "contentHash": "OC8/5zmxOR1yYmRyUbGvyG9BUhvm4lTh82JYPvDAWUcc+g1NSz3OxL8kbPRM/N8LHd8oYPTDSLkSvCJeshbd4g==",
+        "dependencies": {
+          "NATS.Client.JetStream": "2.0.3"
+        }
+      },
+      "NATS.Client.ObjectStore": {
+        "type": "Transitive",
+        "resolved": "2.0.3",
+        "contentHash": "bwARBO4uPBmEQkYicmpBHxfHn0zi0WuW/fEtHOkTB9j1qzISEH55m7xUQa6e4TSlTpSUKPOrSJVmI4T6bTpu2g==",
+        "dependencies": {
+          "NATS.Client.JetStream": "2.0.3"
+        }
+      },
+      "NATS.Client.Services": {
+        "type": "Transitive",
+        "resolved": "2.0.3",
+        "contentHash": "4yHu4gCHXP9Keet3SUeQSQK/ZvVkjTdm0dSfdyl+bduTUalhl4r8N2/6wDkCI9DZ/OnM4LG7olaBfTXnoMsFwA==",
+        "dependencies": {
+          "NATS.Client.Core": "2.0.3"
+        }
       },
       "NJsonSchema": {
         "type": "Transitive",
@@ -699,6 +745,11 @@
           "System.Text.Encoding": "4.3.0",
           "System.Threading.Tasks": "4.3.0"
         }
+      },
+      "System.IO.Hashing": {
+        "type": "Transitive",
+        "resolved": "6.0.1",
+        "contentHash": "pVe5VujLdulan4S33ODi1MBp+/sGFV9kSTLUxpJZhG32Z3WmTrn2uf1fq1wG9maxYyF/DZzJuxPQrUJErnUyDA=="
       },
       "System.IO.Pipelines": {
         "type": "Transitive",
@@ -955,7 +1006,7 @@
           "EasyNetQ.Serialization.SystemTextJson": "[7.8.0, )",
           "Microsoft.Extensions.Configuration": "[8.0.0, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
-          "NATS.Client": "[1.1.2, )",
+          "NATS.Net": "[2.0.3, )",
           "OneOf": "[3.0.263, )",
           "OneOf.SourceGenerator": "[3.0.263, )",
           "System.Linq.Async": "[6.0.1, )",
@@ -1081,6 +1132,20 @@
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
           "Microsoft.Extensions.Options": "8.0.0"
+        }
+      },
+      "NATS.Net": {
+        "type": "CentralTransitive",
+        "requested": "[2.0.3, )",
+        "resolved": "2.0.3",
+        "contentHash": "dDsu6OArWAvA1OPWeH4qLgidEcIkzr1WgQRyrxDEa3heWlYqtLIw21XDa2+hQsUOIGu/IEo44E1T8OFJVi2hlA==",
+        "dependencies": {
+          "NATS.Client.Core": "2.0.3",
+          "NATS.Client.Hosting": "2.0.3",
+          "NATS.Client.JetStream": "2.0.3",
+          "NATS.Client.KeyValueStore": "2.0.3",
+          "NATS.Client.ObjectStore": "2.0.3",
+          "NATS.Client.Services": "2.0.3"
         }
       },
       "Newtonsoft.Json": {

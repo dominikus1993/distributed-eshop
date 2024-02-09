@@ -3,7 +3,7 @@ using EasyNetQ.Topology;
 
 using Messaging.RabbitMq.Configuration;
 
-namespace Messaging.Extensions;
+namespace Messaging.RabbitMq.Extensions;
 
 internal static class RabbitMqClientExtensions
 {
