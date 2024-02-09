@@ -14,7 +14,6 @@ using Xunit;
 
 namespace Catalog.Tests.Infrastructure.Repositories;
 
-[UsesVerify]
 public sealed class OpenSearchProductFilterTests(OpenSearchFixture fixture) : IAsyncLifetime, IClassFixture<OpenSearchFixture>
 {
     private readonly IProductFilter _productFilter = fixture.ProductFilter;
