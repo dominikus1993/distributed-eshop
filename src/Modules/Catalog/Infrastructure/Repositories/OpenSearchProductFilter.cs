@@ -85,7 +85,7 @@ public sealed class OpenSearchProductFilter : IProductFilter
 
         var res = result.Documents.Select(x => x.ToProduct()).ToArray();
 
-        return new PagedResult<Product>(res, (uint)res.Length, (uint)result.Total);
+        return new PagedResult<Product>(res, QueryResultMetadata.Empty, (uint)res.Length, (uint)result.Total);
     }
 
     private static ISort[] GetSortOrder(SortOrder sortOrder)

@@ -31,11 +31,23 @@ public sealed class Filter
     public SortOrder SortOrder { get; init; } = SortOrder.Default;
 }
 
-public sealed record PagedResult<T>(IEnumerable<T> Data, uint Count, uint Total)
+public sealed record TagFilter(string Tag, long Count);
+
+public sealed record TagsFilters(IReadOnlyCollection<TagFilter> Filters)
+{
+    internal static readonly TagsFilters Empty = new TagsFilters(Array.Empty<TagFilter>());
+}
+
+public sealed class QueryResultMetadata(TagsFilters TagFilters)
+{
+    internal static readonly QueryResultMetadata Empty = new(TagsFilters.Empty);
+}
+
+public sealed record PagedResult<T>(IEnumerable<T> Data, QueryResultMetadata Metadata, uint Count, uint Total)
 {
     public bool IsEmpty => Count == 0;
 
-    public static PagedResult<T> Empty = new(Enumerable.Empty<T>(), 0, 0);
+    public static readonly PagedResult<T> Empty = new(Enumerable.Empty<T>(), QueryResultMetadata.Empty, 0, 0);
 }
 
 public interface IProductFilter

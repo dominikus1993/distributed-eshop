@@ -33,6 +33,6 @@ public sealed class SearchProductsRequestHandler : IRequestHandler<SearchProduct
         }
 
         var products = res.Data.Select(p => new ProductDto(p));
-        return new PagedResult<ProductDto>(products, res.Count, res.Total);
+        return new PagedResult<ProductDto>(products, res.Metadata, res.Count, res.Total);
     }
 }
