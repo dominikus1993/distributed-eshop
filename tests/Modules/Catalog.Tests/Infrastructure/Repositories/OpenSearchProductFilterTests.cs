@@ -33,6 +33,12 @@ public sealed class OpenSearchProductFilterTests(OpenSearchFixture fixture) : IA
 
         subject.ShouldNotBeNull();
         subject.IsEmpty.ShouldBeFalse();
+        subject.Metadata.ShouldNotBeNull();
+        subject.Metadata.TagFiltersMetaData.Filters.ShouldNotBeEmpty();
+        subject.Metadata.Prices.ShouldNotBeNull();
+        subject.Metadata.Prices.MaxPrice.ShouldBeGreaterThan(0);
+        subject.Metadata.Prices.MinPrice.ShouldBeGreaterThan(0);
+        subject.Metadata.Prices.MaxPrice.ShouldBeGreaterThan(subject.Metadata.Prices.MinPrice);
         subject.Data.Count().ShouldBe(products.Length);
         subject.Count.ShouldBe((uint)products.Length);
         subject.Total.ShouldBe((uint)products.Length);

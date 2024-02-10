@@ -21,7 +21,6 @@ internal sealed class OpenSearchProduct
     
     public IReadOnlyList<string>? Tags { get; set; }
     
-    
     public DateTimeOffset DateCreated { get; set; } = DateTimeOffset.UtcNow;
 
     public OpenSearchProduct()

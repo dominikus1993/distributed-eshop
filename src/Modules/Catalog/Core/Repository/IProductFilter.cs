@@ -31,16 +31,20 @@ public sealed class Filter
     public SortOrder SortOrder { get; init; } = SortOrder.Default;
 }
 
-public sealed record TagFilter(string Tag, long Count);
-
-public sealed record TagsFilters(IReadOnlyCollection<TagFilter> Filters)
+public sealed record PricesMetaData(decimal MinPrice, decimal MaxPrice)
 {
-    internal static readonly TagsFilters Empty = new TagsFilters(Array.Empty<TagFilter>());
+    internal static readonly PricesMetaData Empty = new PricesMetaData(0, 0);
+}
+public sealed record TagFilterMetaData(string Tag, long Count);
+
+public sealed record TagsFiltersMetaData(IReadOnlyCollection<TagFilterMetaData> Filters)
+{
+    internal static readonly TagsFiltersMetaData Empty = new TagsFiltersMetaData(Array.Empty<TagFilterMetaData>());
 }
 
-public sealed class QueryResultMetadata(TagsFilters TagFilters)
+public sealed record QueryResultMetadata(TagsFiltersMetaData TagFiltersMetaData, PricesMetaData Prices)
 {
-    internal static readonly QueryResultMetadata Empty = new(TagsFilters.Empty);
+    internal static readonly QueryResultMetadata Empty = new(TagsFiltersMetaData.Empty, PricesMetaData.Empty);
 }
 
 public sealed record PagedResult<T>(IEnumerable<T> Data, QueryResultMetadata Metadata, uint Count, uint Total)

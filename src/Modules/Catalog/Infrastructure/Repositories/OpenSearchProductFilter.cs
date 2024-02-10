@@ -76,6 +76,13 @@ public sealed class OpenSearchProductFilter : IProductFilter
             searchRequest.Query &= priceQ;
         }
 
+        searchRequest.Aggregations = new AggregationDictionary()
+        {
+            { "tags", new TermsAggregation("tags") { Field = Field(OpenSearchProductIndex.TagsKeyword), Size = 1000, } },
+            { "max_price", new MaxAggregation("max_price", Field<OpenSearchProduct>(x => x.SalePrice)) { } },
+            { "min_price", new MinAggregation("min_price", Field<OpenSearchProduct>(x => x.SalePrice)) { } },
+        };
+
         var result = await _openSearchClient.SearchAsync<OpenSearchProduct>(searchRequest, cancellationToken);
 
         if (!result.IsValid || result.Total == 0)
@@ -84,8 +91,22 @@ public sealed class OpenSearchProductFilter : IProductFilter
         }
 
         var res = result.Documents.Select(x => x.ToProduct()).ToArray();
+        var meta = GetQueryResultMetadata(result);
+        return new PagedResult<Product>(res, meta, (uint)res.Length, (uint)result.Total);
+    }
+    
+    private static QueryResultMetadata GetQueryResultMetadata(ISearchResponse<OpenSearchProduct> result)
+    {
+        var tags = result.Aggregations.Terms("tags").Buckets.Select(x => x.DocCount.HasValue ? new TagFilterMetaData(x.Key, x.DocCount.Value) : new TagFilterMetaData(x.Key, 0));
 
-        return new PagedResult<Product>(res, QueryResultMetadata.Empty, (uint)res.Length, (uint)result.Total);
+        var prices = PricesMetaData.Empty;
+        var minPrice = result.Aggregations.Min("min_price");
+        var maxPrice = result.Aggregations.Max("max_price");
+        if (minPrice.Value.HasValue && maxPrice.Value.HasValue)
+        {
+            prices = new PricesMetaData((decimal)minPrice.Value.Value, (decimal)maxPrice.Value.Value);
+        }
+        return new QueryResultMetadata(new TagsFiltersMetaData(tags.ToArray()), prices);
     }
 
     private static ISort[] GetSortOrder(SortOrder sortOrder)
