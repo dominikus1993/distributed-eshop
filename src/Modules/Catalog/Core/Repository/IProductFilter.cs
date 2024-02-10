@@ -12,6 +12,7 @@ public enum SortOrder
 public sealed class Filter
 {
     private readonly int _page = 1;
+    private readonly int _pageSize = 12;
     public int Page
     {
         get => _page;
@@ -21,7 +22,15 @@ public sealed class Filter
         }
     }
 
-    public int PageSize { get; init; } = 12;
+    public int PageSize
+    {
+        get => _pageSize;
+        init
+        {
+            _pageSize = value <= 0 ? 12 : value;
+        }
+    }
+
     public string? Query { get; init; }
     public decimal? PriceFrom { get; init; }
     public decimal? PriceTo { get; init; }

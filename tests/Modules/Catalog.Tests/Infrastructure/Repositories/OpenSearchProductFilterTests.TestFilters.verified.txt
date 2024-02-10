@@ -1,0 +1,106 @@
+﻿{
+  Data: [
+    {
+      Id: {
+        Value: Guid_1
+      },
+      ProductName: {
+        Name: nivea
+      },
+      ProductDescription: {
+        Description: nivea
+      },
+      Price: {
+        CurrentPrice: {
+          Value: 10.0
+        },
+        PromotionalPrice: {
+          Value: 1.0
+        }
+      },
+      AvailableQuantity: {
+        Value: 10
+      },
+      Tags: [
+        {
+          Name: body
+        }
+      ]
+    },
+    {
+      Id: {
+        Value: Guid_2
+      },
+      ProductName: {
+        Name: Nivea
+      },
+      ProductDescription: {
+        Description: xDDD
+      },
+      Price: {
+        CurrentPrice: {
+          Value: 10.0
+        },
+        PromotionalPrice: {
+          Value: 5.0
+        }
+      },
+      AvailableQuantity: {
+        Value: 10
+      },
+      Tags: [
+        {
+          Name: hair
+        }
+      ]
+    },
+    {
+      Id: {
+        Value: Guid_3
+      },
+      ProductName: {
+        Name: Nivea Men
+      },
+      ProductDescription: {
+        Description: xDDD
+      },
+      Price: {
+        CurrentPrice: {
+          Value: 10.0
+        },
+        PromotionalPrice: {
+          Value: 9.0
+        }
+      },
+      AvailableQuantity: {
+        Value: 10
+      },
+      Tags: [
+        {
+          Name: hair
+        }
+      ]
+    }
+  ],
+  Metadata: {
+    TagFiltersMetaData: {
+      Filters: [
+        {
+          Tag: hair,
+          Count: 2
+        },
+        {
+          Tag: body,
+          Count: 1
+        }
+      ]
+    },
+    Prices: {
+      MinPrice: 1.0,
+      MaxPrice: 9.0
+    }
+  },
+  Count: 3,
+  Total: 3,
+  IsEmpty: false
+}

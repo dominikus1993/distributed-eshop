@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 
 namespace Catalog.Core.Model;
 
@@ -6,10 +8,20 @@ public readonly record struct ProductName(string Name);
 
 public sealed record Tag(string Name);
 
+[CollectionBuilder(typeof(Tags), "Create")]
 public sealed record Tags(IReadOnlyCollection<Tag> Value) : IEnumerable<Tag>
 {
     public static readonly Tags Empty = new Tags(Array.Empty<Tag>());
     public bool HasElements() => Value is { Count: > 0 };
+    
+    public static Tags Create(ReadOnlySpan<Tag> value)
+    {
+        if (value is {Length: 0})
+        {
+            return Tags.Empty;
+        }
+        return new Tags(value.ToArray());
+    }
     public IEnumerator<Tag> GetEnumerator()
     {
         return Value.GetEnumerator();

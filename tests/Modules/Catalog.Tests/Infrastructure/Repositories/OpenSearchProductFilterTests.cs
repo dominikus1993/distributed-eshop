@@ -196,6 +196,29 @@ public sealed class OpenSearchProductFilterTests(OpenSearchFixture fixture) : IA
          await Verify(subject);
     }
 
+     [Fact]
+     public async Task TestFilters()
+     {
+         // Arrange 
+         var product1 = new Product(ProductId.New(), new ProductName("nivea"), new ProductDescription("nivea"),
+             new ProductPrice(new Price(10m), new Price(1m)), new AvailableQuantity(10), [new Tag("body")]);
+         var product2 = new Product(ProductId.New(), new ProductName("Nivea"), new ProductDescription("xDDD"),
+             new ProductPrice(new Price(10m), new Price(5m)), new AvailableQuantity(10), [new Tag("hair")]);
+         var product3 = new Product(ProductId.New(), new ProductName("Nivea Men"), new ProductDescription("xDDD"),
+             new ProductPrice(new Price(10m), new Price(9m)), new AvailableQuantity(10), [new Tag("hair")]);
+         await _productsWriter.AddProducts([ product1, product2, product3 ]);
+         // Act
+
+         var subject = await _productFilter.FilterProducts(new Filter() { Query = "nivea", PageSize = 3, Page = 1 });
+         
+         // Assert
+         subject.ShouldNotBeNull();
+         subject.Data.ShouldNotBeEmpty();
+         subject.Count.ShouldBe(3u);
+         
+         await Verify(subject);
+     }
+     
     public Task InitializeAsync()
     {
         return Task.CompletedTask;
