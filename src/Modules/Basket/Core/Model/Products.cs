@@ -37,7 +37,12 @@ public sealed class Products : IEnumerable<Product>
     
     public Products AddItems(IEnumerable<Product> items)
     {
-        return items.Aggregate(this, [MethodImpl(MethodImplOptions.AggressiveInlining)]static (basketItems, item) => basketItems.AddItem(item));
+        var aggreated = this;
+        foreach (var item in items)
+        {
+            aggreated.AddItem(item);
+        }
+        return aggreated;
     }
     
     public static Products Create(ReadOnlySpan<Product> value)
