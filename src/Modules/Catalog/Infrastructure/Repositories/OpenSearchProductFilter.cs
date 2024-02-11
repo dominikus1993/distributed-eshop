@@ -97,6 +97,11 @@ public sealed class OpenSearchProductFilter : IProductFilter
     
     private static QueryResultMetadata GetQueryResultMetadata(ISearchResponse<OpenSearchProduct> result)
     {
+        if (result.Aggregations is {Count: 0})
+        {
+            return QueryResultMetadata.Empty;
+        }
+        
         var tags = result.Aggregations.Terms("tags").Buckets.Select(x => x.DocCount.HasValue ? new TagFilterMetaData(x.Key, x.DocCount.Value) : new TagFilterMetaData(x.Key, 0));
 
         var prices = PricesMetaData.Empty;
@@ -113,23 +118,17 @@ public sealed class OpenSearchProductFilter : IProductFilter
     {
         return sortOrder switch
         {
-            SortOrder.Default => Array.Empty<ISort>(),
-            SortOrder.PriceAsc => new ISort[]
-            {
-                new FieldSort()
+            SortOrder.Default => [],
+            SortOrder.PriceAsc => [new FieldSort()
                 {
                     Field = Field<OpenSearchProduct>(static p => p.SalePrice),
                     Order = OpenSearch.Client.SortOrder.Ascending
-                }
-            },
-            SortOrder.PriceDesc => new ISort[]
-            {
-                new FieldSort()
+                }],
+            SortOrder.PriceDesc => [new FieldSort()
                 {
                     Field = Field<OpenSearchProduct>(static p => p.SalePrice),
                     Order = OpenSearch.Client.SortOrder.Descending
-                }
-            },
+                }],
             _ => throw new ArgumentOutOfRangeException(nameof(sortOrder), sortOrder, null)
         };
     }
