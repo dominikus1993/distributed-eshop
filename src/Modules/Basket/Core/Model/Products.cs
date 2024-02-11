@@ -16,7 +16,7 @@ public sealed class Products : IEnumerable<Product>
         _items = items;
     }
     
-    public static Products Empty => new([]);
+    public static readonly Products Empty = new([]);
     public Products AddItem(Product item)
     {
         var items = new List<Product>(_items);
@@ -32,7 +32,7 @@ public sealed class Products : IEnumerable<Product>
             items[index] = newItem;   
         }
 
-        return [..items];
+        return new Products(items);
     }
     
     public Products AddItems(IEnumerable<Product> items)
