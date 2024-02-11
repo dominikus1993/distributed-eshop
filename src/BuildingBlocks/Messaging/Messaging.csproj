@@ -15,7 +15,6 @@
       <PackageReference Include="EasyNetQ.Serialization.SystemTextJson" />
       <PackageReference Include="Microsoft.Extensions.Configuration" />
       <PackageReference Include="Microsoft.Extensions.Hosting" />
-      <PackageReference Include="NATS.Net" />
       <PackageReference Include="OneOf" />
       <PackageReference Include="OneOf.SourceGenerator" />
       <PackageReference Include="System.Linq.Async" />

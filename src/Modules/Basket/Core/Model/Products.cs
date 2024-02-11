@@ -5,6 +5,7 @@ using Basket.Infrastructure.Extensions;
 
 namespace Basket.Core.Model;
 
+[CollectionBuilder(typeof(Products), "Create")]
 public sealed class Products : IEnumerable<Product>
 {
     private readonly IReadOnlyList<Product> _items;
@@ -15,7 +16,7 @@ public sealed class Products : IEnumerable<Product>
         _items = items;
     }
     
-    public static Products Empty => new(Array.Empty<Product>());
+    public static Products Empty => new([]);
     public Products AddItem(Product item)
     {
         var items = new List<Product>(_items);
@@ -31,12 +32,24 @@ public sealed class Products : IEnumerable<Product>
             items[index] = newItem;   
         }
 
-        return new Products(items);
+        return [..items];
     }
     
     public Products AddItems(IEnumerable<Product> items)
     {
         return items.Aggregate(this, [MethodImpl(MethodImplOptions.AggressiveInlining)]static (basketItems, item) => basketItems.AddItem(item));
+    }
+    
+    public static Products Create(ReadOnlySpan<Product> value)
+    {
+        if (value.IsEmpty)
+        {
+            return Empty;
+        }
+
+        Product[] products = new Product[value.Length];
+        value.CopyTo(products.AsSpan());
+        return new Products(products);
     }
 
     public IReadOnlyList<T> MapItems<T>(Func<Product, T> map)
