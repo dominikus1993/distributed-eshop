@@ -13,18 +13,19 @@ namespace Basket.Infrastructure.Repositories;
 internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICustomerBasketWriter
 {
     private readonly IConnectionMultiplexer _connectionMultiplexer;
+    private readonly IDatabase _database;
     private readonly IRedisObjectDeserializer _redisObjectDeserializer;
     public RedisCustomerBasketRepository(IConnectionMultiplexer connectionMultiplexer, IRedisObjectDeserializer redisObjectDeserializer)
     {
         _connectionMultiplexer = connectionMultiplexer;
         _redisObjectDeserializer = redisObjectDeserializer;
+        _database = connectionMultiplexer.GetDatabase();
     }
 
     public async Task<CustomerBasket?> Find(CustomerId customerId, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var db = _connectionMultiplexer.GetDatabase();
-        var result = await db.StringGetAsync(customerId.ToRedisKey());
+        var result = await _database.StringGetAsync(customerId.ToRedisKey());
         if (!_redisObjectDeserializer.Deserialize(result, out var model))
         {
             return null;
@@ -41,10 +42,8 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
         var redisBasket = new RedisCustomerBasket(basket);
 
         var json = _redisObjectDeserializer.Serialize(redisBasket);
-
-        var db = _connectionMultiplexer.GetDatabase();
         
-        await db.StringSetAsync(basket.CustomerId.ToRedisKey(), json);
+        await _database.StringSetAsync(basket.CustomerId.ToRedisKey(), json);
 
         return Result.Ok(UpdateBasketSuccess.Instance);
     }
@@ -53,8 +52,7 @@ internal sealed class RedisCustomerBasketRepository : ICustomerBasketReader, ICu
     {
         cancellationToken.ThrowIfCancellationRequested();
         var key = customerId.ToRedisKey();
-        var db = _connectionMultiplexer.GetDatabase();
-        await db.KeyDeleteAsync(key);
+        await _database.KeyDeleteAsync(key);
 
         return Result.Ok(RemoveBasketSuccess.Instance);
     }
