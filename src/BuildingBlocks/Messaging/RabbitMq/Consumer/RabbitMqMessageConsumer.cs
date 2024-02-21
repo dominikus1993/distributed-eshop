@@ -92,6 +92,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                 if (!result.IsSuccess)
                 {
                     logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue);
+                    activity?.RecordException(result.ErrorValue);
                     return _subscriptionConfiguration.AckStrategy;
                 }
                 

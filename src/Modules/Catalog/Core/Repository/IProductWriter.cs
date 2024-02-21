@@ -10,8 +10,10 @@ namespace Catalog.Core.Repository;
 public sealed partial class AddProductResult : OneOfBase<Unit, Exception>
 {
     public bool IsSuccess => IsT0;
+
+    private static readonly AddProductResult OkValue = new AddProductResult(Unit.Value);
     
-    public static AddProductResult Ok() => new AddProductResult(Unit.Value);
+    public static AddProductResult Ok() => OkValue;
     public static AddProductResult Error(Exception exception) => new AddProductResult(exception);
 }
 
