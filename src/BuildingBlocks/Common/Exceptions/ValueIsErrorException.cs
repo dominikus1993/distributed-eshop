@@ -2,9 +2,9 @@
 
 public sealed class ValueIsErrorException : Exception
 {
-    private const string Message = "Value is Error";
+    private const string ErrorMessage = "Value is Error";
     
-    public ValueIsErrorException(Exception innerException) : base(Message, innerException)
+    public ValueIsErrorException(Exception innerException) : base(ErrorMessage, innerException)
     {
     }
 }
