@@ -18,6 +18,7 @@ public abstract partial class CustomerBasket
     public static CustomerBasket Empty(CustomerId id) => EmptyBasket.Zero(id);
 
     public static CustomerBasket Active(CustomerId id, Products items) => new ActiveBasket(id, items);
+    public static CustomerBasket Active(CustomerId id, IEnumerable<Product> items) => new ActiveBasket(id, Products.Create(items));
 
     public abstract CustomerBasket AddItem(Product item);
     

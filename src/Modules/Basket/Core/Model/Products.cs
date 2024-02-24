@@ -51,11 +51,20 @@ public sealed class Products : IEnumerable<Product>
         {
             return Empty;
         }
-
-        Product[] products = new Product[value.Length];
-        value.CopyTo(products.AsSpan());
+        return new Products(value.ToArray());
+    }
+    
+    public static Products Create(IEnumerable<Product> value)
+    {
+        var products = value.ToArray();
+        if (products is {Length: 0 })
+        {
+            return Empty;
+        }
+        
         return new Products(products);
     }
+
 
     public IReadOnlyList<T> MapItems<T>(Func<Product, T> map)
     {
