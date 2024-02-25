@@ -12,7 +12,7 @@ public class RedisExtensionsTests
     [Theory]
     [InlineData("some data", true, "some data")]
     [InlineData(null, false, null)]
-    public void TestTryGetValue(string data, bool expectedResult, string expectedValue)
+    public void TestTryGetValue(string? data, bool expectedResult, string? expectedValue)
     {
         var redisValue = new RedisValue(data);
         var subject = redisValue.TryGetValue(out var result);

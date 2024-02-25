@@ -16,7 +16,4 @@ internal interface IRedisObjectDeserializer
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(RedisCustomerBasket))]
-internal sealed partial class RedisJsonContext : JsonSerializerContext
-{
-
-}
+internal sealed partial class RedisJsonContext : JsonSerializerContext;
