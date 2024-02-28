@@ -18,6 +18,75 @@ public sealed class ResultTests
     
     [Theory]
     [AutoData]
+    public void TestCaseWhenResultIsOk(string data)
+    {
+        var result = Result.Ok(data);
+        
+        var resultCase = result.Case;
+
+        Assert.NotNull(resultCase);
+        Assert.IsType<string>(resultCase);
+        Assert.Equal(data, resultCase);
+    }
+    
+    [Theory]
+    [AutoData]
+    public void TestCaseWhenResultIsError(Exception exception)
+    {
+        var result = Result.Failure<string>(exception);
+        
+        var resultCase = result.Case;
+
+        Assert.NotNull(resultCase);
+        Assert.IsType<Exception>(resultCase);
+    }
+    
+    [Theory]
+    [AutoData]
+    public void TestCaseSwitchWhenResultIsOk(string data)
+    {
+        var result = Result.Ok(data);
+        
+        var resultCase = result.Case;
+
+        switch (resultCase)
+        {
+            case string str:
+                Assert.Equal(data, str);
+                break;
+            case Exception _:
+                Assert.Fail();
+                break;
+            default:
+                Assert.Fail();
+                break;
+        }
+    }
+    
+    [Theory]
+    [AutoData]
+    public void TestCaseSwitchWhenResultIsError(Exception exception)
+    {
+        var result = Result.Failure<string>(exception);
+        
+        var resultCase = result.Case;
+
+        switch (resultCase)
+        {
+            case string _:
+                Assert.Fail();
+                break;
+            case Exception ex:
+                Assert.Equivalent(ex, exception);
+                break;
+            default:
+                Assert.Fail();
+                break;
+        }
+    }
+    
+    [Theory]
+    [AutoData]
     public void TestResultIsSuccessIfIsResultIsFailure(Exception exception)
     {
         var result = Result.Failure<string>(exception);
@@ -108,6 +177,49 @@ public sealed class ResultTests
         var subject = result.Map(_ => newValue);
         Assert.NotNull(subject);
         Assert.Equal(newValue, subject.Value);
+    }
+    
+    
+    [Theory]
+    [AutoData]
+    public void TestResultMatchIfResultIsError(Exception error)
+    {
+        var result = Result.Failure<int>(error);
+
+        var ex = result.Match(_ => throw new InvalidOperationException("invalid test"), exception => exception);
+        Assert.Equivalent(error, ex);
+    }
+    
+    [Theory]
+    [AutoData]
+    public void TestResultMatchIfResultIsSuccess(int value, int newValue)
+    {
+        var result = Result.Ok(value);
+
+        var subject = result.Match(_ => newValue, exception => throw exception);
+        
+        Assert.Equal(newValue, subject);
+    }
+    
+    [Theory]
+    [AutoData]
+    public async Task TestResultMatchTaskIfResultIsError(Exception error)
+    {
+        var result = Result.Failure<int>(error);
+
+        var ex = await result.MatchTask((_, _) => throw new InvalidOperationException("invalid test"), (exception, ct) => Task.FromResult(exception));
+        Assert.Equivalent(error, ex);
+    }
+    
+    [Theory]
+    [AutoData]
+    public async Task TestResultMatchTaskIfResultIsSuccess(int value, int newValue)
+    {
+        var result = Result.Ok(value);
+
+        var subject = await result.MatchTask((_, _) => Task.FromResult(newValue), (exception, _) => throw exception);
+        
+        Assert.Equal(newValue, subject);
     }
     
     [Theory]

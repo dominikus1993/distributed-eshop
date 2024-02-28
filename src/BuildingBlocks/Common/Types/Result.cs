@@ -42,6 +42,8 @@ public abstract class Result<T>
     public abstract Result<TRes> Map<TRes>(Func<T, TRes> map);
     public abstract TRes Match<TRes>(Func<T, TRes> ok, Func<Exception, TRes> error);
     public abstract void Match(Action<T> ok, Action<Exception> error);
+    public abstract Task<TRes> MatchTask<TRes>(Func<T, CancellationToken, Task<TRes>> ok, Func<Exception, CancellationToken, Task<TRes>> func, CancellationToken token = default);
+    public abstract Task MatchTask(Func<T, CancellationToken, Task> ok, Func<Exception, CancellationToken, Task> error, CancellationToken cancellationToken = default);
     public abstract object? Case { get; }
 }
 
@@ -74,6 +76,16 @@ public sealed class Success<T>: Result<T>
     public override void Match(Action<T> ok, Action<Exception> error)
     {
         ok(Ok);
+    }
+
+    public override Task<TRes> MatchTask<TRes>(Func<T, CancellationToken, Task<TRes>> ok, Func<Exception, CancellationToken, Task<TRes>> error, CancellationToken token = default)
+    {
+        return ok(Ok, token);
+    }
+
+    public override Task MatchTask(Func<T, CancellationToken, Task> ok, Func<Exception, CancellationToken, Task> error, CancellationToken cancellationToken = default)
+    {
+        return ok(Ok, cancellationToken);
     }
 
     public override object? Case => Ok;
@@ -112,6 +124,16 @@ internal sealed class Failure<T>: Result<T>
     public override void Match(Action<T> ok, Action<Exception> error)
     {
         error(ErrorValue);
+    }
+
+    public override Task<TRes> MatchTask<TRes>(Func<T, CancellationToken, Task<TRes>> ok, Func<Exception, CancellationToken, Task<TRes>> error, CancellationToken token = default)
+    {
+        return error(Error, token);
+    }
+
+    public override Task MatchTask(Func<T, CancellationToken, Task> ok, Func<Exception, CancellationToken, Task> error, CancellationToken cancellationToken = default)
+    {
+        return error(Error, cancellationToken);
     }
 
     public override object? Case => Error;
