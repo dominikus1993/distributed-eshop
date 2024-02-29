@@ -17,12 +17,32 @@ public static class StreamExtensions
         }
         
         var buffer = new byte[count];
-        var readBytes = stream.ReadAtLeast(buffer, count, false);
 
-        if (readBytes < count)
+        ReadBytes(stream, ref buffer);
+        
+        return buffer;
+    }
+    
+    
+    public static void ReadBytes(this Stream stream, ref byte[] buffer)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        if (stream.Length == 0)
+        {
+            buffer = [];
+            return;
+        }
+
+        if (buffer.Length == 0)
+        {
+            return;
+        }
+        
+        var readBytes = stream.ReadAtLeast(buffer, buffer.Length, false);
+
+        if (readBytes < buffer.Length)
         {
             Array.Resize(ref buffer, readBytes);
         }
-        return buffer;
     }
 }
