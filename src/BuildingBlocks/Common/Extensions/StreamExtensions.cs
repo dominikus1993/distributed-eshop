@@ -1,4 +1,40 @@
+using System.Buffers;
+
 namespace Common.Extensions;
+
+
+internal sealed class BytesStreamReader : IDisposable
+{
+    private readonly bool _disposeStreamAfterRead;
+    private static readonly ArrayPool<byte> ArrayPool = ArrayPool<byte>.Shared;
+    private readonly byte[] _bytes;
+    private readonly Stream _stream;
+
+    public BytesStreamReader(Stream stream, int bufferSize = 8, bool disposeStreamAfterRead = false)
+    {
+        _stream = stream;
+        _disposeStreamAfterRead = disposeStreamAfterRead;
+        _bytes = ArrayPool.Rent(bufferSize);
+    }
+    
+    public bool SequenceEqual(byte[] arr)
+    {
+        var readBytes = _stream.ReadAtLeast(_bytes, _bytes.Length, false);
+        var arrSpan = arr.AsSpan();
+        var bytesSpan = _bytes.AsSpan(0, readBytes);
+        return arrSpan.SequenceEqual(bytesSpan);
+    }
+    
+    public void Dispose()
+    {
+        if (_disposeStreamAfterRead)
+        {
+            _stream.Dispose();
+        }
+        ArrayPool.Return(_bytes);
+    }
+    
+}
 
 public static class StreamExtensions
 {
