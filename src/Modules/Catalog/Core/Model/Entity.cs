@@ -20,7 +20,13 @@ public sealed record Tags(IReadOnlyCollection<Tag> Value) : IEnumerable<Tag>
         {
             return Tags.Empty;
         }
-        return new Tags(value.ToArray());
+
+        var tags = new Tag[value.Length];
+        for (int i = 0; i < value.Length; i++)
+        {
+            tags[i] = value[i];
+        }
+        return new Tags(tags);
     }
     public IEnumerator<Tag> GetEnumerator()
     {

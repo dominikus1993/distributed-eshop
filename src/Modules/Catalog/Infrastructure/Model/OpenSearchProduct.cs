@@ -42,9 +42,9 @@ internal sealed class OpenSearchProduct
 
     public Product ToProduct()
     {
-        var tags = Tags?.Select(tag => new Tag(tag)).ToArray() ?? Array.Empty<Tag>();
+        var tags = Tags?.Select(tag => new Tag(tag)) ?? Enumerable.Empty<Tag>();
         Guid id = Guid.Parse(ProductId.ToString());
         return new Product(id, new ProductName(Name), new ProductDescription(Description),
-            new ProductPrice(Price, PromotionalPrice), new AvailableQuantity(AvailableQuantity), new Tags(tags));
+            new ProductPrice(Price, PromotionalPrice), new AvailableQuantity(AvailableQuantity), [..tags]);
     }
 }
