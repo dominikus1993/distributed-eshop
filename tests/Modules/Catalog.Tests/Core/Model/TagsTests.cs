@@ -11,6 +11,10 @@ public sealed class TagsTests
         Tags tags = [..value];
         
         Assert.Empty(tags);
+        
+        var subject = tags.HasElements();
+        
+        Assert.False(subject);
     }
     
     [Fact]
@@ -22,5 +26,8 @@ public sealed class TagsTests
         
         Assert.NotEmpty(tags);
         Assert.Single(tags, tag);
+
+        var subject = tags.HasElements();
+        Assert.True(subject);
     }
 }
