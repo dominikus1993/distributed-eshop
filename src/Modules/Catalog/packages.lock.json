@@ -66,18 +66,18 @@
       },
       "OpenSearch.Client": {
         "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "141ea1/2+n+O5FDGrHYrNF+mc/zUSvOdHWlQlAUzpI39Fu2laqBuraTpGUlsyfFpJEYepQos9Est6OetjOlXTQ==",
+        "requested": "[1.7.0, )",
+        "resolved": "1.7.0",
+        "contentHash": "iALPqhPnFKjUxGuyfGChTciSlJGNIx944NdaQnHC4mTO0gUmG11LFKeqmSvAwHCK9sJNL7NmzeMCLzylNwv8ug==",
         "dependencies": {
-          "OpenSearch.Net": "1.6.0"
+          "OpenSearch.Net": "1.7.0"
         }
       },
       "OpenSearch.Net": {
         "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "cNwI5JsUn9dj5Eg5OphcjHJXT4LiIUR2TUcmeWAJHA2oxorTZh7F7BFAE5ApEo9O8j+qVgtTlYwF1PSe3j/6Mw==",
+        "requested": "[1.7.0, )",
+        "resolved": "1.7.0",
+        "contentHash": "3NqBzDaRmu8OYrPW4BvJCbmOTIk6gi2gIY0ix+9Ck9gP2vT9zHLNHG3zjNXJFxrTwVWk36bxSDOeHfsqArGlug==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "System.Buffers": "4.5.1",

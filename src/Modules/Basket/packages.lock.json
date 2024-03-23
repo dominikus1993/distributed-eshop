@@ -24,12 +24,12 @@
       },
       "MemoryPack": {
         "type": "Direct",
-        "requested": "[1.10.0, )",
-        "resolved": "1.10.0",
-        "contentHash": "QgvbIRqAXUvp4/3WcFahjOM3Hy42Ma2OxFsXitstc5XGHDpEl6zdV8XedxbBpvl29sS++i3BzT71/8ET1SyBvg==",
+        "requested": "[1.20.5, )",
+        "resolved": "1.20.5",
+        "contentHash": "E0VfEnaxYlywQ9vwMyDRw0D08HuaTrUQ9Kc5cfZQ1A5P9kflwJsEOyUwVDvFgBsu7dY/KVbXAEf66revLArAcg==",
         "dependencies": {
-          "MemoryPack.Core": "1.10.0",
-          "MemoryPack.Generator": "1.10.0"
+          "MemoryPack.Core": "1.20.5",
+          "MemoryPack.Generator": "1.20.5"
         }
       },
       "Microsoft.Extensions.Hosting": {
@@ -76,9 +76,9 @@
       },
       "StackExchange.Redis": {
         "type": "Direct",
-        "requested": "[2.7.20, )",
-        "resolved": "2.7.20",
-        "contentHash": "4ogjXwVp/7Gi/dNjGn1SWVxjrS0J0izVg8LeMVWSF3/zS3GH4lwtEMehQ9VEatQAqRbZ0i+OU+Z2obLUTYEoYg==",
+        "requested": "[2.7.33, )",
+        "resolved": "2.7.33",
+        "contentHash": "2kCX5fvhEE824a4Ab5Imyi8DRuGuTxyklXV01kegkRpsWJcPmO6+GAQ+HegKxvXAxlXZ8yaRspvWJ8t3mMClfQ==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
           "Pipelines.Sockets.Unofficial": "2.2.8"
@@ -124,13 +124,13 @@
       },
       "MemoryPack.Core": {
         "type": "Transitive",
-        "resolved": "1.10.0",
-        "contentHash": "MxQ7jag9AOXyAbq7DGvaJBANINLxnkzibOMuwdYAjQDaeIWamIi8Z/QmkOJGBUPGANjIxv2J07rMsFFnHJW/iQ=="
+        "resolved": "1.20.5",
+        "contentHash": "ARo5V5GTsfcWfW02S+24zRSqW2xvpww/d3+vEyNur0QsPmD/OJ6jEi9cU9rks2FQj67UxRFhfCpyNxjCyO4MGg=="
       },
       "MemoryPack.Generator": {
         "type": "Transitive",
-        "resolved": "1.10.0",
-        "contentHash": "U6J+mUb95KVO+ytZECLYJ4awuypfiGwNvWQDaEid3fKOz0X5GGQsLyKE4A9CyMqU5SZKri+Md9YcLGYMCqvkKA=="
+        "resolved": "1.20.5",
+        "contentHash": "Qh1sR1eGxeFBvbMoqh7fliqMueE34iSxldKq8p4eUE3bCVdouxng33ufmp6hMlzQnIPB9tYiPxjfome3QM1pWg=="
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
