@@ -17,6 +17,7 @@ public sealed class SearchProductsRequestHandler : IRequestHandler<SearchProduct
 
     public async ValueTask<PagedResult<ProductDto>> Handle(SearchProducts request, CancellationToken cancellationToken)
     {
+        
         var res = await _productFilter.FilterProducts(
             new Filter()
             {

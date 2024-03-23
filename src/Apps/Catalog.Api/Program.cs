@@ -1,8 +1,11 @@
 
 using Carter;
 
+using Catalog.Api.Modules;
 using Catalog.Core.Extensions;
 using Catalog.Infrastructure.Extensions;
+
+using FluentValidation;
 
 using Hosting.HealthChecks;
 
@@ -20,6 +23,7 @@ builder.AddOpenTelemetry(service)
         b.AddNpgsql();
     })
     .AddOpenTelemetryMetrics();
+builder.Services.AddTransient<IValidator<SearchProductsRequest>, SearchProductsRequestValidator>();
 builder.Services.AddCatalog();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
