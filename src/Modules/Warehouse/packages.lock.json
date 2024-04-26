@@ -4,9 +4,9 @@
     "net8.0": {
       "Marten": {
         "type": "Direct",
-        "requested": "[7.4.0, )",
-        "resolved": "7.4.0",
-        "contentHash": "kaJaf9YA16waux9RfAiJZTHQT61v30iTlpuKmsDhIw9xI7Sv35jeo1d7Ugn74FkvJyJxISA52oOrkSnLph/lCw==",
+        "requested": "[7.9.0, )",
+        "resolved": "7.9.0",
+        "contentHash": "AGEZGg602wLNlywzI5O+ivQlw7LpogeLgHsxO0Pf7JV1+yP2xe8i2hd6zTXQKpkGm1IZX0qGu+Bn4mzfL2vQ5A==",
         "dependencies": {
           "JasperFx.CodeGeneration": "3.5.0",
           "JasperFx.Core": "1.5.1",
@@ -16,10 +16,10 @@
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
           "Newtonsoft.Json": "13.0.3",
           "Npgsql.Json.NET": "8.0.0",
-          "Polly": "8.2.1",
+          "Polly.Core": "8.3.1",
           "System.Text.Json": "8.0.0",
           "System.Threading.Tasks.Dataflow": "8.0.0",
-          "Weasel.Postgresql": "7.3.0"
+          "Weasel.Postgresql": "7.4.0"
         }
       },
       "FastExpressionCompiler": {
@@ -262,18 +262,10 @@
           "Npgsql": "8.0.0"
         }
       },
-      "Polly": {
-        "type": "Transitive",
-        "resolved": "8.2.1",
-        "contentHash": "tVHvP5Z0fNoZCE9mpKAsh0IaValwsTGPrqjlWqkWR/Gpl5jL05HWC/AVGSL+jkAqkl1Jn7uBUOArnRD+dK5PfQ==",
-        "dependencies": {
-          "Polly.Core": "8.2.1"
-        }
-      },
       "Polly.Core": {
         "type": "Transitive",
-        "resolved": "8.2.1",
-        "contentHash": "/Z3EspfWBdTla4I9IAcQn32/7kB5WS3rSnOYloz8YlVyClu8h7uuYf4pfUvffOYVbxmDX/mFRfxwzqW2Zs96ZA=="
+        "resolved": "8.3.1",
+        "contentHash": "b9mMAjqXuCXFCtf/RtRPwFUkAm/sz37s7G+taDvS5EqfkJsLiWfO2xO2cSISjIgIY+88oIZTGguP6UrRGRlqzg=="
       },
       "System.Collections": {
         "type": "Transitive",
@@ -496,8 +488,8 @@
       },
       "Weasel.Core": {
         "type": "Transitive",
-        "resolved": "7.3.0",
-        "contentHash": "4BDh/XM+mjoVqfC/wmKngWOjUQCW7bCmggOwzo/dfSJ2VHNAOrcXQmADoncvkbRApPHjf1h8wBoch/dYPfQQaQ==",
+        "resolved": "7.4.0",
+        "contentHash": "QQDItml9Xa2Ld32VfRZ2aZdhc7+rmzP4veEMCPyYzX0+MK8vfU0BFoD/axrlHrOIQ9BYpQYJCKFT8kDWmdlznw==",
         "dependencies": {
           "JasperFx.Core": "1.5.1",
           "System.Data.Common": "4.3.0"
@@ -505,11 +497,11 @@
       },
       "Weasel.Postgresql": {
         "type": "Transitive",
-        "resolved": "7.3.0",
-        "contentHash": "4DX0tjH6114dxbWVK2x/1AdSpdbZeqYrvRhhQkgKJU8azyEMs174uqtM0Jo6CPQ9g7dKh5mTzG7sdxTG94+tRQ==",
+        "resolved": "7.4.0",
+        "contentHash": "+0DrcfbtPMnIxg9h5kiuObTB4mngb+CfCfpnj8pbjodAbqeLDV4AXq0CRMAvzNKLmydLaaNQTr91mppF/C0ESw==",
         "dependencies": {
           "Npgsql": "8.0.2",
-          "Weasel.Core": "7.3.0"
+          "Weasel.Core": "7.4.0"
         }
       },
       "Newtonsoft.Json": {

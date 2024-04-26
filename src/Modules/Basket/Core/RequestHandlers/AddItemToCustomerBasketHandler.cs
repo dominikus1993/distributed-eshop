@@ -14,12 +14,14 @@ public sealed class AddItemToCustomerBasketHandler : IRequestHandler<AddItemToCu
     private readonly ICustomerBasketReader _customerBasketReader;
     private readonly ICustomerBasketWriter _customerBasketWriter;
     private readonly IMessagePublisher<BasketItemWasAdded> _messagePublisher;
+    private readonly TimeProvider _timeProvider;
 
-    public AddItemToCustomerBasketHandler(ICustomerBasketReader customerBasketReader, ICustomerBasketWriter customerBasketWriter, IMessagePublisher<BasketItemWasAdded> messagePublisher)
+    public AddItemToCustomerBasketHandler(ICustomerBasketReader customerBasketReader, ICustomerBasketWriter customerBasketWriter, IMessagePublisher<BasketItemWasAdded> messagePublisher, TimeProvider timeProvider)
     {
         _customerBasketReader = customerBasketReader;
         _customerBasketWriter = customerBasketWriter;
         _messagePublisher = messagePublisher;
+        _timeProvider = timeProvider;
     }
 
     public async ValueTask<Unit> Handle(AddItemToCustomerBasket request, CancellationToken cancellationToken)
@@ -35,7 +37,7 @@ public sealed class AddItemToCustomerBasketHandler : IRequestHandler<AddItemToCu
             throw new InvalidOperationException("can't update basket", result.ErrorValue);
         }
         
-        var res = await _messagePublisher.Publish(new BasketItemWasAdded(request.CustomerId, request.Item), cancellationToken: cancellationToken);
+        var res = await _messagePublisher.Publish(new BasketItemWasAdded(request.CustomerId, request.Item, _timeProvider), cancellationToken: cancellationToken);
         if (!res.IsSuccess)
         {
             throw new InvalidOperationException("can't publish message", res.ErrorValue);

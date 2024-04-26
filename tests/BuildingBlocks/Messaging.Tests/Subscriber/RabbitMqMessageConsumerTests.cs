@@ -23,6 +23,7 @@ public class Msg : IMessage
 {
     public string? Message { get; init; }
     public Guid Id { get; set; } = Guid.NewGuid();
+    public long Timestamp { get; set; }
 }
 
 [Collection(nameof(RabbitMqFixtureCollectionTest))]

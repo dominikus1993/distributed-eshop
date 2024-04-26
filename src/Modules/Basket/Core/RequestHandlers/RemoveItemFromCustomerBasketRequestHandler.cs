@@ -15,12 +15,14 @@ public class RemoveItemFromCustomerBasketRequestHandler : IRequestHandler<Remove
     private readonly ICustomerBasketReader _customerBasketReader;
     private readonly ICustomerBasketWriter _customerBasketWriter;
     private readonly IMessagePublisher<BasketItemWasRemoved> _messagePublisher;
-
-    public RemoveItemFromCustomerBasketRequestHandler(ICustomerBasketReader customerBasketReader, ICustomerBasketWriter customerBasketWriter, IMessagePublisher<BasketItemWasRemoved> messagePublisher)
+    private readonly TimeProvider _timeProvider;
+    
+    public RemoveItemFromCustomerBasketRequestHandler(ICustomerBasketReader customerBasketReader, ICustomerBasketWriter customerBasketWriter, IMessagePublisher<BasketItemWasRemoved> messagePublisher, TimeProvider timeProvider)
     {
         _customerBasketReader = customerBasketReader;
         _customerBasketWriter = customerBasketWriter;
         _messagePublisher = messagePublisher;
+        _timeProvider = timeProvider;
     }
 
     public async ValueTask<Unit> Handle(RemoveItemFromCustomerBasket request, CancellationToken cancellationToken)
@@ -47,7 +49,7 @@ public class RemoveItemFromCustomerBasketRequestHandler : IRequestHandler<Remove
             await _customerBasketWriter.Update(basket, cancellationToken);
         }
 
-        await _messagePublisher.Publish(new BasketItemWasRemoved(request.CustomerId, request.Item), cancellationToken: cancellationToken);
+        await _messagePublisher.Publish(new BasketItemWasRemoved(request.CustomerId, request.Item, _timeProvider), cancellationToken: cancellationToken);
         return Unit.Value;
     }
 }

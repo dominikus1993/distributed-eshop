@@ -75,7 +75,7 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
         var exchange = await _advancedBus.ExchangeDeclareAsync(_publisherConfig.Exchange, ExchangeType.Topic, true, false,
             cancellationToken);
         using var activity = RabbitMqTelemetry.RabbitMqActivitySource.Start(activityContext: ctx?.Context);
-        MessageProperties messageProps = new();
+        MessageProperties messageProps = GetMessageProps(message, _publisherConfig);
         if (activity is not null)
         {
             activity.SetTag("messaging.rabbitmq.routing_key", _publisherConfig.Topic);
@@ -90,4 +90,25 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
         }
         await _advancedBus.PublishAsync(exchange, _publisherConfig.Topic, false, Message<T>.Create(message, messageProps), cancellationToken);
     }
+
+    private static MessageProperties GetMessageProps(T message, RabbitMqPublisherConfig<T> config)
+    {
+        var props =  new MessageProperties()
+        {
+            Type = MessageName,
+            ContentType = "application/json",
+            Timestamp = message.Timestamp,
+            MessageId = message.Id.ToString()
+        };
+        
+        if (config.TTL.HasValue)
+        {
+            props.Expiration = config.TTL.Value;
+        }
+        
+
+        return props;
+    }
+    
+    
 }
