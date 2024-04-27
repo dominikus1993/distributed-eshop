@@ -55,9 +55,8 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
         var queue = await _advancedBus.QueueDeclareAsync(_subscriptionConfiguration.Queue, configuration =>
         {
             configuration.AsDurable(true);
-            configuration.WithExpires(TimeSpan.FromDays(5));
             configuration.WithMessageTtl(TimeSpan.FromHours(5));
-            configuration.WithMaxLength(1000);
+            configuration.WithMaxLength(10000);
         }, stoppingToken);
 
         _ = await _advancedBus.BindAsync(exchange, queue, _subscriptionConfiguration.Topic, cancellationToken: stoppingToken);
@@ -74,6 +73,9 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                     activity.SetTag("messaging.rabbitmq.routing_key", info.RoutingKey);
                     activity.SetTag("messaging.exchange", info.Exchange);
                     activity.SetTag("messaging.destination", info.Queue);
+                    activity.SetTag("messaging.timestamp", properties.Timestamp);
+                    activity.SetTag("messaging.message_id", properties.MessageId);
+                    activity.SetTag("messaging.message_type", properties.Type);
                     activity.SetTag("messaging.system", "rabbitmq");
                     activity.SetTag("messaging.destination_kind", "queue");
                     activity.SetTag("messaging.protocol", "AMQP");
@@ -91,7 +93,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                 var result = await subscriber.Handle(message, ct);
                 if (!result.IsSuccess)
                 {
-                    logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue);
+                    logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue, properties);
                     activity?.RecordException(result.ErrorValue);
                     return _subscriptionConfiguration.AckStrategy;
                 }
@@ -100,7 +102,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
             }
             catch (Exception exc)
             {
-                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue);
+                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue, properties);
                 activity?.RecordException(exc);
                 return _subscriptionConfiguration.AckStrategy;
             }

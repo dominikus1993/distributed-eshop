@@ -1,3 +1,5 @@
+using EasyNetQ;
+
 using Microsoft.Extensions.Logging;
 
 namespace Messaging.Logging;
@@ -9,7 +11,7 @@ internal static partial class SubscriberLogger
         Level = LogLevel.Error,
         Message = "Can't process message {Exchange} -> {RoutingKey} -> {Queue}")]
     public static partial void LogCantProcessMessage(
-        this ILogger logger, Exception exception, string exchange, string routingKey, string queue);
+        this ILogger logger, Exception exception, string exchange, string routingKey, string queue, [LogProperties(SkipNullProperties = true)]MessageProperties properties);
     
     
     [LoggerMessage(

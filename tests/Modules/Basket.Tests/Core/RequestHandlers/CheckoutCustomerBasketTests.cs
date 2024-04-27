@@ -12,6 +12,8 @@ using Common.Types;
 
 using Messaging.Abstraction;
 
+using Microsoft.Extensions.Time.Testing;
+
 using NSubstitute;
 
 using Shouldly;
@@ -25,6 +27,7 @@ public sealed class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
     private readonly AddItemToCustomerBasketHandler _addItemToCustomerBasketHandler;
     private readonly CheckoutCustomerBasketHandler _checkoutCustomerBasketHandler;
     private readonly IMessagePublisher<BasketItemWasAdded> _messagePublisher;
+    private readonly DateTimeOffset _dateTimeOffset = DateTimeOffset.Now;
     public CheckoutCustomerBasketTests(RedisFixture redisFixture)
     {
         _messagePublisher = Substitute.For<IMessagePublisher<BasketItemWasAdded>>();
@@ -32,7 +35,7 @@ public sealed class CheckoutCustomerBasketTests : IClassFixture<RedisFixture>
         _redisFixture = redisFixture;
         _getCustomerBasketHandler = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
         _addItemToCustomerBasketHandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader,
-            _redisFixture.CustomerBasketWriter, _messagePublisher);
+            _redisFixture.CustomerBasketWriter, _messagePublisher, new FakeTimeProvider(_dateTimeOffset));
         _checkoutCustomerBasketHandler = new CheckoutCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter);
     }
 

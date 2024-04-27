@@ -12,6 +12,8 @@ using Common.Types;
 
 using Messaging.Abstraction;
 
+using Microsoft.Extensions.Time.Testing;
+
 using NSubstitute;
 
 using Shouldly;
@@ -22,7 +24,8 @@ namespace Basket.Tests.Core.RequestHandlers;
 public class RemoveItemFromCustomerBasketRequestHandlerTests
 {
     private readonly RedisFixture _redisFixture;
-
+    private readonly DateTimeOffset _dateTimeOffset = DateTimeOffset.Now;
+    
     public RemoveItemFromCustomerBasketRequestHandlerTests(RedisFixture redisFixture)
     {
         _redisFixture = redisFixture;
@@ -41,8 +44,8 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
         
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock);
-        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock);
+        var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock, new FakeTimeProvider(_dateTimeOffset));
+        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock, new FakeTimeProvider(_dateTimeOffset));
         // Act
         await addhandler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
         await removeHandler.Handle(new RemoveItemFromCustomerBasket(customerId, basketItem), CancellationToken.None);
@@ -67,8 +70,8 @@ public class RemoveItemFromCustomerBasketRequestHandlerTests
         var customerId = CustomerId.New();
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock);
-        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock);
+        var addhandler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock, new FakeTimeProvider(_dateTimeOffset));
+        var removeHandler = new RemoveItemFromCustomerBasketRequestHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherRemovedMock, new FakeTimeProvider(_dateTimeOffset));
         await addhandler.Handle(new AddItemToCustomerBasket(customerId, basketItem with { Quantity = new ItemQuantity(1) }), CancellationToken.None);
         
         // Act

@@ -12,6 +12,8 @@ using Common.Types;
 
 using Messaging.Abstraction;
 
+using Microsoft.Extensions.Time.Testing;
+
 using NSubstitute;
 
 using Shouldly;
@@ -22,6 +24,7 @@ namespace Basket.Tests.Core.RequestHandlers;
 public sealed class AddItemToCustomerBasketHandlerTests
 {
     private readonly RedisFixture _redisFixture;
+    private readonly DateTimeOffset _dateTimeOffset = DateTimeOffset.Now;
 
     public AddItemToCustomerBasketHandlerTests(RedisFixture redisFixture)
     {
@@ -37,7 +40,7 @@ public sealed class AddItemToCustomerBasketHandlerTests
         publisherMock.Publish(Arg.Any<BasketItemWasAdded>(), Arg.Any<IMessageContext>(), Arg.Any<CancellationToken>()).Returns(Result.UnitResult);
         
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock);
+        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock, new FakeTimeProvider(_dateTimeOffset));
         // Act
         await handler.Handle(new AddItemToCustomerBasket(customerId, basketItem), CancellationToken.None);
         var result = await getCustomerBasket.Handle(new GetCustomerBasket(customerId), CancellationToken.None);
@@ -61,7 +64,7 @@ public sealed class AddItemToCustomerBasketHandlerTests
         var customerId = CustomerId.New();
         var basketItem = new Product(ItemId.New(), new ItemQuantity(1));
         var getCustomerBasket = new GetCustomerBasketHandler(_redisFixture.CustomerBasketReader);
-        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock);
+        var handler = new AddItemToCustomerBasketHandler(_redisFixture.CustomerBasketReader, _redisFixture.CustomerBasketWriter, publisherMock, new FakeTimeProvider(_dateTimeOffset));
         await handler.Handle(new AddItemToCustomerBasket(customerId, new Product(ItemId.New(), new ItemQuantity(2))), CancellationToken.None);
         
         // Act
