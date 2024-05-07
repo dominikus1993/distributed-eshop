@@ -25,9 +25,9 @@
       },
       "coverlet.collector": {
         "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "tW3lsNS+dAEII6YGUX/VMoJjBS1QvsxqJeqLaJXub08y1FSjasFPtQ4UBUsudE9PNrzLjooClMsPtY2cZLdXpQ=="
+        "requested": "[6.0.2, )",
+        "resolved": "6.0.2",
+        "contentHash": "bJShQ6uWRTQ100ZeyiMqcFlhP7WJ+bCuabUs885dJiBEzMsJMSFr7BOyeCw4rgvQokteGi5rKQTlkhfQPUXg2A=="
       },
       "FluentAssertions": {
         "type": "Direct",
@@ -132,20 +132,20 @@
       },
       "xunit": {
         "type": "Direct",
-        "requested": "[2.7.1, )",
-        "resolved": "2.7.1",
-        "contentHash": "9o050yCLzPvHxbrAkaHnI1j+YfPvRw+/ncvKbTfzIhO4JvQA0rPgoICJxXHMkscfgXmLFwZ8107ehnMUVzE23A==",
+        "requested": "[2.8.0, )",
+        "resolved": "2.8.0",
+        "contentHash": "US3a3twJziAif1kFPGdk9fALwILHxV0n1roX5j67bN/d3o4DGNLHnV3tr5ZX+uinVrzfkf0avH3zGX8JPBC0qA==",
         "dependencies": {
-          "xunit.analyzers": "1.12.0",
-          "xunit.assert": "2.7.1",
-          "xunit.core": "[2.7.1]"
+          "xunit.analyzers": "1.13.0",
+          "xunit.assert": "2.8.0",
+          "xunit.core": "[2.8.0]"
         }
       },
       "xunit.runner.visualstudio": {
         "type": "Direct",
-        "requested": "[2.5.1, )",
-        "resolved": "2.5.1",
-        "contentHash": "W5dQj2tysIY6MHaidZyqyiR7MGFEk+FrvHRapFyhe11HuR4A6aFGSVi8txi+kkXdY9FDjXffU/1PkNzRX52Caw=="
+        "requested": "[2.8.0, )",
+        "resolved": "2.8.0",
+        "contentHash": "mqQbS2zr8dfgSWxkNOC6UTzO8JoqpTmM5+FFn2XR/2nVmx2JvEY0YbM5pt2FmXVg9YVe+jKUPHd6KrroyCl67w=="
       },
       "Argon": {
         "type": "Transitive",
@@ -228,13 +228,13 @@
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
-        "resolved": "5.24.0",
-        "contentHash": "jNg9h90NfUwU+jYQOyNoAXlNEwYri0GYli1S5ws4NXpw8ccGzY0xoeCAzcw49qk5IGetcUcsJaMrpAgvOM1VxA=="
+        "resolved": "5.25.0",
+        "contentHash": "ipwlE9tRuVNqVOE5HCB6Ph4W3AkCzjIl0ElFsOZPkuUCEAgLhTXugT5dVmBl/4BGdp5Ki5/UUbU1jEk7t+P8Fw=="
       },
       "FastEndpoints.Messaging.Core": {
         "type": "Transitive",
-        "resolved": "5.24.0",
-        "contentHash": "zidNegKx+5WNmNva5qyyG5XTCutucBxOqlYltFVIvC0PaN1jgpu435T6QkiBdAoz0ny+19hVwFt1tRM5yvChYQ=="
+        "resolved": "5.25.0",
+        "contentHash": "379eP/nf/vuFoakft5lY6cKjMvzIH7hCjCTRQpvqGnaSZuYn7csdcLpMWiQfDHYjah58rI5vtx7MkuwXLugvkQ=="
       },
       "FluentValidation": {
         "type": "Transitive",
@@ -1861,37 +1861,37 @@
       },
       "xunit.analyzers": {
         "type": "Transitive",
-        "resolved": "1.12.0",
-        "contentHash": "w23LH3aXade2WXKvXi0oA/uV15fpgUMjsPq1x91iQckzgWApgAiijNHmfFQtqNPm41wfrdbRl7nSJRd0yux/dw=="
+        "resolved": "1.13.0",
+        "contentHash": "Pai9YnDV71/Ox14nBHB6/f62iyPyLbmUG/YYMiA4dfdFZvr0gIYE9yGxSr0i5Tr3INK75wgL2MCUNEKpeiZ2Fw=="
       },
       "xunit.assert": {
         "type": "Transitive",
-        "resolved": "2.7.1",
-        "contentHash": "JqvXS4yX+PtJn5BuqoKkYav7I0g4nXcxRbGTomDwVQjFccOdyfYKpuPOHX/DqrPCcL+MIHrGVdP3bveUXlvdnA=="
+        "resolved": "2.8.0",
+        "contentHash": "lwf7Dy5/5HbDkaPx1YrGXCByytCEEcIn+KPI74jh2BD/RU/7RhO8c+S3k0Ph+Mr7+cLf338fl+o6UcgPCLa6PA=="
       },
       "xunit.core": {
         "type": "Transitive",
-        "resolved": "2.7.1",
-        "contentHash": "hcODgS+RXdjmXq0zQzmRbERQgY+bAGGx1bdH3370t/8CTGmIEU2qAc1dQAjIRpARsacR0cj6LLJDUF5BNQNKTQ==",
+        "resolved": "2.8.0",
+        "contentHash": "McSTFGTETCxLpmJKE9TWi9FtFthrRbpRrjz2V2g8sK2wRt1+JHs15vwi+B+nfftFkV9aFWIXZfzZM95TIGZNIA==",
         "dependencies": {
-          "xunit.extensibility.core": "[2.7.1]",
-          "xunit.extensibility.execution": "[2.7.1]"
+          "xunit.extensibility.core": "[2.8.0]",
+          "xunit.extensibility.execution": "[2.8.0]"
         }
       },
       "xunit.extensibility.core": {
         "type": "Transitive",
-        "resolved": "2.7.1",
-        "contentHash": "yLX4XlBFkvNYCzf+DEzlNk45KsSlu9W93IJHBmtUP96qZ9XyRYDFlwMj6BCcOhDKVNrZxSM8bqu4F/Qud4ehxA==",
+        "resolved": "2.8.0",
+        "contentHash": "eBJv9xQeY0p5z+C/L1tFjUFYqtl5pQqIEYCGTMl+MbRzA7sOlgYKwJE//vEePBp+mgBh7NjD0Qhz0liZBYM27w==",
         "dependencies": {
           "xunit.abstractions": "2.0.3"
         }
       },
       "xunit.extensibility.execution": {
         "type": "Transitive",
-        "resolved": "2.7.1",
-        "contentHash": "ei3dKF8agj4UKkJ6KkaZ5/Gcif3if6hBsyzegIQJonZDSKZFvb0AyKtyOhDfggBaXVL5iXZExITdRkfjC95yhw==",
+        "resolved": "2.8.0",
+        "contentHash": "TyyrZesHB9ODZMS9c73OqiBz4x0vL944JCkSPBWW5w6PF2LlUfdfXRjjOhoIOuY6lTmEgl07rS4/Jot9mCYnpg==",
         "dependencies": {
-          "xunit.extensibility.core": "[2.7.1]"
+          "xunit.extensibility.core": "[2.8.0]"
         }
       },
       "YamlDotNet": {
@@ -1915,9 +1915,9 @@
         "type": "Project",
         "dependencies": {
           "Basket": "[1.0.0, )",
-          "FastEndpoints": "[5.24.0, )",
-          "FastEndpoints.Security": "[5.24.0, )",
-          "FastEndpoints.Swagger": "[5.24.0, )",
+          "FastEndpoints": "[5.25.0, )",
+          "FastEndpoints.Security": "[5.25.0, )",
+          "FastEndpoints.Swagger": "[5.25.0, )",
           "Hosting": "[1.0.0, )",
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.14, )"
         }
@@ -1999,32 +1999,32 @@
       },
       "FastEndpoints": {
         "type": "CentralTransitive",
-        "requested": "[5.24.0, )",
-        "resolved": "5.24.0",
-        "contentHash": "pxhIXkLaA7dc6RDHQ/4eaGMULtDtYAv/lujkvgH05atrgaq4l0kjpFvZoP7abPTa9lT4hdZu5SjvO4U7sdG1MQ==",
+        "requested": "[5.25.0, )",
+        "resolved": "5.25.0",
+        "contentHash": "LG1DwKEIDw8NInBKIFjojHpYDQT6txQA7iyG14puPigFhSkam/hQ3WHtskr8vpX1j6MbLHRSuTedSeJO6N+uSg==",
         "dependencies": {
-          "FastEndpoints.Attributes": "5.24.0",
-          "FastEndpoints.Messaging.Core": "5.24.0",
+          "FastEndpoints.Attributes": "5.25.0",
+          "FastEndpoints.Messaging.Core": "5.25.0",
           "FluentValidation": "11.9.0"
         }
       },
       "FastEndpoints.Security": {
         "type": "CentralTransitive",
-        "requested": "[5.24.0, )",
-        "resolved": "5.24.0",
-        "contentHash": "UW8l+yOHr1fstBqXfAvK86GiVTrS8LMH3DSZ52u2qgpTBRkGJ/mFSVrIP/Zd3FAe4qUhmIUbqCefHKT9BeqZMA==",
+        "requested": "[5.25.0, )",
+        "resolved": "5.25.0",
+        "contentHash": "TMeLYT/5ttvf/fTYZ9lmFtSeYaXdMip1T3yKOQjHOurZSgHDyA9qh8d+jOAry6dt2CQ5FQW/20FHlQfRzZxvTA==",
         "dependencies": {
-          "FastEndpoints": "5.24.0",
+          "FastEndpoints": "5.25.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.3"
         }
       },
       "FastEndpoints.Swagger": {
         "type": "CentralTransitive",
-        "requested": "[5.24.0, )",
-        "resolved": "5.24.0",
-        "contentHash": "xHtv5gsslJK+yx7yMel21ppk11TkxIWQvX7+44tvcF/O8W9O4ETDyNA11y47bjwMG+wiDD1ny42bJ8/a0B1oIw==",
+        "requested": "[5.25.0, )",
+        "resolved": "5.25.0",
+        "contentHash": "xJVWDw2fu8QwIZaJkB8WZDvLTw4iRwZid3pEiiSbX7+xRfH7aXnoJUEkFCMqqnsW2WMA+IYNHTChslZhbAPLNg==",
         "dependencies": {
-          "FastEndpoints": "5.24.0",
+          "FastEndpoints": "5.25.0",
           "NSwag.AspNetCore": "14.0.7"
         }
       },

@@ -106,7 +106,6 @@ internal sealed class RabbitMqMessagePublisher<T> : IMessagePublisher<T> where T
             props.Expiration = config.TTL.Value;
         }
         
-
         return props;
     }
     

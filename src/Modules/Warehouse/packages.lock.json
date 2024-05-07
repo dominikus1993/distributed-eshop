@@ -4,9 +4,9 @@
     "net8.0": {
       "Marten": {
         "type": "Direct",
-        "requested": "[7.9.0, )",
-        "resolved": "7.9.0",
-        "contentHash": "AGEZGg602wLNlywzI5O+ivQlw7LpogeLgHsxO0Pf7JV1+yP2xe8i2hd6zTXQKpkGm1IZX0qGu+Bn4mzfL2vQ5A==",
+        "requested": "[7.10.1, )",
+        "resolved": "7.10.1",
+        "contentHash": "Fup9hUwKlzTtM4KmBp19FZmcrmFPQy8B2YaXtm8k6/jUYTDm8gfr2j+xyuPZCvDEiE7Iyd8GZnTBR6P9XE9CbQ==",
         "dependencies": {
           "JasperFx.CodeGeneration": "3.5.0",
           "JasperFx.Core": "1.5.1",
@@ -16,6 +16,7 @@
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
           "Newtonsoft.Json": "13.0.3",
           "Npgsql.Json.NET": "8.0.0",
+          "OpenTelemetry.API": "1.8.0",
           "Polly.Core": "8.3.1",
           "System.Text.Json": "8.0.0",
           "System.Threading.Tasks.Dataflow": "8.0.0",
@@ -260,6 +261,14 @@
         "dependencies": {
           "Newtonsoft.Json": "13.0.3",
           "Npgsql": "8.0.0"
+        }
+      },
+      "OpenTelemetry.Api": {
+        "type": "Transitive",
+        "resolved": "1.8.0",
+        "contentHash": "+daN4OqIXne3QLlFHEzb6ybAETgKs7Hg5jINYT5P8p8A/cEtuP6CRDYdDpOe6AlW8oAaV/nJJ5tLyPUVKKQu0w==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "8.0.0"
         }
       },
       "Polly.Core": {

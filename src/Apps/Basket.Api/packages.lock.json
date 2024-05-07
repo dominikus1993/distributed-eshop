@@ -4,32 +4,32 @@
     "net8.0": {
       "FastEndpoints": {
         "type": "Direct",
-        "requested": "[5.24.0, )",
-        "resolved": "5.24.0",
-        "contentHash": "pxhIXkLaA7dc6RDHQ/4eaGMULtDtYAv/lujkvgH05atrgaq4l0kjpFvZoP7abPTa9lT4hdZu5SjvO4U7sdG1MQ==",
+        "requested": "[5.25.0, )",
+        "resolved": "5.25.0",
+        "contentHash": "LG1DwKEIDw8NInBKIFjojHpYDQT6txQA7iyG14puPigFhSkam/hQ3WHtskr8vpX1j6MbLHRSuTedSeJO6N+uSg==",
         "dependencies": {
-          "FastEndpoints.Attributes": "5.24.0",
-          "FastEndpoints.Messaging.Core": "5.24.0",
+          "FastEndpoints.Attributes": "5.25.0",
+          "FastEndpoints.Messaging.Core": "5.25.0",
           "FluentValidation": "11.9.0"
         }
       },
       "FastEndpoints.Security": {
         "type": "Direct",
-        "requested": "[5.24.0, )",
-        "resolved": "5.24.0",
-        "contentHash": "UW8l+yOHr1fstBqXfAvK86GiVTrS8LMH3DSZ52u2qgpTBRkGJ/mFSVrIP/Zd3FAe4qUhmIUbqCefHKT9BeqZMA==",
+        "requested": "[5.25.0, )",
+        "resolved": "5.25.0",
+        "contentHash": "TMeLYT/5ttvf/fTYZ9lmFtSeYaXdMip1T3yKOQjHOurZSgHDyA9qh8d+jOAry6dt2CQ5FQW/20FHlQfRzZxvTA==",
         "dependencies": {
-          "FastEndpoints": "5.24.0",
+          "FastEndpoints": "5.25.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.3"
         }
       },
       "FastEndpoints.Swagger": {
         "type": "Direct",
-        "requested": "[5.24.0, )",
-        "resolved": "5.24.0",
-        "contentHash": "xHtv5gsslJK+yx7yMel21ppk11TkxIWQvX7+44tvcF/O8W9O4ETDyNA11y47bjwMG+wiDD1ny42bJ8/a0B1oIw==",
+        "requested": "[5.25.0, )",
+        "resolved": "5.25.0",
+        "contentHash": "xJVWDw2fu8QwIZaJkB8WZDvLTw4iRwZid3pEiiSbX7+xRfH7aXnoJUEkFCMqqnsW2WMA+IYNHTChslZhbAPLNg==",
         "dependencies": {
-          "FastEndpoints": "5.24.0",
+          "FastEndpoints": "5.25.0",
           "NSwag.AspNetCore": "14.0.7"
         }
       },
@@ -64,13 +64,13 @@
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
-        "resolved": "5.24.0",
-        "contentHash": "jNg9h90NfUwU+jYQOyNoAXlNEwYri0GYli1S5ws4NXpw8ccGzY0xoeCAzcw49qk5IGetcUcsJaMrpAgvOM1VxA=="
+        "resolved": "5.25.0",
+        "contentHash": "ipwlE9tRuVNqVOE5HCB6Ph4W3AkCzjIl0ElFsOZPkuUCEAgLhTXugT5dVmBl/4BGdp5Ki5/UUbU1jEk7t+P8Fw=="
       },
       "FastEndpoints.Messaging.Core": {
         "type": "Transitive",
-        "resolved": "5.24.0",
-        "contentHash": "zidNegKx+5WNmNva5qyyG5XTCutucBxOqlYltFVIvC0PaN1jgpu435T6QkiBdAoz0ny+19hVwFt1tRM5yvChYQ=="
+        "resolved": "5.25.0",
+        "contentHash": "379eP/nf/vuFoakft5lY6cKjMvzIH7hCjCTRQpvqGnaSZuYn7csdcLpMWiQfDHYjah58rI5vtx7MkuwXLugvkQ=="
       },
       "FluentValidation": {
         "type": "Transitive",
