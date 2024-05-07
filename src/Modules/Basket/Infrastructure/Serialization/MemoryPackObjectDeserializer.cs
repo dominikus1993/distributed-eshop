@@ -30,6 +30,7 @@ internal sealed class MemoryPackObjectDeserializer : IRedisObjectDeserializer
 
     public RedisValue Serialize(RedisCustomerBasket obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
         return MemoryPackSerializer.Serialize(obj);
     }
 }

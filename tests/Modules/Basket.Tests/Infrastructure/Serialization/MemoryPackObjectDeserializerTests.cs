@@ -8,6 +8,8 @@ using FluentAssertions;
 
 using Shouldly;
 
+using StackExchange.Redis;
+
 namespace Basket.Tests.Infrastructure.Serialization;
 
 public class MemoryPackObjectDeserializerTests
@@ -31,5 +33,23 @@ public class MemoryPackObjectDeserializerTests
         {
             result.Items.Should().ContainEquivalentOf(item);
         }
+    }
+    
+    [Theory]
+    [AutoData]
+    internal void TestNullDeserialization_ShouldDeserializeNull(MemoryPackObjectDeserializer serializer)
+    {
+        RedisValue value = RedisValue.Null;
+        var subject = serializer.Deserialize(value, out var result);
+        
+        subject.Should().BeFalse();
+        result.Should().BeNull();
+    }
+    
+    [Theory]
+    [AutoData]
+    internal void TestSerializationWhenNull_ShouldThrowArgumentNullException(MemoryPackObjectDeserializer serializer)
+    {
+        Assert.Throws<ArgumentNullException>(() => serializer.Serialize(null!));
     }
 }
