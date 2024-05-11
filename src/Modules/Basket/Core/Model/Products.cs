@@ -19,6 +19,7 @@ public sealed class Products : IEnumerable<Product>
     public static readonly Products Empty = new([]);
     public Products AddItem(Product item)
     {
+        ArgumentNullException.ThrowIfNull(item);
         var items = new List<Product>(_items);
         var index = items.IndexOf(item);
         if (index == -1)
@@ -71,9 +72,9 @@ public sealed class Products : IEnumerable<Product>
         switch (_items)
         {
             case null or {Count: 0}:
-                return Array.Empty<T>();
+                return [];
             case [var element]:
-                return new[] { map(element) };
+                return [map(element)];
         }
 
         var array = new T[_items.Count];
