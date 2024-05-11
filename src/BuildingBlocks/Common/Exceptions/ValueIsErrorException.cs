@@ -1,10 +1,6 @@
 ﻿namespace Common.Exceptions;
 
-public sealed class ValueIsErrorException : Exception
+public sealed class ValueIsErrorException(Exception innerException) : Exception(ErrorMessage, innerException)
 {
     private const string ErrorMessage = "Value is Error";
-    
-    public ValueIsErrorException(Exception innerException) : base(ErrorMessage, innerException)
-    {
-    }
 }

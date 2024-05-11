@@ -1,15 +1,8 @@
 ﻿namespace Common.Exceptions;
 
-public sealed class ValueIsSuccessException<T> : Exception
+public sealed class ValueIsSuccessException<T>(T currentValue) : Exception("Value is Success")
 {
-    public T CurrentValue { get; }
-    
-    public ValueIsSuccessException
-        (T currentValue) : base("Value is Success")
-    {
-
-        CurrentValue = currentValue;
-    }
+    public T CurrentValue { get; } = currentValue;
 
     public override string ToString()
     {
