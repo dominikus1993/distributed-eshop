@@ -1,6 +1,4 @@
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 
 using Common.Types;
 
@@ -14,11 +12,8 @@ using Messaging.RabbitMq.Telemetry;
 using IMessage = Messaging.Abstraction.IMessage;
 
 namespace Messaging.RabbitMq.Publisher;
-public static partial class A
-{
-    [GeneratedRegex(".", RegexOptions.Compiled, 1000)]
-    public static partial Regex Regex2();
-}
+
+
 internal sealed class Message<T> : IMessage<T>
 {
     private static readonly Type CachedType = typeof(T);
