@@ -77,7 +77,7 @@ public sealed class RabbitMqTestConsumer<T>: IAsyncDisposable where T : IMessage
 
     public async IAsyncEnumerable<T> Consume()
     {
-        await foreach (var message in _channel.Reader.ReadAllAsync(_cancellationTokenSource.Token).WithCancellation(_cancellationTokenSource.Token))
+        await foreach (var message in _channel.Reader.ReadAllAsync(_cancellationTokenSource.Token))
         {
             yield return message;
         }
