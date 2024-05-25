@@ -7,6 +7,7 @@ using Catalog.Infrastructure.Extensions;
 
 using FluentValidation;
 
+using Hosting.Extensions;
 using Hosting.HealthChecks;
 
 using Microsoft.OpenApi.Models;
@@ -30,23 +31,18 @@ builder.Services.AddAuthentication();
 builder.Services.AddCarter();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalog.Api", Version = "v1" });
-});
+builder.Services.AddSwaggerDocument();
 
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
 app.UseHttpLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapCarter();
-app.MapSwagger();
+app.UseSwaggerUi();
 app.MapHealthCheckEndpoints();
 
 app.Run();

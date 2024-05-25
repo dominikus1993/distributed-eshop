@@ -23,8 +23,10 @@
   <ItemGroup>
     <PackageReference Include="Carter" />
     <PackageReference Include="FluentValidation.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Npgsql.OpenTelemetry" />
+    <PackageReference Include="NSwag.AspNetCore" />
+    <PackageReference Include="NSwag.Generation.AspNetCore" />
     <PackageReference Include="OpenSearch.Client" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 </Project>

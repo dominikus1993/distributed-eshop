@@ -32,7 +32,7 @@ public sealed class RabbitMqSubscriptionConfiguration<T> where T : IMessage
 
 public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMessage
 {
-    private static readonly Type _type = typeof(T);
+    private static readonly Type Type = typeof(T);
     private readonly IAdvancedBus _advancedBus;
     private readonly IServiceProvider _serviceProvider;
     private readonly RabbitMqSubscriptionConfiguration<T> _subscriptionConfiguration;
@@ -84,7 +84,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                     activity.SetTag("messaging.message_name", _subscriptionConfiguration.MessageName);
                 }
                 var serializer = serviceScope.ServiceProvider.GetRequiredService<ISerializer>();
-                if (serializer.BytesToMessage(_type, body) is not T message)
+                if (serializer.BytesToMessage(Type, body) is not T message)
                 {
                     logger.LogCantDeserializeMessage(info.Exchange, info.RoutingKey, info.Queue);
                     activity?.AddEvent(new ActivityEvent("Message is null or can't be deserialized"));

@@ -573,16 +573,6 @@
           "NSwag.Core": "14.0.7"
         }
       },
-      "NSwag.Generation.AspNetCore": {
-        "type": "Transitive",
-        "resolved": "14.0.7",
-        "contentHash": "j2sJxTyeTmp8xD/YeW6D8U0Y5hea9ruAlL8XV4GWJHJzx0D9tp4MV1ZhJCvXUfdXV5Dnu+bkOxaY4SQWa+Un8Q==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Options": "8.0.0",
-          "NSwag.Generation": "14.0.7"
-        }
-      },
       "OpenTelemetry": {
         "type": "Transitive",
         "resolved": "1.8.1",
@@ -1109,6 +1099,17 @@
         "requested": "[13.0.3, )",
         "resolved": "13.0.3",
         "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
+      },
+      "NSwag.Generation.AspNetCore": {
+        "type": "CentralTransitive",
+        "requested": "[14.0.7, )",
+        "resolved": "14.0.7",
+        "contentHash": "j2sJxTyeTmp8xD/YeW6D8U0Y5hea9ruAlL8XV4GWJHJzx0D9tp4MV1ZhJCvXUfdXV5Dnu+bkOxaY4SQWa+Un8Q==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Options": "8.0.0",
+          "NSwag.Generation": "14.0.7"
+        }
       },
       "OneOf": {
         "type": "CentralTransitive",
