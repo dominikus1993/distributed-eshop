@@ -4,9 +4,9 @@
     "net8.0": {
       "Marten": {
         "type": "Direct",
-        "requested": "[7.16.0, )",
-        "resolved": "7.16.0",
-        "contentHash": "2zMlzf4Abkr1OI4THodjgbjh7hLfhKNtshu6OOQeKK2+aLTJ8JyAGuXmxOACpKI0gfKLofBBcA37GeS9ywrjEg==",
+        "requested": "[7.19.1, )",
+        "resolved": "7.19.1",
+        "contentHash": "Sopuv2zkAalbtL/ag43vk2XlVWfCE4pY/xIil4wIYlPOAxahfhj7nEkPpWn+eDOg8IhXOnkBXb91LdjJVzD77w==",
         "dependencies": {
           "JasperFx.CodeGeneration": "3.5.3",
           "JasperFx.Core": "1.5.1",
