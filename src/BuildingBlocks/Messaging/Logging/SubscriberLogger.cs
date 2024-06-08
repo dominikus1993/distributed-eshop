@@ -20,4 +20,11 @@ internal static partial class SubscriberLogger
         Message = "Can't deserialize message {Exchange} -> {RoutingKey} -> {Queue}")]
     public static partial void LogCantDeserializeMessage(
         this ILogger logger, string exchange, string routingKey, string queue);
+    
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Warning,
+        Message = "Subscriber not found {Exchange} -> {RoutingKey} -> {Queue}")]
+    public static partial void LogSubscriberNotFound(
+        this ILogger logger, string exchange, string routingKey, string queue);
 }
