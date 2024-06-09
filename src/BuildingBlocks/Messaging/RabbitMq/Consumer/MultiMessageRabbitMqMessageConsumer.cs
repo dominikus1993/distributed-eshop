@@ -99,11 +99,11 @@ public sealed class MultiMessageRabbitMqMessageConsumer : BackgroundService
                 }
 
                 var subscriber = serviceScope.ServiceProvider.GetRequiredService(type.Handler);
-                var handle = _methodInfos.GetOrAdd(subscriber.GetType(),
+                var handleMethodInfo = _methodInfos.GetOrAdd(subscriber.GetType(),
                     (subscriberType) =>
                         subscriberType.GetMethod(nameof(IMessageSubscriber<IMessage>.Handle))!);
                 
-                var result = await (Task<Result<Unit>>)handle.Invoke(subscriber, [msg, ct])!;
+                var result = await (Task<Result<Unit>>)handleMethodInfo.Invoke(subscriber, [msg, ct])!;
                 if (!result.IsSuccess)
                 {
                     logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue, properties);
