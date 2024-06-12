@@ -69,8 +69,10 @@ public static class RabbitMqTestConsumer
         var channel2 = Channel.CreateBounded<T2>(new BoundedChannelOptions(message2SubscriberTake) { FullMode = BoundedChannelFullMode.Wait});
         var testSubscriber2 = new TestSubscriber<T2>(channel2, message2SubscriberTake);
         var services = new ServiceCollection();
-        services.AddSingleton<TestSubscriber<T1>>(testSubscriber);
-        services.AddSingleton<TestSubscriber<T2>>(testSubscriber2);
+        services.AddSingleton<RabbitMqMessageProcessor<T1>>();
+        services.AddSingleton<RabbitMqMessageProcessor<T2>>();
+        services.AddSingleton<IMessageSubscriber<T1>, TestSubscriber<T1>>(_ => testSubscriber);
+        services.AddSingleton<IMessageSubscriber<T2>, TestSubscriber<T2>>(_ => testSubscriber2);
         services.AddSingleton<ISerializer>(new SystemTextJsonSerializer());
         services.AddSingleton(NullLoggerFactory.Instance.CreateLogger<MultiMessageRabbitMqMessageConsumer>());
         var consumer = new MultiMessageRabbitMqMessageConsumer(bus, services.BuildServiceProvider(), configuration);

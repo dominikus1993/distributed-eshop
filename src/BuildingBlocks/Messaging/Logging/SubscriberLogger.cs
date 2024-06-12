@@ -11,7 +11,7 @@ internal static partial class SubscriberLogger
         Level = LogLevel.Error,
         Message = "Can't process message {Exchange} -> {RoutingKey} -> {Queue}")]
     public static partial void LogCantProcessMessage(
-        this ILogger logger, Exception exception, string exchange, string routingKey, string queue, [LogProperties(SkipNullProperties = true)]MessageProperties properties);
+        this ILogger logger, Exception exception, string exchange, string routingKey, string queue, [LogProperties(SkipNullProperties = true)]MessageProperties properties, [LogProperties(SkipNullProperties = true)]MessageReceivedInfo info);
     
     
     [LoggerMessage(
@@ -19,6 +19,13 @@ internal static partial class SubscriberLogger
         Level = LogLevel.Warning,
         Message = "Can't deserialize message {Exchange} -> {RoutingKey} -> {Queue}")]
     public static partial void LogCantDeserializeMessage(
+        this ILogger logger, string exchange, string routingKey, string queue);
+    
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Warning,
+        Message = "Message Processor Not Found {Exchange} -> {RoutingKey} -> {Queue}")]
+    public static partial void LogMessageProcessorNotFound(
         this ILogger logger, string exchange, string routingKey, string queue);
     
     [LoggerMessage(

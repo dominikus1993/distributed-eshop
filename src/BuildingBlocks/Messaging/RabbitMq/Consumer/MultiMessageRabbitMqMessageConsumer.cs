@@ -23,6 +23,74 @@ using IMessage = Messaging.Abstraction.IMessage;
 
 namespace Messaging.RabbitMq.Consumer;
 
+internal interface IMessageProcessor
+{
+    Task<AckStrategy> Process(ReadOnlyMemory<byte> body, MessageProperties properties,
+        MessageReceivedInfo info, CancellationToken ct);
+}
+internal sealed class RabbitMqMessageProcessor<T> : IMessageProcessor where T : IMessage
+{
+    private static readonly Type _type = typeof(T);
+    private readonly IServiceProvider _serviceProvider;
+
+    public RabbitMqMessageProcessor(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public async Task<AckStrategy> Process(ReadOnlyMemory<byte> body, MessageProperties properties,
+        MessageReceivedInfo info, CancellationToken ct)
+    {
+        using var activity = RabbitMqTelemetry.RabbitMqActivitySource.Start("rabbitmq.consume", ActivityKind.Consumer, RabbitMqTelemetry.GetHeaderFromProps(properties).ActivityContext);
+            await using var serviceScope = _serviceProvider.CreateAsyncScope(); 
+            var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<MultiMessageRabbitMqMessageConsumer>>();
+            
+            try
+            {
+                if (activity is not null)
+                {
+                    activity.SetTag("messaging.rabbitmq.routing_key", info.RoutingKey);
+                    activity.SetTag("messaging.exchange", info.Exchange);
+                    activity.SetTag("messaging.destination", info.Queue);
+                    activity.SetTag("messaging.timestamp", properties.Timestamp);
+                    activity.SetTag("messaging.message_id", properties.MessageId);
+                    activity.SetTag("messaging.message_type", properties.Type);
+                    activity.SetTag("messaging.system", "rabbitmq");
+                    activity.SetTag("messaging.destination_kind", "queue");
+                    activity.SetTag("messaging.protocol", "AMQP");
+                    activity.SetTag("messaging.protocol_version", "0.9.1");
+                    activity.SetTag("messaging.message_name", _type.Name);
+                }
+                
+                
+                var serializer = serviceScope.ServiceProvider.GetRequiredService<ISerializer>();
+                if (serializer.BytesToMessage(_type, body) is not T msg)
+                {
+                    logger.LogCantDeserializeMessage(info.Exchange, info.RoutingKey, info.Queue);
+                    activity?.AddEvent(new ActivityEvent("Message is null or can't be deserialized"));
+                    return AckStrategies.NackWithRequeue;
+                }
+
+                var subscriber = serviceScope.ServiceProvider.GetRequiredService<IMessageSubscriber<T>>();
+
+                var result = await subscriber.Handle(msg, ct);
+                if (!result.IsSuccess)
+                {
+                    logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue, properties, info);
+                    activity?.RecordException(result.ErrorValue);
+                    return AckStrategies.NackWithRequeue;
+                }
+                
+                return AckStrategies.Ack;
+            }
+            catch (Exception exc)
+            {
+                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue, properties, info);
+                activity?.RecordException(exc);
+                return AckStrategies.NackWithRequeue;
+            }
+    }
+}
 
 public sealed class MultiMessageRabbitMqMessageConsumer : BackgroundService
 {
@@ -30,7 +98,7 @@ public sealed class MultiMessageRabbitMqMessageConsumer : BackgroundService
     private readonly IServiceProvider _serviceProvider;
     private readonly MultiMessageRabbitMqSubscriptionConfiguration _subscriptionConfiguration;
     private IDisposable? _disposable;
-    private ConcurrentDictionary<Type, MethodInfo> _methodInfos = new();
+    private ConcurrentDictionary<Type, Type> _processorTypes = new();
     
     public MultiMessageRabbitMqMessageConsumer(IAdvancedBus advancedBus, IServiceProvider serviceProvider, MultiMessageRabbitMqSubscriptionConfiguration subscriptionConfiguration)
     {
@@ -62,61 +130,39 @@ public sealed class MultiMessageRabbitMqMessageConsumer : BackgroundService
 
         _disposable = _advancedBus.Consume(queue, async (body, properties, info, ct) =>
         {
-            using var activity = RabbitMqTelemetry.RabbitMqActivitySource.Start("rabbitmq.consume", ActivityKind.Consumer, RabbitMqTelemetry.GetHeaderFromProps(properties).ActivityContext);
             await using var serviceScope = _serviceProvider.CreateAsyncScope(); 
-            var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<MultiMessageRabbitMqMessageConsumer>>();
             
             try
             {
-                if (activity is not null)
-                {
-                    activity.SetTag("messaging.rabbitmq.routing_key", info.RoutingKey);
-                    activity.SetTag("messaging.exchange", info.Exchange);
-                    activity.SetTag("messaging.destination", info.Queue);
-                    activity.SetTag("messaging.timestamp", properties.Timestamp);
-                    activity.SetTag("messaging.message_id", properties.MessageId);
-                    activity.SetTag("messaging.message_type", properties.Type);
-                    activity.SetTag("messaging.system", "rabbitmq");
-                    activity.SetTag("messaging.destination_kind", "queue");
-                    activity.SetTag("messaging.protocol", "AMQP");
-                    activity.SetTag("messaging.protocol_version", "0.9.1");
-                }
-
                 if (!_subscriptionConfiguration.Subscriptions.TryGetValue(info.RoutingKey, out var type))
                 {
+                    var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<MultiMessageRabbitMqMessageConsumer>>();
                     logger.LogSubscriberNotFound(info.Exchange, info.RoutingKey, info.Queue);
                     return AckStrategies.NackWithRequeue;
                 }
                 
-                activity?.SetTag("messaging.message_name", type.Message.Name);
-                
-                var serializer = serviceScope.ServiceProvider.GetRequiredService<ISerializer>();
-                if (serializer.BytesToMessage(type.Message, body) is not {} msg)
+                var processorType = _processorTypes.GetOrAdd(type.Message, t =>
                 {
-                    logger.LogCantDeserializeMessage(info.Exchange, info.RoutingKey, info.Queue);
-                    activity?.AddEvent(new ActivityEvent("Message is null or can't be deserialized"));
-                    return AckStrategies.NackWithRequeue;
-                }
+                    var processorType = typeof(RabbitMqMessageProcessor<>).MakeGenericType(t);
+                    return processorType;
+                });
+                
+                var processor = serviceScope.ServiceProvider.GetRequiredService(processorType);
 
-                var subscriber = serviceScope.ServiceProvider.GetRequiredService(type.Handler);
-                var handleMethodInfo = _methodInfos.GetOrAdd(subscriber.GetType(),
-                    (subscriberType) =>
-                        subscriberType.GetMethod(nameof(IMessageSubscriber<IMessage>.Handle))!);
-                
-                var result = await (Task<Result<Unit>>)handleMethodInfo.Invoke(subscriber, [msg, ct])!;
-                if (!result.IsSuccess)
+                if (processor is not IMessageProcessor messageProcessor)
                 {
-                    logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue, properties);
-                    activity?.RecordException(result.ErrorValue);
-                    return _subscriptionConfiguration.AckStrategy;
+                    var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<MultiMessageRabbitMqMessageConsumer>>();
+                    logger.LogMessageProcessorNotFound(info.Exchange, info.RoutingKey, info.Queue);
+                    return AckStrategies.NackWithoutRequeue;
                 }
                 
-                return AckStrategies.Ack;
+                return await messageProcessor.Process(body, properties, info, ct);
+                
             }
             catch (Exception exc)
             {
-                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue, properties);
-                activity?.RecordException(exc);
+                var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<MultiMessageRabbitMqMessageConsumer>>();
+                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue, properties, info);
                 return _subscriptionConfiguration.AckStrategy;
             }
         }, configuration =>

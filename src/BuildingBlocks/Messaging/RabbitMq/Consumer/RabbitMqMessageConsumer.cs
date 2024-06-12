@@ -94,7 +94,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
                 var result = await subscriber.Handle(message, ct);
                 if (!result.IsSuccess)
                 {
-                    logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue, properties);
+                    logger.LogCantProcessMessage(result.ErrorValue, info.Exchange, info.RoutingKey, info.Queue, properties, info);
                     activity?.RecordException(result.ErrorValue);
                     return _subscriptionConfiguration.AckStrategy;
                 }
@@ -103,7 +103,7 @@ public sealed class RabbitMqMessageConsumer<T> : BackgroundService where T : IMe
             }
             catch (Exception exc)
             {
-                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue, properties);
+                logger.LogCantProcessMessage(exc, info.Exchange, info.RoutingKey, info.Queue, properties, info);
                 activity?.RecordException(exc);
                 return _subscriptionConfiguration.AckStrategy;
             }
