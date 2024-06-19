@@ -13,8 +13,8 @@ public sealed class OpenSearchContainer : DockerContainer
     /// </summary>
     /// <param name="configuration">The container configuration.</param>
     /// <param name="logger">The logger.</param>
-    public OpenSearchContainer(OpenSearchConfiguration configuration, ILogger logger)
-        : base(configuration, logger)
+    public OpenSearchContainer(OpenSearchConfiguration configuration)
+        : base(configuration)
     {
         _configuration = configuration;
     }

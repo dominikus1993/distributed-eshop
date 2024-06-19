@@ -56,7 +56,7 @@ public sealed class OpenSearchBuilder : ContainerBuilder<OpenSearchBuilder, Open
     public override OpenSearchContainer Build()
     {
         Validate();
-        return new OpenSearchContainer(DockerResourceConfiguration, TestcontainersSettings.Logger);
+        return new OpenSearchContainer(DockerResourceConfiguration);
     }
 
     /// <inheritdoc />
